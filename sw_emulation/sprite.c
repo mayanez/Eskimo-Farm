@@ -60,7 +60,6 @@ void gl_state_input (sprite_info_t Gl_array[]){
        }
 
     }
-
 }
 
 
