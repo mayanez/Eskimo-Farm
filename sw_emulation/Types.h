@@ -1,8 +1,8 @@
 #ifndef _TYPES_H
 #define _TYPES_H
 
-#define DISPLAY_WIDTH 480
-#define DISPLAY_HEIGHT 640
+#define DISPLAY_WIDTH 640
+#define DISPLAY_HEIGHT 480
 #define INPUT_STRUCT_LENGTH 10
 
 typedef struct {
