@@ -2,28 +2,29 @@
 #include "sprite.h"
 #include<stdio.h>
 #include<stdlib.h>
+#include<string.h>
 #define N INPUT_STRUCT_LENGTH
-#define ROW DISPLAY_HEIGHT
-#define COL DISPLAY_WIDTH
+#define ROW DISPLAY_HEIGHT //480
+#define COL DISPLAY_WIDTH //640
 
 int main(int argc, char const *argv[])
 {
 	sprite_init();
 	sprite_info_t input_array[N]={0};
 	input_array[0].x = 0;
-	input_array[0].y = 471;
+	input_array[0].y = 0;
 	input_array[0].id =  2; // Green
 
-	input_array[1].x = 631;
-	input_array[1].y = 471;
+	input_array[1].x = 471;
+	input_array[1].y = 631;
 	input_array[1].id =  3; //Red
 
-	input_array[2].x =  631;
+	input_array[2].x = 471;
 	input_array[2].y = 0;
 	input_array[2].id = 49;//Blue
 
-	input_array[3].x =  471;
-	input_array[3].y = 639;
+	input_array[3].x =  0;
+	input_array[3].y = 621;
 	input_array[3].id = 50;//
 
 
@@ -35,7 +36,7 @@ int main(int argc, char const *argv[])
  
     gl_state_input (input_array);
  
-    memset(golden_output,0,ROW*COL);
+    memset(golden_output,0,ROW*COL*sizeof(rgb_pixel_t));
 
     for(i=input_array[0].x; i< input_array[0].x + 8 ; i++) {
     	for (j= input_array[0].y; j< input_array[0].y + 8;j++){

@@ -18,7 +18,7 @@
 
 rgb_pixel_t Sprite_Array [DISPLAY_HEIGHT][DISPLAY_WIDTH];
 void sprite_init() {
-   memset(Sprite_Array, 0, DISPLAY_WIDTH * DISPLAY_HEIGHT);
+   memset(Sprite_Array, 0, DISPLAY_WIDTH * DISPLAY_HEIGHT * sizeof(rgb_pixel_t));
 }
 void gl_state_input (sprite_info_t Gl_array[]){
     
