@@ -99,7 +99,3 @@ void draw_rgb_fb() {
 	memset(framebuffer, 0, fb_finfo.smem_len);
 }
 
-int main() {
-fbopen();
-draw_rgb_fb();
-}
