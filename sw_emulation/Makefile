@@ -1,7 +1,7 @@
 CFLAGS = -Wall
 
 SPRITE_TESTER_OBJECTS = vga.o sprite.o tester_sprite.o
-VGA_TESTER_OBJECTs = vga.o sprite.o tester_vga.o
+VGA_TESTER_OBJECTS = vga.o sprite.o tester_vga.o
 
 sprite_tester: $(SPRITE_TESTER_OBJECTS)
 	cc $(CFLAGS) -o sprite_tester $(SPRITE_TESTER_OBJECTS)

@@ -15,6 +15,7 @@
 #define ENEMY   49
 #define SKY     1
 
+void read_ppm(int, rgb_pixel_t*, int, int);
 
 rgb_pixel_t Sprite_Array [DISPLAY_HEIGHT][DISPLAY_WIDTH];
 void sprite_init() {
@@ -38,7 +39,7 @@ void gl_state_input (sprite_info_t Gl_array[]){
             for(m = ycoord; m< ycoord + 8; m++)
             {
                 if(type == 50){
-                    read_ppm(50, &Sprite_Array, j, m);
+                    read_ppm(50, Sprite_Array, j, m);
                  }
                 else if (type == 49){
                     Sprite_Array[j][m].r = 0;
@@ -71,23 +72,36 @@ rgb_pixel_t vga_rgb_req(int hcount, int vcount){
 
 void read_ppm(int id, rgb_pixel_t *state_array, int x, int y) {
 
-    char buf[256];
+    char buf[256*4];
     unsigned int w, h;
 
     FILE *file;
     file = fopen("sprite.ppm", "r");
+    unsigned int d;
 
-    if (file == NULL) return NULL;
+    if (file == NULL) return;
     fgets(buf, 256, file);
+    printf("format %s\n", buf);
     fgets(buf, 256, file);
     sscanf(buf, "%u %u", &w, &h);
-    fgets(buf, 256, file);
-    fseek(file, 1, SEEK_CUR);
+    printf("w: %u h: %u\n", w, h);
+    fscanf(file, "%u", &d);
+    printf("color: %u\n", d);
+    fseek(file, 0xd0, SEEK_CUR);
+    
+    memset(&buf, 0, 256*3);
+    size_t rd = fread(buf, 3, 1, file);
+    printf("%x\n", buf);
+    printf("%x %x %x\n", buf[0], buf[1], buf[2]);
+    
+    memset(&buf, 0, 256*3);
+    fread(buf, 3, 1, file);
+    printf("%x\n", buf);
+    printf("%x %x %x\n", buf[0], buf[1], buf[2]);
+ 
+}
 
-    size_t rd = fread((*state_array)[x][y], 3, w*h, file);
+int main() {
 
-    if (rd <  h*w) {
-        return NULL;
-    }
-
+read_ppm(1, Sprite_Array, 0, 0);
 }
