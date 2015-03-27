@@ -1,5 +1,6 @@
 #define DISPLAY_WIDTH 480
 #define DISPLAY_HEIGHT 640
+#define INPUT_STRUCT_LENGTH 10
 
 typedef struct {
     int x;
