@@ -1,4 +1,4 @@
-#import "vga.h"
+#include "vga.h"
 
 void send_hcount_vcount() {
     return;
