@@ -3,8 +3,8 @@
 #include<stdio.h>
 #include<stdlib.h>
 #define N INPUT_STRUCT_LENGTH
-#define ROW DISPLAY_WIDTH
-#define COL DISPLAY_HEIGHT
+#define ROW DISPLAY_HEIGHT
+#define COL DISPLAY_WIDTH
 
 int main(int argc, char const *argv[])
 {
@@ -34,14 +34,7 @@ int main(int argc, char const *argv[])
 	rgb_pixel_t test_output[ROW][COL];
  
     gl_state_input (input_array);
-    for(i=0;i<ROW;i++) {
-    	for(j=0;j<COL;j++){
-    		golden_output[i][j].r = 0;
-    		golden_output[i][j].g = 0;
-    		golden_output[i][j].b = 0;
-    	}
-    }
-
+ 
     memset(golden_output,0,ROW*COL);
 
     for(i=input_array[0].x; i< input_array[0].x + 8 ; i++) {

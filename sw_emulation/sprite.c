@@ -15,12 +15,12 @@
 #define ENEMY   49
 #define SKY     1
 
-rgb_pixel_t Sprite_Array [DISPLAY_WIDTH][DISPLAY_HEIGHT]; // initialise to 0
+
+rgb_pixel_t Sprite_Array [DISPLAY_HEIGHT][DISPLAY_WIDTH] = {{0}}; // initialise to 0
 
 void sprite_init() {
    memset(Sprite_Array, 0, DISPLAY_WIDTH * DISPLAY_HEIGHT);
 }
-
 void gl_state_input (sprite_info_t Gl_array[]){
     
     int i,j,m;
@@ -33,9 +33,9 @@ void gl_state_input (sprite_info_t Gl_array[]){
         ycoord = Gl_array[i].y;
         type = Gl_array[i].id;
         
-        for (j = xcoord; i< 8 ; i++)
+       for (int j = xcoord; i< xcoord + 8 ; i++)
         {
-            for(m = ycoord; m< 8; m++)
+            for( int m = ycoord; m< ycoord + 8; m++)
             {
                 if(type == 50){
                     Sprite_Array[j][m].r = 255;
