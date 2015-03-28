@@ -1,3 +1,11 @@
+#ifndef _SPRITE_H
+#define _SPRITE_H
+
 #include "Types.h"
 
-rgb_pixel_t *vga_rgb_req(int, int);
+sprite_info_t Gl_array[INPUT_STRUCT_LENGTH];
+
+void gl_state_input (sprite_info_t Gl_array[INPUT_STRUCT_LENGTH]);
+rgb_pixel_t vga_rgb_req(int h, int v);
+
+#endif
