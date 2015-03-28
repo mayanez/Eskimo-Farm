@@ -15,15 +15,7 @@
 #define ENEMY   49
 #define SKY     1
 
-typedef struct sprite_info_t{
-    int x;
-    int y;
-    int id;
-} sprite_info_t;
-
-
 rgb_pixel_t Sprite_Array [DISPLAY_WIDTH][DISPLAY_HEIGHT] = {{0}}; // initialise to 0
-
 
 void gl_state_input (sprite_info_t Gl_array[]){
     
