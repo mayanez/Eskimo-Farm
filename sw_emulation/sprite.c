@@ -37,25 +37,33 @@ void gl_state_input (sprite_info_t Gl_array[]){
         ycoord = Gl_array[i].y;
         type = Gl_array[i].id;
         
-        for(int j = i; j< 8+i; j++){
-            if(type == 50){
-            memset(Sprite_Array[j].r,0,8 );
-            memset(Sprite_Array[j].g,255,8 );
-            memset(Sprite_Array[j].b,0,8 );
-            }
-            
-            else if (type == 49){
-                memset(Sprite_Array[j].r,255,8 );
-                memset(Sprite_Array[j].g,0,8 );
-                memset(Sprite_Array[j].b,0,8 );
-            }
-            
-            else{
-                memset(Sprite_Array[j].r,255,8 );
-                memset(Sprite_Array[j].g,255,8 );
-                memset(Sprite_Array[j].b,0,8 );
-            }
-        }
+        for (int j = xcoord; i< 8 ; i++)
+        {
+            for( int m = ycoord; m< 8; m++)
+            {
+                if(type == 50){
+                    Sprite_Array[j][m].r = 255;
+                    Sprite_Array[j][m].g = 0;
+                    Sprite_Array[j][m].b = 0;
+                 }
+                else if (type == 49){
+                    Sprite_Array[j][m].r = 0;
+                    Sprite_Array[j][m].g = 255;
+                    Sprite_Array[j][m].b = 0;
+                }
+                else if (type == 3){
+                    Sprite_Array[j][m].r = 255;
+                    Sprite_Array[j][m].g = 255;
+                    Sprite_Array[j][m].b = 0;
+                }
+                else {
+                    Sprite_Array[j][m].r = 0;
+                    Sprite_Array[j][m].g = 255;
+                    Sprite_Array[j][m].b = 255;
+                }
+          }
+       
+       }
 
     }
         
