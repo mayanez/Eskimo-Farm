@@ -11,8 +11,8 @@
 #include <stdio.h>
 #include <linux/fb.h>
 
-#define ESKIMO  3
-#define ENEMY   2
+#define ESKIMO  50
+#define ENEMY   49
 #define SKY     1
 
 typedef struct sprite_info_t{
@@ -22,61 +22,34 @@ typedef struct sprite_info_t{
 } sprite_info_t;
 
 
-int Sprite_Array [DISPLAY_WIDTH][DISPLAY_HEIGHT] = {{0}}; // initialise to 0
+rgb_pixel_t Sprite_Array [DISPLAY_WIDTH][DISPLAY_HEIGHT] = {{0}}; // initialise to 0
 
 
 void gl_state_input (sprite_info_t Gl_array[]){
     
     int i;
-    for (i = 0; i < INPUT_STRUCT_LENGTH; i++)
-        priority_checker(Gl_array, i);
-}
+    int type;
+    int xcoord;
+    int ycoord;
 
+    for (i = 0; i < INPUT_STRUCT_LENGTH; i++){
+        xcoord = Gl_array[i].x;
+        ycoord = Gl_array[i].y;
+        type = Gl_array[i].id;
+        
+        for(int j = 0; j< 8; j++){
+            memset(Sprite_Array[j].r,255,8 );
+            memset(Sprite_Array[j].g,0,8 );
+            memset(Sprite_Array[j].b,0,8 );
+        }
 
-
-void priority_checker (sprite_info_t Gl_array[], int i){
-    int type = Gl_array[i].id;
-    int xcoord = Gl_array[i].x;
-    int ycoord = Gl_array[i].y;
-    int check = Sprite_Array[xcoord][ycoord];
-    int val;
-    
-    if (check < type)
-        val = 1;
-    else
-        val = 0;
-    
-    switch(val){
-        case 1:
-            Sprite_Array[xcoord][ycoord] = type;
-            break;
-        default:
-            Sprite_Array[xcoord][ycoord] = type;
     }
+        
 }
 
 
 rgb_pixel_t vga_rgb_req(int hcount, int vcount){
-    int type = Sprite_Array[hcount][vcount];
     rgb_pixel_t rt;
-    
-    if (type == ESKIMO){
-        rt.r = 0;
-        rt.g = 255;
-        rt.b = 0;
-    }
-    
-    else if (type == ENEMY){
-        rt.r = 255;
-        rt.g = 0;
-        rt.b = 0;
-    }
-    
-    else {
-        rt.r = 0;
-        rt.g = 255;
-        rt.b = 255;
-    }
-    
+    rt = Sprite_Array[hcount][vcount];
     return rt;
 }
