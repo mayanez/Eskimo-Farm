@@ -16,7 +16,7 @@ typedef struct {
 
 typedef struct {
     int id;
-    rgb_pixel_t[8][8] pixels;
+    rgb_pixel_t pixels[8][8];
 } sprite_t;
 
 

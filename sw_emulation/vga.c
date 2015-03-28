@@ -21,7 +21,7 @@
  * http://raspberrycompote.blogspot.com/2013/01/low-level-graphics-on-raspberry-pi-part_22.html
  *
  */
- 
+
 struct fb_var_screeninfo fb_vinfo;
 struct fb_fix_screeninfo fb_finfo;
 unsigned char *framebuffer;
@@ -51,7 +51,7 @@ int fbopen() {
 }
 
 void fbputpixel(rgb_pixel_t *rgb_pixel, int hcount, int vcount) {
-	unsigned char *offset = ((vcount + fb_vinfo.yoffset) * fb_finfo.line_length) + ((hcount + fb_vinfo.xoffset) * BITS_PER_PIXEL / 8);
+	unsigned char *pixel = ((vcount + fb_vinfo.yoffset) * fb_finfo.line_length) + ((hcount + fb_vinfo.xoffset) * BITS_PER_PIXEL / 8);
 	pixel[0] = rgb_pixel->r;
 	pixel[1] = rgb_pixel->g;
 	pixel[2] = rgb_pixel->b;
