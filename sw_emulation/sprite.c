@@ -1,4 +1,3 @@
-
 #include "sprite.h"
 #include "vga.h"
 
@@ -16,7 +15,15 @@
 #define ENEMY   2
 #define SKY     1
 
+typedef struct sprite_info_t{
+    int x;
+    int y;
+    int id;
+} sprite_info_t;
+
+
 int Sprite_Array [DISPLAY_WIDTH][DISPLAY_HEIGHT] = {{0}}; // initialise to 0
+
 
 void gl_state_input (sprite_info_t Gl_array[]){
     
@@ -25,20 +32,29 @@ void gl_state_input (sprite_info_t Gl_array[]){
         priority_checker(Gl_array, i);
 }
 
+
+
 void priority_checker (sprite_info_t Gl_array[], int i){
     int type = Gl_array[i].id;
     int xcoord = Gl_array[i].x;
     int ycoord = Gl_array[i].y;
     int check = Sprite_Array[xcoord][ycoord];
+    int val;
     
-    switch(type){
-        case (check < type) :
+    if (check < type)
+        val = 1;
+    else
+        val = 0;
+    
+    switch(val){
+        case 1:
             Sprite_Array[xcoord][ycoord] = type;
             break;
         default:
             Sprite_Array[xcoord][ycoord] = type;
     }
 }
+
 
 rgb_pixel_t vga_rgb_req(int hcount, int vcount){
     int type = Sprite_Array[hcount][vcount];
