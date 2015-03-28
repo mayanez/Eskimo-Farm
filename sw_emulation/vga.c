@@ -1,4 +1,3 @@
-#include "Types.h"
 #include "vga.h"
 #include "sprite.h"
 

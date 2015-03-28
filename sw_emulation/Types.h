@@ -1,3 +1,6 @@
+#ifndef _TYPES_H
+#define _TYPES_H
+
 #define DISPLAY_WIDTH 480
 #define DISPLAY_HEIGHT 640
 #define INPUT_STRUCT_LENGTH 10
@@ -19,4 +22,4 @@ typedef struct {
     rgb_pixel_t pixels[8][8];
 } sprite_t;
 
-
+#endif
