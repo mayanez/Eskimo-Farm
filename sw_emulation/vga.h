@@ -3,7 +3,9 @@
 
 #include "Types.h"
 
-void send_hcount_vcount();
+extern int hcount, vcount;
+
+void vga_init();
 void draw_rgb_fb();
 
 #endif

@@ -1,8 +1,8 @@
 #include "Types.h"
 #include "sprite.h"
-#include<stdio.h>
-#include<stdlib.h>
-#include<string.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #define N INPUT_STRUCT_LENGTH
 #define ROW DISPLAY_HEIGHT //480
 #define COL DISPLAY_WIDTH //640
@@ -33,9 +33,9 @@ int main(int argc, char const *argv[])
 
 	rgb_pixel_t golden_output[ROW][COL];
 	rgb_pixel_t test_output[ROW][COL];
- 
+
     gl_state_input (input_array);
- 
+
     memset(golden_output,0,ROW*COL*sizeof(rgb_pixel_t));
 
     for(i=input_array[0].x; i< input_array[0].x + 8 ; i++) {
@@ -44,8 +44,8 @@ int main(int argc, char const *argv[])
 			golden_output[i][j].g = 255;
 			golden_output[i][j].b = 255;
     	}
-    }	
-    
+    }
+
     for(i=input_array[1].x; i< input_array[1].x + 8 ; i++) {
     	for (j= input_array[1].y; j< input_array[1].y + 8;j++){
     		golden_output[i][j].r = 255;
@@ -61,7 +61,7 @@ int main(int argc, char const *argv[])
 			golden_output[i][j].b = 0;
         }
     }
-	
+
 
     for(i=input_array[3].x; i< input_array[3].x + 8 ; i++) {
     	for (j= input_array[3].y; j< input_array[3].y + 8;j++){
@@ -83,7 +83,7 @@ int main(int argc, char const *argv[])
     		}
     	}
     }
-    
+
 
     printf("Successful\n");
 

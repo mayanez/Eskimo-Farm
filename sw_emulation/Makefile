@@ -3,7 +3,7 @@ CFLAGS = -Wall
 OBJECTS = vga.o sprite.o tester_sprite.o
 
 vga: $(OBJECTS)
-	cc $(CFLAGS) -o emulator $(OBJECTS)
+	cc $(CFLAGS) -o emulator $(OBJECTS) -pthread
 
 
 vga.o: vga.c vga.h sprite.h Types.h
