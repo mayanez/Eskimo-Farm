@@ -1,5 +1,5 @@
 #include "vga.h"
-//#include "sprite.h"
+#include "sprite.h"
 
 #include <sys/types.h>
 #include <sys/stat.h>

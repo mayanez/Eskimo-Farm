@@ -15,11 +15,11 @@ int main() {
     sprite_init();
     vga_init();
 
-      /* Init Mutex */
-      if (pthread_mutex_init(&vga_lock, NULL) != 0) {
-            fprintf(stderr, "mutex init failed\n");
-            exit(1);
-      }
+    /* Init Mutex */
+    if (pthread_mutex_init(&vga_lock, NULL) != 0) {
+        fprintf(stderr, "mutex init failed\n");
+        exit(1);
+    }
 
     /*Start Sprite Thread*/
     pthread_create(&sprite_thread, NULL, sprite_thread_f, NULL);
@@ -53,6 +53,7 @@ void *vga_thread_f(void *ignored) {
 
         /* Will wait for Game State to be updated */
         pthread_mutex_lock(&vga_lock);
+        /* Request rgb_pixels for screen for a given Game state */
         draw_rgb_fb();
         pthread_mutex_unlock(&vga_lock);
     }
@@ -91,6 +92,7 @@ void *sprite_thread_f(void *ignored) {
 
         /* Will wait for screen to draw before getting next state */
         pthread_mutex_lock(&vga_lock);
+        /* Updates the rgb_pixels to be drawn to screen */
         gl_logic_state_input(input_array);
         pthread_mutex_unlock(&vga_lock);
         x++;
