@@ -1,12 +1,13 @@
 CFLAGS = -Wall
 
-OBJECTS = vga.o sprite.o tester_sprite.o
+SPRITE_TESTER_OBJECTS = vga.o sprite.o tester_sprite.o
+VGA_TESTER_OBJECTs = vga.o sprite.o tester_vga.o
 
-vga: $(OBJECTS)
-	cc $(CFLAGS) -o emulator $(OBJECTS) -pthread
+sprite_tester: $(SPRITE_TESTER_OBJECTS)
+	cc $(CFLAGS) -o sprite_tester $(SPRITE_TESTER_OBJECTS)
 
-vga_tester: vga.o sprite.o tester_vga.o
-	cc $(CFLAGS) -o vga_tester vga.o sprite.o tester_vga.o -pthread
+vga_tester: $(VGA_TESTER_OBJECTS)
+	cc $(CFLAGS) -o vga_tester $(VGA_TESTER_OBJECTS)
 
 vga.o: vga.c vga.h sprite.h Types.h
 sprite.o: sprite.c sprite.h Types.h
@@ -15,4 +16,4 @@ tester_vga.o: tester_vga.c sprite.h vga.h Types.h
 
 .PHONY : clean
 clean:
-	rm -rf *.o emulator
+	rm -rf *.o sprite_tester vga_tester

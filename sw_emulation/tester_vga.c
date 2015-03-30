@@ -7,29 +7,16 @@
 #include <string.h>
 #include <unistd.h>
 
-pthread_t sprite_thread, vga_thread;
-pthread_mutex_t vga_lock;
-pthread_cond_t cond = PTHREAD_COND_INITIALIZER;
-
-void *sprite_thread_f(void *);
-void *vga_thread_f(void *);
-
 /* Tests Sprite Drawing to FB */
 int main() {
 
     sprite_init();
     vga_init();
 
-    /* Init Mutex */
-    if (pthread_mutex_init(&vga_lock, NULL) != 0) {
-        fprintf(stderr, "mutex init failed\n");
-        exit(1);
-    }
-    
-int x;
+    int x;
 
     sprite_info_t input_array[INPUT_STRUCT_LENGTH]={0};
-     input_array[0].x = 50;
+    input_array[0].x = 50;
     input_array[0].y = 20;
     input_array[0].id =  2;
 
@@ -45,22 +32,19 @@ int x;
     input_array[3].y = 621;
     input_array[3].id = 50;
 
-   
-while(1) {
+    /*Serialized. Will be parallel in Hardware. Need to figure out how to ensure this */
+    while(1) {
+        /*Translates a sprite horizontally */
+        if (x % 640 == 0 ) {
+           x = 0;
+        }
 
-    /*Translates a sprite horizontally */
-    
+        input_array[0].x = ++x;
 
-    if (x % 640 == 0 ) {
-       x = 0;
-    }
-    x++;
-    input_array[0].x = x;
-    /* Will wait for screen to draw before getting next state */
-	/* Updates the rgb_pixels to be drawn to screen */
         gl_state_input(input_array);
-        draw_rgb_fb();	
-   }
+        draw_rgb_fb();
+    }
+
     return 0;
 }
 
