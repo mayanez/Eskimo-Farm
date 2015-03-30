@@ -26,52 +26,11 @@ int main() {
         exit(1);
     }
     
-    /*Start Sprite Thread*/
-    pthread_create(&sprite_thread, NULL, sprite_thread_f, NULL);
-
-    /*Start VGA Thread */
-    pthread_create(&vga_thread, NULL, vga_thread_f, NULL);
-
-
-    /* Terminate threads */
-    pthread_cancel(sprite_thread);
-    pthread_cancel(vga_thread);
-
-    /* Destroy lock */
-    pthread_mutex_destroy(&vga_lock);
-
-    pthread_join(sprite_thread, NULL);
-    pthread_join(vga_thread, NULL);
-}
-
-/*
- * 1. Sprite Controller will initialize with Game State.
- * 2. VGA will get RGB from Sprite Controller and draw to screen.
- * 3. Repeat.
- *
- * In hardware this might have to be synchronized using a buffer?
- */
-
-void *vga_thread_f(void *ignored) {
-    /* Draws the screen constantly */
-    while (1) {
-
-        /* Will wait for Game State to be updated */
-        printf("Waiting for lock\n");
-	pthread_mutex_lock(&vga_lock);
-	pthread_cond_wait(&cond, &vga_lock);
-	/* Request rgb_pixels for screen for a given Game state */
-	printf("Drawing to Framebuffer\n");
-        draw_rgb_fb();
-        pthread_mutex_unlock(&vga_lock);
-    }
-}
-
-void *sprite_thread_f(void *ignored) {
+int x;
 
     sprite_info_t input_array[INPUT_STRUCT_LENGTH]={0};
-    input_array[0].x = 0;
-    input_array[0].y = 10;
+     input_array[0].x = 50;
+    input_array[0].y = 20;
     input_array[0].id =  2;
 
     input_array[1].x = 471;
@@ -86,25 +45,22 @@ void *sprite_thread_f(void *ignored) {
     input_array[3].y = 621;
     input_array[3].id = 50;
 
-    int x;
+   
+while(1) {
 
     /*Translates a sprite horizontally */
+    
 
-    while (1) {
-
-        if (x % 640 == 0) {
-            x = 0;
-        }
-
-       // input_array[0].x = x;
-
-        /* Will wait for screen to draw before getting next state */
-        pthread_mutex_lock(&vga_lock);
-	/* Updates the rgb_pixels to be drawn to screen */
-	printf("Updating State Input: Sprite Controller\n");
-	pthread_cond_signal(&cond);
-        gl_state_input(input_array);
-        pthread_mutex_unlock(&vga_lock);
-        x++;
+    if (x % 640 == 0 ) {
+       x = 0;
     }
+    x++;
+    input_array[0].x = x;
+    /* Will wait for screen to draw before getting next state */
+	/* Updates the rgb_pixels to be drawn to screen */
+        gl_state_input(input_array);
+        draw_rgb_fb();	
+   }
+    return 0;
 }
+
