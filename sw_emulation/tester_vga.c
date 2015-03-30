@@ -2,9 +2,14 @@
 #include "sprite.h"
 #include "vga.h"
 #include <pthread.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
 
 pthread_t sprite_thread, vga_thread;
 pthread_mutex_t vga_lock;
+pthread_cond_t cond = PTHREAD_COND_INITIALIZER;
 
 void *sprite_thread_f(void *);
 void *vga_thread_f(void *);
@@ -20,7 +25,7 @@ int main() {
         fprintf(stderr, "mutex init failed\n");
         exit(1);
     }
-
+    
     /*Start Sprite Thread*/
     pthread_create(&sprite_thread, NULL, sprite_thread_f, NULL);
 
@@ -52,8 +57,11 @@ void *vga_thread_f(void *ignored) {
     while (1) {
 
         /* Will wait for Game State to be updated */
-        pthread_mutex_lock(&vga_lock);
-        /* Request rgb_pixels for screen for a given Game state */
+        printf("Waiting for lock\n");
+	pthread_mutex_lock(&vga_lock);
+	pthread_cond_wait(&cond, &vga_lock);
+	/* Request rgb_pixels for screen for a given Game state */
+	printf("Drawing to Framebuffer\n");
         draw_rgb_fb();
         pthread_mutex_unlock(&vga_lock);
     }
@@ -66,16 +74,16 @@ void *sprite_thread_f(void *ignored) {
     input_array[0].y = 10;
     input_array[0].id =  2;
 
-    input_array[1].x = 631;
-    input_array[1].y = 471;
+    input_array[1].x = 471;
+    input_array[1].y = 631;
     input_array[1].id =  3;
 
-    input_array[2].x = 0;
-    input_array[2].y = 471;
+    input_array[2].x = 471;
+    input_array[2].y = 0;
     input_array[2].id = 49;
 
-    input_array[3].x = 621;
-    input_array[3].y = 0;
+    input_array[3].x = 0;
+    input_array[3].y = 621;
     input_array[3].id = 50;
 
     int x;
@@ -88,12 +96,14 @@ void *sprite_thread_f(void *ignored) {
             x = 0;
         }
 
-        input_array[0].x = x;
+       // input_array[0].x = x;
 
         /* Will wait for screen to draw before getting next state */
         pthread_mutex_lock(&vga_lock);
-        /* Updates the rgb_pixels to be drawn to screen */
-        gl_logic_state_input(input_array);
+	/* Updates the rgb_pixels to be drawn to screen */
+	printf("Updating State Input: Sprite Controller\n");
+	pthread_cond_signal(&cond);
+        gl_state_input(input_array);
         pthread_mutex_unlock(&vga_lock);
         x++;
     }

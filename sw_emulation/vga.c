@@ -84,9 +84,9 @@ void draw_rgb_fb() {
 		}
 	}
 
-	memset(framebuffer, 0, fb_finfo.smem_len);
+	//memset(framebuffer, 0, fb_finfo.smem_len);
 }
 
 void vga_init() {
-  fbopen()
+  fbopen();
 }
