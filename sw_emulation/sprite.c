@@ -15,9 +15,10 @@
 #define ENEMY   49
 #define SKY     1
 
+rgb_pixel_t Sprite_Array [DISPLAY_HEIGHT][DISPLAY_WIDTH];
+
 void read_ppm(int, rgb_pixel_t*, int, int);
 
-rgb_pixel_t Sprite_Array [DISPLAY_HEIGHT][DISPLAY_WIDTH];
 void sprite_init() {
    memset(Sprite_Array, 0, DISPLAY_WIDTH * DISPLAY_HEIGHT * sizeof(rgb_pixel_t));
 }
@@ -38,10 +39,10 @@ void gl_state_input (sprite_info_t Gl_array[]){
         {
             for(m = ycoord; m< ycoord + 8; m++)
             {
-                if(type == 50){
+                if(type == ESKIMO){
                     read_ppm(50, j, m);
                 }
-                else if (type == 49){
+                else if (type == ENEMY){
                     Sprite_Array[j][m].r = 0;
                     Sprite_Array[j][m].g = 255;
                     Sprite_Array[j][m].b = 0;
@@ -111,9 +112,4 @@ void read_ppm(int id, int x, int y) {
       }
     }
 
-}
-
-int main() {
-
-read_ppm(1, 0, 0);
 }
