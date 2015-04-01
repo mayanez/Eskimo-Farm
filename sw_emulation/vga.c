@@ -17,7 +17,8 @@
 #define FBOPEN_VSCREENINFO -3
 #define FBOPEN_MMAP -4
 #define FBOPEN_BPP -5
-
+#define DW 640
+#define DH 480
 /*
  * References:
  *
@@ -76,14 +77,13 @@ void put_pixel(rgb_pixel_t *rgb_pixel, int x, int y)
 }
 
 void draw_rgb_fb() {
-
-	for (vcount = 0; vcount < DISPLAY_HEIGHT; vcount++) {
-		for (hcount = 0; hcount < DISPLAY_WIDTH; hcount++) {
+	for (vcount = 0; vcount < DH; vcount++) {
+		for (hcount = 0; hcount < DW; hcount++) {
 			rgb_pixel_t rgb_pixel = vga_rgb_req(hcount, vcount);
 			put_pixel(&rgb_pixel, hcount, vcount);
 		}
 	}
-
+	
 	memset(framebuffer, 0, fb_finfo.smem_len);
 }
 

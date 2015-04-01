@@ -4,8 +4,6 @@
 #include <stdlib.h>
 #include <string.h>
 #define N INPUT_STRUCT_LENGTH
-#define ROW DISPLAY_HEIGHT //480
-#define COL DISPLAY_WIDTH //640
 
 
 int verify_static_output() {
