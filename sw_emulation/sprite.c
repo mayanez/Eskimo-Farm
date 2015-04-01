@@ -74,6 +74,7 @@ void read_ppm(int id, rgb_pixel_t *state_array, int x, int y) {
 
     char buf[256*4];
     unsigned int w, h;
+    int i,j;
 
     FILE *file;
     file = fopen("sprite.ppm", "r");
@@ -87,12 +88,18 @@ void read_ppm(int id, rgb_pixel_t *state_array, int x, int y) {
     printf("w: %u h: %u\n", w, h);
     fscanf(file, "%u", &d);
     printf("color: %u\n", d);
-    fseek(file, 0xd0, SEEK_CUR);
+    fseek(file,1, SEEK_CUR); 
     
-    memset(&buf, 0, 256*3);
-    size_t rd = fread(buf, 3, 1, file);
-    printf("%x\n", buf);
-    printf("%x %x %x\n", buf[0], buf[1], buf[2]);
+     for (i = 0; i<h; i++){
+       for(j=0; j<w; j++){
+           size_t rd = fread(buf, 3, 1, file);
+           printf("%x\n", buf);
+           printf("%x %x %x\n", buf[0], buf[1], buf[2]);
+           Sprite_Array[i][j].r = buf[0];
+           Sprite_Array[i][j].g = buf[1];
+           Sprite_Array[i][j].b = buf[2];
+       }
+    }
     
     memset(&buf, 0, 256*3);
     fread(buf, 3, 1, file);
