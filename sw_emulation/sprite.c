@@ -39,8 +39,8 @@ void gl_state_input (sprite_info_t Gl_array[]){
             for(m = ycoord; m< ycoord + 8; m++)
             {
                 if(type == 50){
-                    read_ppm(50, Sprite_Array, j, m);
-                 }
+                    read_ppm(50, j, m);
+                }
                 else if (type == 49){
                     Sprite_Array[j][m].r = 0;
                     Sprite_Array[j][m].g = 255;
@@ -70,45 +70,50 @@ rgb_pixel_t vga_rgb_req(int hcount, int vcount){
     return rt;
 }
 
-void read_ppm(int id, rgb_pixel_t *state_array, int x, int y) {
+void read_ppm(int id, int x, int y) {
 
-    char buf[256*4];
-    unsigned int w, h;
+    char buf[2048]; //Max width size 640 columns * 3bytes per column
+    unsigned int w, h, d;
     int i,j;
 
     FILE *file;
-    file = fopen("sprite.ppm", "r");
-    unsigned int d;
+    file = fopen(id + ".ppm", "r");
 
-    if (file == NULL) return;
+    if (file == NULL) {
+      return;
+    }
+
+    /* Reads format line. ex: P6 */
     fgets(buf, 256, file);
-    printf("format %s\n", buf);
+    debug_print("format %s\n", buf);
+
+    /* Reads dimensions */
     fgets(buf, 256, file);
     sscanf(buf, "%u %u", &w, &h);
-    printf("w: %u h: %u\n", w, h);
+    debug_print("w: %u h: %u\n", w, h);
+
+    /* Reads the color */
     fscanf(file, "%u", &d);
-    printf("color: %u\n", d);
-    fseek(file,1, SEEK_CUR); 
-    
-     for (i = 0; i<h; i++){
-       for(j=0; j<w; j++){
-           size_t rd = fread(buf, 3, 1, file);
-           printf("%x\n", buf);
-           printf("%x %x %x\n", buf[0], buf[1], buf[2]);
-           Sprite_Array[i][j].r = buf[0];
-           Sprite_Array[i][j].g = buf[1];
-           Sprite_Array[i][j].b = buf[2];
-       }
+    debug_print("color: %u\n", d);
+
+    /* Move past last newline char to image start */
+    fseek(file, 1, SEEK_CUR);
+
+    size_t rd = 0;
+    for (i = y; i < h && i < DISPLAY_HEIGHT; i++){
+      for(j = x; j < w && j < DISPLAY_WIDTH; j++){
+          rd = fread(buf, 3, 1, file);
+          debug_print("%x\n", buf);
+          debug_print("%x %x %x\n", buf[0], buf[1], buf[2]);
+          Sprite_Array[i][j].r = buf[0];
+          Sprite_Array[i][j].g = buf[1];
+          Sprite_Array[i][j].b = buf[2];
+      }
     }
-    
-    memset(&buf, 0, 256*3);
-    fread(buf, 3, 1, file);
-    printf("%x\n", buf);
-    printf("%x %x %x\n", buf[0], buf[1], buf[2]);
- 
+
 }
 
 int main() {
 
-read_ppm(1, Sprite_Array, 0, 0);
+read_ppm(1, 0, 0);
 }

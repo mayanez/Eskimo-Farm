@@ -31,19 +31,22 @@ int main() {
     input_array[3].y = 621;
     input_array[3].id = 50;
 
-  
-while(1) {
-    sprite_init();
-    /*Translates a sprite horizontally */
-    if (x % 640 == 0 ) {
-       x = 0;
-    }
-    x++;
-    input_array[0].x = x;
-    /* Will wait for screen to draw before getting next state */
-	/* Updates the rgb_pixels to be drawn to screen */
+
+    while(1) {
+        sprite_init();
+        /*Translates a sprite horizontally */
+        if (x % 640 == 0 ) {
+           x = 0;
+        }
+
+        input_array[0].x = x;
+
+        /* Will wait for screen to draw before getting next state */
+        /* Updates the rgb_pixels to be drawn to screen */
         gl_state_input(input_array);
         draw_rgb_fb();
+
+        x++;
     }
 
     return 0;
