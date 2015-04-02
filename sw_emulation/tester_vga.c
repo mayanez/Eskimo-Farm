@@ -16,9 +16,9 @@ int main() {
 
     sprite_info_t input_array[INPUT_STRUCT_LENGTH]={0};
     input_array[0].x = 0;
-    input_array[0].y = 0;
+    input_array[0].y = 50;
     input_array[0].id =  50;
-
+    
     while(1) {
         sprite_init();
         /*Translates a sprite horizontally */
