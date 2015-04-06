@@ -6,10 +6,7 @@
 
 module VGA_LED_Emulator(
  input logic 	    clk50, reset,
- input logic [7:0] RGB_R, RGB_G, RGB_B,
- output logic [7:0] VGA_R, VGA_G, VGA_B,
- output logic [10:0] VGA_HCOUNT,
- output logic [9:0] VGA_VCOUNT,
+ output logic [9:0] VGA_HCOUNT, VGA_VCOUNT,
  output logic 	    VGA_CLK, VGA_HS, VGA_VS, VGA_BLANK_n, VGA_SYNC_n);
 
 /*
@@ -84,10 +81,6 @@ module VGA_LED_Emulator(
    assign VGA_CLK = hcount[0]; // 25 MHz clock: pixel latched on rising edge
    assign VGA_HCOUNT = hcount[10:1];
    assign VGA_VCOUNT = vcount;
-
-   always_comb begin
-      {VGA_R, VGA_G, VGA_B} = {RGB_R, RGB_G, RGB_B};
-   end  
    
 endmodule // VGA_LED_Emulator
 
