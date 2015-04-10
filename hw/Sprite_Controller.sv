@@ -15,7 +15,7 @@ module SPRITE_CONTROLLER(  input logic clk,
    /* At least 9 bits for 480 and at least 10 bits for 640 and 5bits for type*/
    /* 20 sprite entry array */
 
-   logic [23:0] line_buffer [639:0];
+   logic [23:0] line_buffer [639:0]; /*Make sure this is zeroed every time */
 
 
    always_ff @(VGA_VCOUNT)
@@ -84,6 +84,8 @@ module SPRITE_CONTROLLER(  input logic clk,
         end
     end
 
+  /* For a given hcount(column) select bits for each color channel */
+  assign VGA_R, VGA_G, VGA_B = {line_buffer[VGA_HCOUNT][23:16], line_buffer[VGA_HCOUNT][15:8], line_buffer[VGA_HCOUNT][7:0]};
 
 endmodule
 

@@ -12,7 +12,7 @@ module gfx_controller(input logic clk,
 wire [9:0] VGA_HCOUNT;
 wire [9:0] VGA_VCOUNT;
 
-wire sprite_rom_data;
+wire [23:0] sprite_rom_data;
 
 VGA_LED_Emulator led_emulator(.clk50(clk), .*);
 
@@ -20,6 +20,8 @@ VGA_LED_Emulator led_emulator(.clk50(clk), .*);
 sprite_rom sprite_rom(.clock(clk), .address(addr), .q(sprite_rom_data)) /* sample */
 
 Sprite_Controller sprite_controller(.*);
+
+
 
 
 endmodule
