@@ -55,9 +55,9 @@
 }
 ]]></parameter>
  <parameter name="clockCrossingAdapter" value="HANDSHAKE" />
- <parameter name="device" value="5CSXFC6D6F31C8ES" />
+ <parameter name="device" value="5CGXFC7C7F23C8" />
  <parameter name="deviceFamily" value="Cyclone V" />
- <parameter name="deviceSpeedGrade" value="8_H6" />
+ <parameter name="deviceSpeedGrade" value="8_H7" />
  <parameter name="fabricMode" value="QSYS" />
  <parameter name="generateLegacySim" value="false" />
  <parameter name="generationId" value="0" />
@@ -525,7 +525,7 @@
   <parameter name="FPGA_PERIPHERAL_OUTPUT_CLOCK_FREQ_I2C2_CLK" value="100" />
   <parameter name="FPGA_PERIPHERAL_INPUT_CLOCK_FREQ_I2C3_SCL_IN" value="100" />
   <parameter name="FPGA_PERIPHERAL_OUTPUT_CLOCK_FREQ_I2C3_CLK" value="100" />
-  <parameter name="device_name" value="5CSXFC6D6F31C8ES" />
+  <parameter name="device_name" value="5CGXFC7C7F23C8" />
   <parameter
      name="quartus_ini_hps_ip_enable_all_peripheral_fpga_interfaces"
      value="false" />
@@ -552,7 +552,7 @@
   <parameter name="FAST_VER" value="0" />
   <parameter name="FIFO_DEPTHS" value="2" />
   <parameter name="AUTO_DEVICE_FAMILY" value="Cyclone V" />
-  <parameter name="AUTO_DEVICE" value="5CSXFC6D6F31C8ES" />
+  <parameter name="AUTO_DEVICE" value="5CGXFC7C7F23C8" />
  </module>
  <module kind="VGA_LED" version="1.0" enabled="1" name="VGA_LED_0" />
  <connection
