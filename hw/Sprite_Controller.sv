@@ -9,14 +9,14 @@ module Sprite_Controller(  input logic clk,
                            input logic reset,
                            input logic [23:0] sprite1,
                            input logic [9:0]  VGA_HCOUNT, VGA_VCOUNT,
-						   input wire [11:0] M_moon,
-						   output logic [14:0] addr_moon,
+						   input wire [23:0] M_moon,
+						   output logic [11:0] addr_moon,
                            output logic [7:0] VGA_R, VGA_G, VGA_B);
 
    /* At least 9 bits for 480 and at least 10 bits for 640 and 5bits for id*/
    /* 20 sprite entry array */
 
-   logic [11:0] line_buffer [639:0];
+   logic [23:0] line_buffer [639:0];
 
 
    logic [8:0] x11, x12;
@@ -49,10 +49,8 @@ module Sprite_Controller(  input logic clk,
 
 
   /* For a given hcount(column) select bits for each color channel */
-  //assign {VGA_R, VGA_G, VGA_B} = {line_buffer[VGA_HCOUNT][23:16], line_buffer[VGA_HCOUNT][15:8], line_buffer[VGA_HCOUNT][7:0]};
-  assign VGA_R = {line_buffer[VGA_HCOUNT][11:8],line_buffer[VGA_HCOUNT][11:8]}; 
-assign VGA_G = {line_buffer[VGA_HCOUNT][7:4],line_buffer[VGA_HCOUNT][7:4]};
-assign VGA_B = {line_buffer[VGA_HCOUNT][3:0],line_buffer[VGA_HCOUNT][3:0]};
+  assign {VGA_R, VGA_G, VGA_B} = {line_buffer[VGA_HCOUNT][23:16], line_buffer[VGA_HCOUNT][15:8], line_buffer[VGA_HCOUNT][7:0]};
+
 
 
 endmodule

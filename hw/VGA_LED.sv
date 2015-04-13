@@ -22,8 +22,8 @@ module VGA_LED(input logic        clk,
    /* Continue until gl[19] */
 
    /* One block like this for every sprite we have available */
-   logic [14:0] addr_moon; /* The #bits varies on dimensions of sprite */
-   logic [11:0] M_moon; /* Change to 24-bit color */
+   logic [11:0] addr_moon; /* The #bits varies on dimensions of sprite */
+   logic [23:0] M_moon; /* Change to 24-bit color */
    moon mn(.clock(VGA_CLK), .address(addr_moon), .q(M_moon));
    
 
