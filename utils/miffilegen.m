@@ -1,4 +1,4 @@
-function [outfname, rows, cols] = miffilegen(infile, outfname, numrows, numcols)
+function [outfname, rows, cols] = miffilegen(infile, outfname)
 
 img = imread(infile);
 
