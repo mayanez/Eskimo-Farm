@@ -8,14 +8,13 @@
 module Sprite_Controller(  input logic clk,
                            input logic reset,
                            input logic [9:0]  VGA_HCOUNT, VGA_VCOUNT,
-
                            input logic [23:0] sprite1,sprite2,sprite3,sprite4,sprite5,sprite6,sprite7,sprite8,sprite9,sprite10,sprite11,sprite12,sprite13,sprite14,sprite15,sprite16,sprite17,sprite18,sprite19,sprite20,
 
 						   input wire [23:0] M_sprite1,M_sprite2,M_sprite3,M_sprite4,M_sprite5,M_sprite6,M_sprite7,M_sprite8,M_sprite9,M_sprite10,M_sprite11,M_sprite12,M_sprite13,M_sprite14,M_sprite15,M_sprite16,M_sprite17,M_sprite18,M_sprite19,M_sprite20,M_background,
 
                            output logic [11:0] addr_sprite1,addr_sprite2,addr_sprite3,addr_sprite4,addr_sprite5,addr_sprite6,addr_sprite7,addr_sprite8,addr_sprite9,addr_sprite10,addr_sprite11,addr_sprite12,addr_sprite13,addr_sprite14,addr_sprite15,addr_sprite16,addr_sprite17,addr_sprite18,addr_sprite19,addr_sprite20,
 
-                           output logic [7:0] VGA_R, VGA_G, VGA_B);
+                          output logic [7:0] VGA_R, VGA_G, VGA_B);
 
    /* At least 9 bits for 480 and at least 10 bits for 640 and 5bits for id*/
    /* 20 sprite entry array */
@@ -32,7 +31,6 @@ module Sprite_Controller(  input logic clk,
    
    assign x2 = sprite2[9:0];
    assign y2 = sprite2[18:10];
-
    assign x3 = sprite3[9:0];
    assign y3 = sprite3[18:10];
    
@@ -177,7 +175,6 @@ module Sprite_Controller(  input logic clk,
 	  else
 	     line_buffer[VGA_HCOUNT] <= M_background;
      end
-
 
   /* For a given hcount(column) select bits for each color channel */
   assign {VGA_R, VGA_G, VGA_B} = {line_buffer[VGA_HCOUNT][23:16], line_buffer[VGA_HCOUNT][15:8], line_buffer[VGA_HCOUNT][7:0]};

@@ -14,19 +14,27 @@ module VGA_LED(input logic        clk,
 	       output logic 	  VGA_SYNC_n);
 
    logic [23:0] gl_array [19:0]; 
+   logic [23:0] M_sprite1;
    logic [9:0] VGA_HCOUNT;
    logic [9:0] VGA_VCOUNT;
    logic VGA_CLOCK;
+   logic [4:0] id1;
 
    assign gl_array[0] = gl_input[23:0];
+   assign id1 = gl_array[0][23:19];
+
+   assign M_sprite1 = (id1 == 5'd1') ? M_moon : 0;
+ 
    /* Continue until gl[19] */
 
-   /* One block like this for every sprite we have available */
-   logic [11:0] addr_moon; /* The #bits varies on dimensions of sprite */
-   logic [23:0] M_moon; /* Change to 24-bit color */
-   moon mn(.clock(VGA_CLK), .address(addr_moon), .q(M_moon));
    
+   logic [11:0] addr_sprite; /* The #bits varies on dimensions of sprite */
+   logic [19:0] addr_background;
+   logic [23:0] M_sprite1; /* Change to 24-bit color */
+   logic [23:0] M_background;
 
+   moon mn(.clock(VGA_CLK), .address(addr_sprite), .q(M_moon));
+   
    VGA_LED_Emulator led_emulator(.clk50(clk), .*);
    Sprite_Controller sprite_controller(.clk(VGA_CLK), .sprite1(gl_array[0]), .*);
 
