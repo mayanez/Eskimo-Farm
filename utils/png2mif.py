@@ -1,18 +1,19 @@
 import png, sys
 
-f = open('ship.mif', 'w')
+f = open('pig.mif', 'w')
 f.write('WIDTH = 24;\n')
 f.write('DEPTH = 1024;\n')
 f.write('ADDRESS_RADIX = UNS;\n')
 f.write('DATA_RADIX = UNS;\n\n')
 f.write('CONTENT BEGIN\n')
 
-pngReader = png.Reader(filename='player_ship.png')
+pngReader = png.Reader(filename='pig-enemy-sprite.png')
 colors = pngReader.asRGB()
 
-i= 0
+
 count = 0
 for row in colors[2]:
+	i= 0
 	while i < len(row):
 		red = row[i]
 		green = row[i+1]
@@ -22,4 +23,5 @@ for row in colors[2]:
 		i += 3 
 		count += 1
 
+f.write('END;\n')
 f.close()
