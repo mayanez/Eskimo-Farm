@@ -23,18 +23,24 @@ module VGA_LED(input logic        clk,
   always_ff@(posedge clk) begin
       if (write) begin
 	   gl_array[0] <= gl_input[23:0];
+           gl_array[1] <= gl_input[45:24];
       end
    end
 
    assign sprite1 = gl_array[0];
+   assign sprite2 = gl_array[1];
 
-
-   logic [9:0] addr_sprite1;
-   logic [23:0] M_ship;
+   logic [9:0] addr_sprite1, addr_sprite2;
+   logic [23:0] M_sprite1, M_sprite2, M_ship, M_pig;
 
    ship sm(.clock(VGA_CLK), .address(addr_sprite1), .q(M_ship));
+   pig  pg(.clock(VGA_CLK), .address(addr_sprite2), .q(M_pig));
+
+
+   assign M_sprite1 = M_ship;
+   assign M_sprite2 = M_pig;
 
    VGA_LED_Emulator led_emulator(.clk50(clk), .*);
-   Sprite_Controller sprite_controller(.clk(VGA_CLK), .M_sprite1(M_ship), .*);
+   Sprite_Controller sprite_controller(.clk(VGA_CLK), .*);
 
 endmodule
