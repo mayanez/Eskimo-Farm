@@ -7,24 +7,28 @@
 
 module VGA_LED(input logic        clk,
 	       input logic 	  reset,
-	       input logic [511:0] gl_input, /* 20 * 24-bit entries rounded up to closest power of 2 */
+	       input logic [31:0] gl_input,
+		   input logic [4:0] address,
 	       input logic 	  write,
+           input logic chipselect,
 	       output logic [7:0] VGA_R, VGA_G, VGA_B,
 	       output logic 	  VGA_CLK, VGA_HS, VGA_VS, VGA_BLANK_n,
 	       output logic 	  VGA_SYNC_n);
 
-   logic [24:0] gl_array [19:0]; 
+   logic [31:0] gl_array [19:0]; 
    logic [9:0] VGA_HCOUNT;
    logic [9:0] VGA_VCOUNT;
    logic [4:0] id1;
-   logic [24:0] sprite1,sprite2,sprite3,sprite4,sprite5,sprite6,sprite7,sprite8,sprite9,sprite10,sprite11,sprite12,sprite13,sprite14,sprite15,sprite16,sprite17,sprite18,sprite19,sprite20;
+   logic [24:0] sprite1,sprite2,sprite3;
    logic VGA_CLOCK;
    
   always_ff@(posedge clk) begin
-      if (write) begin
-	   gl_array[0] <= gl_input[24:0];
-       gl_array[1] <= gl_input[46:25];
-       gl_array[2] <= gl_input[69:47];
+      if (write && chipselect) begin
+       case(address)
+		5'd0: gl_array[0] <= gl_input;
+        5'd1: gl_array[1] <= gl_input;
+        5'd2: gl_array[2] <= gl_input;
+       endcase
       end
    end
 
