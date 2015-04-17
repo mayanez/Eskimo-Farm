@@ -33,14 +33,11 @@ int main()
     return -1;
   }
 
-  vla[0].x = 0;
-  vla[0].y = 0;
+  vla[0].x = 50;
+  vla[0].y = 100;
   vla[0].id = 0;
+  vla[0].dim = 32;
 
-  vla[1].x = 50;
-  vla[1].y = 100;
-  vla[1].id = 2;
-
-  ioctl(vga_led_fd, VGA_SET_SPRITE, &vla);
+  ioctl(vga_led_fd, VGA_SET_SPRITE, vla);
   return 0;
 }

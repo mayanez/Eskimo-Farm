@@ -31,7 +31,7 @@ module VGA_LED(input logic    clk,
       if (write && chipselect)
 		begin
        case(address)
-		  5'd0: gl_array[0] <= gl_input;
+	5'd0: gl_array[0] <= gl_input;
         5'd1: gl_array[1] <= gl_input;
         5'd2: gl_array[2] <= gl_input;
        endcase

@@ -8,14 +8,14 @@
 #define MAX_SPRITES 20
 
 typedef struct {
-	unsigned x:10;
-	unsigned y:10;
-        unsigned id:5; 
-	unsigned dim:7;
+	unsigned int x;
+	unsigned int y;
+        unsigned int id; 
+	unsigned int dim;
 } sprite_t; /* 32 bit for entire struct == 4bytes*/
 
 #define VGA_LED_MAGIC 'q'
-
+#define BIT_MASK(a, b) (((unsigned) -1 >> (31 - (b))) & ~((1U << (a)) - 1))
 /* ioctls and their arguments */
 #define VGA_SET_SPRITE _IOW(VGA_LED_MAGIC, 1, sprite_t **)
 

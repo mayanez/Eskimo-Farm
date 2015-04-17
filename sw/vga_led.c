@@ -54,18 +54,22 @@ static long vga_led_ioctl(struct file *f, unsigned int cmd, unsigned long arg)
 {
 	sprite_t sprite_array[20];
 	int i;
-	u32 var;
 
 
 	switch (cmd) {
 	case VGA_SET_SPRITE:
-		if (copy_from_user(&sprite_array, (sprite_t **) arg,
+		/*if (copy_from_user(&sprite_array, (sprite_t **) arg,
 				   sizeof(sprite_t) * 20))
-			return -EACCES;
-	
+			return -EACCES;*/
+		
+		sprite_array[0].x = 50;
+		sprite_array[0].y = 240;
+		sprite_array[0].id = 3;
+		sprite_array[0].dim = 32;
 
+		pr_info("%x", ((sprite_array[0].dim & 0x7F) << 25) |((sprite_array[0].id & 0x1F) << 20) |((sprite_array[0].y & 0x3FF) << 10)|(sprite_array[0].x & 0x3FF));
 
-		iowrite32(*(u32*)&sprite_array[0], dev.virtbase);
+		iowrite32(((sprite_array[0].dim & 0x7F) << 25) |((sprite_array[0].id & 0x1F) << 20) |((sprite_array[0].y & 0x3FF) << 10)|(sprite_array[0].x & 0x3FF), dev.virtbase);
 
 
 		break;

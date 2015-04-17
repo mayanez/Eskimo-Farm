@@ -60,30 +60,30 @@ module Sprite_Controller(  input logic clk,
    assign addr_sprite3 = (VGA_HCOUNT - x31) + ((VGA_VCOUNT + 1 - y31) << 5);
 	/* END */
 	
+
 	/* Given a sprite type and ON status, assign address to correct ROM */
-	always_comb 
+	/*always_comb 
 	begin
 		if (sprite1_on && id1 == 0)			addr_ship = addr_sprite1;
 		else if (sprite2_on && id2 == 0)		addr_ship = addr_sprite2;
 		else if (sprite3_on && id3 == 0)		addr_ship = addr_sprite3;
-		else											addr_ship = 0;
-	end
-	
-	always_comb 
-	begin
-		if (sprite1_on && id1 == 5'd2)		addr_pig = addr_sprite1;
-		else if (sprite2_on && id2 == 5'd2)	addr_pig = addr_sprite2;
-		else if (sprite3_on && id3 == 5'd2)	addr_pig = addr_sprite3;
-		else											addr_pig = 0;
-	end
-	
-	always_comb 
-	begin
-		if (sprite1_on && id1 == 5'd3)		addr_bee = addr_sprite1;
-		else if (sprite2_on && id2 == 5'd3)	addr_bee = addr_sprite2;
-		else if (sprite3_on && id3 == 5'd3)	addr_bee = addr_sprite3;
-		else											addr_bee = 0;
-	end
+		else if (sprite1_on && id1 == 5'd2)		addr_pig = addr_sprite1;
+		else if (sprite2_on && id2 == 5'd2)		addr_pig = addr_sprite2;
+		else if (sprite3_on && id3 == 5'd2)		addr_pig = addr_sprite3;
+		else if (sprite1_on && id1 == 5'd3)		addr_bee = addr_sprite1;
+		else if (sprite2_on && id2 == 5'd3)		addr_bee = addr_sprite2;
+		else if (sprite3_on && id3 == 5'd3)		addr_bee = addr_sprite3;
+		else begin
+			addr_ship = 0;
+			addr_pig = 0;
+			addr_bee = 0;
+		end
+	end*/
+	assign addr_ship = (sprite1_on && id1 == 0) ? addr_sprite1 : (sprite2_on && id2 == 0) ? addr_sprite2 : (sprite3_on && id3 == 0) ? addr_sprite3 : 0;
+
+	assign addr_pig = (sprite1_on && id1 == 5'd2) ? addr_sprite1 : (sprite2_on && id2 == 5'd2) ? addr_sprite2 : (sprite3_on && id3 == 5'd2) ? addr_sprite3 : 0;
+
+	assign addr_bee = (sprite1_on && id1 == 5'd3) ? addr_sprite1 : (sprite2_on && id2 == 5'd3) ? addr_sprite2 : (sprite3_on && id3 == 5'd3) ? addr_sprite3 : 0;
 	/* END */
 	
 	/* Assign sprite to buffer */
