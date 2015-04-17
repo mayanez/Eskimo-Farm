@@ -8,10 +8,11 @@
 #define MAX_SPRITES 20
 
 typedef struct {
-    unsigned int id:5; /* Will round up to 32 bit for entire struct == 4bytes*/
-	unsigned int x:10;
-	unsigned int y:10;
-} sprite_t;
+	unsigned x:10;
+	unsigned y:10;
+        unsigned id:5; 
+	unsigned dim:7;
+} sprite_t; /* 32 bit for entire struct == 4bytes*/
 
 #define VGA_LED_MAGIC 'q'
 

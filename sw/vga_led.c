@@ -45,15 +45,6 @@ struct vga_led_dev {
 } dev;
 
 
-unsigned create_mask(unsigned a, unsigned b)
-{
-   unsigned r = 0;
-   for (unsigned i=a; i<=b; i++)
-       r |= 1 << i;
-
-   return r;
-}
-
 /*
  * Handle ioctl() calls from userspace:
  * Read or write the segments on single digits.
@@ -62,17 +53,21 @@ unsigned create_mask(unsigned a, unsigned b)
 static long vga_led_ioctl(struct file *f, unsigned int cmd, unsigned long arg)
 {
 	sprite_t sprite_array[20];
+	int i;
+	u32 var;
+
 
 	switch (cmd) {
 	case VGA_SET_SPRITE:
 		if (copy_from_user(&sprite_array, (sprite_t **) arg,
-				   sizeof(sprite_t * 20)))
+				   sizeof(sprite_t) * 20))
 			return -EACCES;
-		
-		for (i = 0; i < 3; i++) {
-			iowrite32(sprite[i], dev.virtbase + i);
-		}
-		
+	
+
+
+		iowrite32(*(u32*)&sprite_array[0], dev.virtbase);
+
+
 		break;
 
 	default:
