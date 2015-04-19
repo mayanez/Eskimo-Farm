@@ -15,6 +15,9 @@ int next_available_sprite_slot;
 
 void draw_sprite(sprite_t *sprite) {
 	sprite_slots[next_available_sprite_slot] = 1;
+	sprite->s = next_available_sprite_slot;
+
+	ioctl(vga_led_fd, VGA_SET_SPRITE, sprite);
 	
 	next_available_sprite_slot++;
 	while (sprite_slots[next_available_sprite_slot] != 0) {
@@ -37,6 +40,7 @@ int init_sprite_controller() {
   	printf("VGA LED Userspace program started\n");
 
   	if ( (vga_led_fd = open(filename, O_RDWR)) == -1) {
+		printf("Could not open device");
    	 	return -1;
   	}
 
@@ -52,7 +56,7 @@ void init_player() {
 }
 
 void draw_background() {
-	  ioctl(vga_led_fd, VGA_CLEAR);
+	ioctl(vga_led_fd, VGA_CLEAR);
 }
 
 
@@ -86,7 +90,9 @@ void move_player(enum direction_t direction) {
 int main() {
 	
 	int quit = 0;
-
+	init_sprite_controller();
+	init_player();
+	
 	draw_background();
 	draw_player();
 
