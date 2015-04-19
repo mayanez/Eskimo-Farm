@@ -56,7 +56,7 @@ static long vga_led_ioctl(struct file *f, unsigned int cmd, unsigned long arg)
 
 	switch (cmd) {
 	case VGA_SET_SPRITE:
-		if (copy_from_user(&sprite, (sprite_t *) arg, sizeof(sprite_t))
+		if (copy_from_user(&sprite, (sprite_t *) arg, sizeof(sprite_t)))
 			return -EACCES;
 	
 		if (sprite.dim < 0 || sprite.dim > MAX_SPRITE_DIM ||

@@ -48,9 +48,9 @@ module Sprite_Controller(   input logic clk,
     /* END */
  
     /* Verify if sprite is in region */
-    assign sprite1_on = VGA_VCOUNT >= y11 && VGA_VCOUNT <= y12 && VGA_HCOUNT >= x11 && VGA_HCOUNT <= x12;
-    assign sprite2_on = VGA_VCOUNT >= y21 && VGA_VCOUNT <= y22 && VGA_HCOUNT >= x21 && VGA_HCOUNT <= x22;
-    assign sprite3_on = VGA_VCOUNT >= y31 && VGA_VCOUNT <= y32 && VGA_HCOUNT >= x31 && VGA_HCOUNT <= x32;
+    assign sprite1_on = (sprite1 > 0) ? VGA_VCOUNT >= y11 && VGA_VCOUNT <= y12 && VGA_HCOUNT >= x11 && VGA_HCOUNT <= x12 : 0;
+    assign sprite2_on = (sprite2 > 0) ? VGA_VCOUNT >= y21 && VGA_VCOUNT <= y22 && VGA_HCOUNT >= x21 && VGA_HCOUNT <= x22 : 0;
+    assign sprite3_on = (sprite3 > 0) ? VGA_VCOUNT >= y31 && VGA_VCOUNT <= y32 && VGA_HCOUNT >= x31 && VGA_HCOUNT <= x32 : 0;
     /* END */
  
     /* Calculate address offset for sprite */
@@ -61,9 +61,9 @@ module Sprite_Controller(   input logic clk,
  
 
     /* Given a sprite type and ON status, assign address to correct ROM */
-    assign addr_ship    = (sprite1_on && id1 == 0) ? addr_sprite1 :
-                          (sprite2_on && id2 == 0) ? addr_sprite2 : 
-                          (sprite3_on && id3 == 0) ? addr_sprite3 : 0;
+    assign addr_ship    = (sprite1_on && id1 == 1) ? addr_sprite1 :
+                          (sprite2_on && id2 == 1) ? addr_sprite2 : 
+                          (sprite3_on && id3 == 1) ? addr_sprite3 : 0;
     assign addr_pig     = (sprite1_on && id1 == 5'd2) ? addr_sprite1 : 
                           (sprite2_on && id2 == 5'd2) ? addr_sprite2 : 
                           (sprite3_on && id3 == 5'd2) ? addr_sprite3 : 0;
@@ -75,15 +75,15 @@ module Sprite_Controller(   input logic clk,
     /* Assign sprite to buffer */
     always@(*)
     begin
-        if (sprite1_on && id1 == 0)          M_buf = M_ship;
+        if (sprite1_on && id1 == 1)          M_buf = M_ship;
         else if (sprite1_on && id1 == 5'd2)  M_buf = M_pig;
         else if (sprite1_on && id1 == 5'd3)  M_buf = M_bee;
         
-        else if (sprite2_on && id2 == 0)     M_buf = M_ship;
+        else if (sprite2_on && id2 == 1)     M_buf = M_ship;
         else if (sprite2_on && id2 == 5'd2)  M_buf = M_pig;
         else if (sprite2_on && id2 == 5'd3)  M_buf = M_bee;
         
-        else if (sprite3_on && id3 == 0)     M_buf = M_ship;
+        else if (sprite3_on && id3 == 1)     M_buf = M_ship;
         else if (sprite3_on && id3 == 5'd2)  M_buf = M_pig;
         else if (sprite3_on && id3 == 5'd3)  M_buf = M_bee;
         
