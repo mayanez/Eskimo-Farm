@@ -52,25 +52,24 @@ struct vga_led_dev {
  */
 static long vga_led_ioctl(struct file *f, unsigned int cmd, unsigned long arg)
 {
-	sprite_t sprite_array[20];
-	int i;
-
+	sprite_t sprite;
 
 	switch (cmd) {
 	case VGA_SET_SPRITE:
-		/*if (copy_from_user(&sprite_array, (sprite_t **) arg,
-				   sizeof(sprite_t) * 20))
-			return -EACCES;*/
-		
-		sprite_array[0].x = 50;
-		sprite_array[0].y = 240;
-		sprite_array[0].id = 3;
-		sprite_array[0].dim = 32;
+		if (copy_from_user(&sprite, (sprite_t *) arg, sizeof(sprite_t))
+			return -EACCES;
+	
+		if (sprite.dim < 0 || sprite.dim > MAX_SPRITE_DIM ||
+		    sprite.id < 0 || sprite.id > MAX_SPRITE_ID ||
+		    sprite.y < 0 || sprite.y > MAX_Y || 
+			sprite.x < 0 || sprite.x > MAX_X ||
+		    sprite.s < 0 || sprite.s > MAX_SPRITES)
+				return -EINVAL;
 
-		pr_info("%x", ((sprite_array[0].dim & 0x7F) << 25) |((sprite_array[0].id & 0x1F) << 20) |((sprite_array[0].y & 0x3FF) << 10)|(sprite_array[0].x & 0x3FF));
-
-		iowrite32(((sprite_array[0].dim & 0x7F) << 25) |((sprite_array[0].id & 0x1F) << 20) |((sprite_array[0].y & 0x3FF) << 10)|(sprite_array[0].x & 0x3FF), dev.virtbase);
-
+		iowrite32(((sprite.dim & 0x7F) << 25) | 
+				  ((sprite.id & 0x1F) << 20)  |
+				  ((sprite.y & 0x3FF) << 10)  |
+				   (sprite.x & 0x3FF), dev.virtbase + sprite.s);
 
 		break;
 
@@ -181,5 +180,5 @@ module_init(vga_led_init);
 module_exit(vga_led_exit);
 
 MODULE_LICENSE("GPL");
-MODULE_AUTHOR("Stephen A. Edwards, Miguel A. Yanez, Columbia University");
-MODULE_DESCRIPTION("VGA Ball Sprite");
+MODULE_AUTHOR("Miguel A. Yanez, Columbia University");
+MODULE_DESCRIPTION("VGA Sprite Controller Driver");

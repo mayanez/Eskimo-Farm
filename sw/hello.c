@@ -19,12 +19,9 @@ int vga_led_fd;
 
 int main()
 {
-  sprite_t vla[20];
-  int i;
-  static const char filename[] = "/dev/vga_led";
+  sprite_t sprites[2];
 
-  static unsigned char message[8] = { 0x39, 0x6D, 0x79, 0x79,
-				      0x66, 0x7F, 0x66, 0x3F };
+  static const char filename[] = "/dev/vga_led";
 
   printf("VGA LED Userspace program started\n");
 
@@ -33,11 +30,20 @@ int main()
     return -1;
   }
 
-  vla[0].x = 50;
-  vla[0].y = 100;
-  vla[0].id = 0;
-  vla[0].dim = 32;
+  sprites[0].x = 50;
+  sprites[0].y = 100;
+  sprites[0].id = 0;
+  sprites[0].dim = 32;
+  sprites[0].s = 0;
 
-  ioctl(vga_led_fd, VGA_SET_SPRITE, vla);
+  sprites[1].x = 50;
+  sprites[1].y = 50;
+  sprites[1].id = 2;
+  sprites[1].dim = 32;
+  sprites[1].s = 0;
+
+  ioctl(vga_led_fd, VGA_SET_SPRITE, sprites[0]);
+  ioctl(vga_led_fd, VGA_SET_SPRITE, sprites[1]);
+
   return 0;
 }

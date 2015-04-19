@@ -3,19 +3,22 @@
 
 #include <linux/ioctl.h>
 
-#define INITIAL_X 0
-#define INITIAL_Y 0
-#define MAX_SPRITES 20
+#define MAX_SPRITES 40
+#define MAX_SPRITE_DIM 128
+#define MAX_SPRITE_ID 40 /* Unique number of sprites == # of ROMs */
+#define MAX_X 640
+#define MAX_Y 480
 
 typedef struct {
+	unsigned int s; /* Sprite Number: Must be assigned in Game Logic. eg. Sprite1 == Player, etc.*/
 	unsigned int x;
 	unsigned int y;
-        unsigned int id; 
+    unsigned int id; 
 	unsigned int dim;
-} sprite_t; /* 32 bit for entire struct == 4bytes*/
+} sprite_t;
 
 #define VGA_LED_MAGIC 'q'
-#define BIT_MASK(a, b) (((unsigned) -1 >> (31 - (b))) & ~((1U << (a)) - 1))
+
 /* ioctls and their arguments */
 #define VGA_SET_SPRITE _IOW(VGA_LED_MAGIC, 1, sprite_t **)
 
