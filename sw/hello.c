@@ -32,7 +32,7 @@ int main()
 
   sprites[0].x = 50;
   sprites[0].y = 100;
-  sprites[0].id = 0;
+  sprites[0].id = 3;
   sprites[0].dim = 32;
   sprites[0].s = 0;
 
@@ -40,10 +40,11 @@ int main()
   sprites[1].y = 50;
   sprites[1].id = 2;
   sprites[1].dim = 32;
-  sprites[1].s = 0;
+  sprites[1].s = 1;
 
-  ioctl(vga_led_fd, VGA_SET_SPRITE, sprites[0]);
-  ioctl(vga_led_fd, VGA_SET_SPRITE, sprites[1]);
+  ioctl(vga_led_fd, VGA_CLEAR);
+  ioctl(vga_led_fd, VGA_SET_SPRITE, &sprites[0]);
+  ioctl(vga_led_fd, VGA_SET_SPRITE, &sprites[1]);
 
   return 0;
 }

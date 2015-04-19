@@ -55,26 +55,31 @@ static long vga_led_ioctl(struct file *f, unsigned int cmd, unsigned long arg)
 	sprite_t sprite;
 
 	switch (cmd) {
-	case VGA_SET_SPRITE:
-		if (copy_from_user(&sprite, (sprite_t *) arg, sizeof(sprite_t)))
-			return -EACCES;
-	
-		if (sprite.dim < 0 || sprite.dim > MAX_SPRITE_DIM ||
-		    sprite.id < 0 || sprite.id > MAX_SPRITE_ID ||
-		    sprite.y < 0 || sprite.y > MAX_Y || 
-			sprite.x < 0 || sprite.x > MAX_X ||
-		    sprite.s < 0 || sprite.s > MAX_SPRITES)
-				return -EINVAL;
+		case VGA_SET_SPRITE:
+			if (copy_from_user(&sprite, (sprite_t *) arg, sizeof(sprite_t)))
+				return -EACCES;
 
-		iowrite32(((sprite.dim & 0x7F) << 25) | 
-				  ((sprite.id & 0x1F) << 20)  |
-				  ((sprite.y & 0x3FF) << 10)  |
-				   (sprite.x & 0x3FF), dev.virtbase + sprite.s);
+			if (sprite.dim < 0 || sprite.dim > MAX_SPRITE_DIM ||
+			    sprite.id < 0 || sprite.id > MAX_SPRITE_ID ||
+			    sprite.y < 0 || sprite.y > MAX_Y || 
+				sprite.x < 0 || sprite.x > MAX_X ||
+			    sprite.s < 0 || sprite.s > MAX_SPRITES)
+					return -EINVAL;
 
-		break;
+			iowrite32(((sprite.dim & 0x7F) << 25) | 
+					  ((sprite.id & 0x1F) << 20)  |
+					  ((sprite.y & 0x3FF) << 10)  |
+					   (sprite.x & 0x3FF), dev.virtbase + (sprite.s << 2));
 
-	default:
-		return -EINVAL;
+			break;
+
+		case VGA_CLEAR:
+
+			iowrite32(NULL, dev.virtbase + (60 << 2));
+
+			break;
+		default:
+			return -EINVAL;
 	}
 
 	return 0;

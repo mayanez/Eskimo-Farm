@@ -20,6 +20,7 @@ typedef struct {
 #define VGA_LED_MAGIC 'q'
 
 /* ioctls and their arguments */
-#define VGA_SET_SPRITE _IOW(VGA_LED_MAGIC, 1, sprite_t **)
+#define VGA_SET_SPRITE _IOW(VGA_LED_MAGIC, 1, sprite_t *)
+#define VGA_CLEAR	   _IO(VGA_LED_MAGIC, 2)
 
 #endif
