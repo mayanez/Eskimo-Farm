@@ -76,6 +76,28 @@ module VGA_LED( input logic         clk,
                 5'd17: sprite18 <= gl_input;
                 5'd18: sprite19 <= gl_input;
                 5'd19: sprite20 <= gl_input;
+                5'd60: begin
+                       sprite1 <= 0;
+                       sprite2 <= 0;
+                       sprite3 <= 0;
+                       sprite4 <= 0;
+                       sprite5 <= 0;
+                       sprite6 <= 0;
+                       sprite7 <= 0;
+                       sprite8 <= 0;
+                       sprite9 <= 0;
+                       sprite10 <= 0;
+                       sprite11 <= 0;
+                       sprite12 <= 0;
+                       sprite13 <= 0;
+                       sprite14 <= 0;
+                       sprite15 <= 0;
+                       sprite16 <= 0;
+                       sprite17 <= 0;
+                       sprite18 <= 0;
+                       sprite19 <= 0;
+                       sprite20 <= 0;
+                       end
             endcase
         end
     end
