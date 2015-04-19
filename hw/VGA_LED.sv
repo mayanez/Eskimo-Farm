@@ -26,7 +26,7 @@ module VGA_LED( input logic         clk,
     logic [9:0]  addr_ship, addr_pig, addr_bee, addr_cow, addr_mcdonald, addr_zero, addr_one, 
                  addr_two, addr_three, addr_four, addr_five, addr_six, addr_seven, addr_eight, addr_nine, addr_bullet;
     
-    logic [23:0] M_ship, M_pig, M_bee, M_cow, M_mcdonald, M_zero, M_zero, 
+    logic [23:0] M_ship, M_pig, M_bee, M_cow, M_mcdonald, M_zero, 
                  M_one, M_two, M_three, M_four, M_five, M_six, M_seven, M_eight, M_nine, M_bullet;
 
 	/* Given an input and address put into array */

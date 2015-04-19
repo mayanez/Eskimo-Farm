@@ -4,7 +4,7 @@
 // MODULE: altsyncram 
 
 // ============================================================
-// File Name: bee.v
+// File Name: cow.v
 // Megafunction Name(s):
 // 			altsyncram
 //
@@ -36,7 +36,7 @@
 // synopsys translate_off
 `timescale 1 ps / 1 ps
 // synopsys translate_on
-module bee (
+module cow (
 	address,
 	clock,
 	q);
@@ -83,7 +83,7 @@ module bee (
 		altsyncram_component.address_aclr_a = "NONE",
 		altsyncram_component.clock_enable_input_a = "BYPASS",
 		altsyncram_component.clock_enable_output_a = "BYPASS",
-		altsyncram_component.init_file = "/home/develop/Eskimo-Farm/sprites/bee.mif",
+		altsyncram_component.init_file = "/home/develop/Eskimo-Farm/sprites/cow.mif",
 		altsyncram_component.intended_device_family = "Cyclone V",
 		altsyncram_component.lpm_hint = "ENABLE_RUNTIME_MOD=NO",
 		altsyncram_component.lpm_type = "altsyncram",
@@ -118,7 +118,7 @@ endmodule
 // Retrieval info: PRIVATE: JTAG_ENABLED NUMERIC "0"
 // Retrieval info: PRIVATE: JTAG_ID STRING "NONE"
 // Retrieval info: PRIVATE: MAXIMUM_DEPTH NUMERIC "0"
-// Retrieval info: PRIVATE: MIFfilename STRING "/home/develop/Eskimo-Farm/sprites/bee.mif"
+// Retrieval info: PRIVATE: MIFfilename STRING "/home/develop/Eskimo-Farm/sprites/cow.mif"
 // Retrieval info: PRIVATE: NUMWORDS_A NUMERIC "1024"
 // Retrieval info: PRIVATE: RAM_BLOCK_TYPE NUMERIC "0"
 // Retrieval info: PRIVATE: RegAddr NUMERIC "1"
@@ -133,7 +133,7 @@ endmodule
 // Retrieval info: CONSTANT: ADDRESS_ACLR_A STRING "NONE"
 // Retrieval info: CONSTANT: CLOCK_ENABLE_INPUT_A STRING "BYPASS"
 // Retrieval info: CONSTANT: CLOCK_ENABLE_OUTPUT_A STRING "BYPASS"
-// Retrieval info: CONSTANT: INIT_FILE STRING "/home/develop/Eskimo-Farm/sprites/bee.mif"
+// Retrieval info: CONSTANT: INIT_FILE STRING "/home/develop/Eskimo-Farm/sprites/cow.mif"
 // Retrieval info: CONSTANT: INTENDED_DEVICE_FAMILY STRING "Cyclone V"
 // Retrieval info: CONSTANT: LPM_HINT STRING "ENABLE_RUNTIME_MOD=NO"
 // Retrieval info: CONSTANT: LPM_TYPE STRING "altsyncram"
@@ -150,10 +150,10 @@ endmodule
 // Retrieval info: CONNECT: @address_a 0 0 10 0 address 0 0 10 0
 // Retrieval info: CONNECT: @clock0 0 0 0 0 clock 0 0 0 0
 // Retrieval info: CONNECT: q 0 0 24 0 @q_a 0 0 24 0
-// Retrieval info: GEN_FILE: TYPE_NORMAL bee.v TRUE
-// Retrieval info: GEN_FILE: TYPE_NORMAL bee.inc FALSE
-// Retrieval info: GEN_FILE: TYPE_NORMAL bee.cmp FALSE
-// Retrieval info: GEN_FILE: TYPE_NORMAL bee.bsf FALSE
-// Retrieval info: GEN_FILE: TYPE_NORMAL bee_inst.v FALSE
-// Retrieval info: GEN_FILE: TYPE_NORMAL bee_bb.v TRUE
+// Retrieval info: GEN_FILE: TYPE_NORMAL cow.v TRUE
+// Retrieval info: GEN_FILE: TYPE_NORMAL cow.inc FALSE
+// Retrieval info: GEN_FILE: TYPE_NORMAL cow.cmp FALSE
+// Retrieval info: GEN_FILE: TYPE_NORMAL cow.bsf FALSE
+// Retrieval info: GEN_FILE: TYPE_NORMAL cow_inst.v FALSE
+// Retrieval info: GEN_FILE: TYPE_NORMAL cow_bb.v FALSE
 // Retrieval info: LIB_FILE: altera_mf
