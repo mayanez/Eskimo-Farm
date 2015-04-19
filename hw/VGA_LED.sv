@@ -37,6 +37,11 @@ module VGA_LED( input logic         clk,
                 5'd0: sprite1 <= gl_input;
                 5'd1: sprite2 <= gl_input;
                 5'd2: sprite3 <= gl_input;
+                5'd60: begin    /* Force Reset from Driver */
+                    sprite1 <= 0;
+                    sprite2 <= 0;
+                    sprite3 <= 0;
+                end
             endcase
         end
     end
