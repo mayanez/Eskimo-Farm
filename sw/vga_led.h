@@ -3,11 +3,14 @@
 
 #include <linux/ioctl.h>
 
-#define MAX_SPRITES 40
+#define MAX_SPRITES 20
 #define MAX_SPRITE_DIM 128
 #define MAX_SPRITE_ID 40 /* Unique number of sprites == # of ROMs */
 #define MAX_X 640
 #define MAX_Y 480
+
+#define SHIP_ID 1
+#define SHIP_DIM 32
 
 typedef struct {
 	unsigned int s; /* Sprite Number: Must be assigned in Game Logic. eg. Sprite1 == Player, etc.*/
