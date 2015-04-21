@@ -1,7 +1,7 @@
 #ifndef _VGA_LED_H
 #define _VGA_LED_H
 
-#include <linux/ioctl.h>
+//#include <linux/ioctl.h>
 
 #define MAX_SPRITES 20
 #define MAX_SPRITE_DIM 128
@@ -11,12 +11,14 @@
 
 #define SHIP_ID 1
 #define SHIP_DIM 32
+#define BULLET_ID 5
+#define BULLET_DIM 16
 
 typedef struct {
 	unsigned int s; /* Sprite Number: Must be assigned in Game Logic. eg. Sprite1 == Player, etc.*/
 	unsigned int x;
 	unsigned int y;
-    unsigned int id; 
+    unsigned int id;
 	unsigned int dim;
 } sprite_t;
 
