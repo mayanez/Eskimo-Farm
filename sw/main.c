@@ -1,12 +1,13 @@
 #include <stdio.h>
 #include "game.h"
+#include "usbkeyboard.h"
 #include <sys/ioctl.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <string.h>
 #include <unistd.h>
-#include "SDL.h"
+#include <stdlib.h>
 
 player_t player;
 invaders_t invaders;
@@ -18,19 +19,32 @@ int next_available_sprite_slot;
 bullet_t bullets[MAX_BULLETS];
 enum state_t state;
 
+struct libusb_device_handle *keyboard;
+uint8_t endpoint_address;
+
+void init_keyboard() {
+	if ( (keyboard = openkeyboard(&endpoint_address)) == NULL ) {
+	    fprintf(stderr, "Did not find a keyboard\n");
+	  	exit(1);
+	}
+}
 void draw_sprite(sprite_t *sprite) {
-	sprite_slots[next_available_sprite_slot] = 1;
-	sprite->s = next_available_sprite_slot;
 
-	ioctl(vga_led_fd, VGA_SET_SPRITE, sprite);
+	if (sprite->s == -1) {
+		sprite_slots[next_available_sprite_slot] = 1;
+		sprite->s = next_available_sprite_slot;
 
-	next_available_sprite_slot++;
-	while (sprite_slots[next_available_sprite_slot] != 0) {
+
 		next_available_sprite_slot++;
-		if (next_available_sprite_slot > MAX_SPRITES) {
-			next_available_sprite_slot = 0;
+		while (sprite_slots[next_available_sprite_slot] != 0) {
+			next_available_sprite_slot++;
+			if (next_available_sprite_slot > MAX_SPRITES) {
+				next_available_sprite_slot = 0;
+			}
 		}
 	}
+
+	ioctl(vga_led_fd, VGA_SET_SPRITE, sprite);
 }
 
 int remove_sprite(sprite_t *sprite) {
@@ -49,6 +63,7 @@ int init_sprite_controller() {
    	 	return -1;
   	}
 
+	next_available_sprite_slot = 0;
 	return 0;
 }
 
@@ -57,6 +72,7 @@ void init_player() {
 	player.sprite_info.y = (MAX_Y / 2);
 	player.sprite_info.id = SHIP_ID;
 	player.sprite_info.dim = SHIP_DIM;
+	player.sprite_info.s = -1;
 	player.lives = 3;
 }
 
@@ -83,7 +99,7 @@ void draw_player() {
 }
 
 void draw_invaders() {
-	draw_sprite(&invaders.enemy[0].sprinte_info);
+	draw_sprite(&invaders.enemy[0].sprite_info);
 }
 
 /* Moves player in all dimensions */
@@ -109,7 +125,7 @@ void move_player(enum direction_t direction) {
 
 }
 
-void init_bullets(struct bullet_t *b, int max) {
+void init_bullets(bullet_t *b, int max) {
 	int i;
 
 	for (i = 0; i < max; i++) {
@@ -120,19 +136,15 @@ void init_bullets(struct bullet_t *b, int max) {
 }
 
 /*Moves bullet across X dim */
-void move_bullet(struct bullet_t *b, int max, int speed) {
+void move_bullets(bullet_t *b, int max, int speed) {
 	int i;
 
 	for (i = 0; i < max; i++) {
 		if (b[i].alive == 1) {
-			if (b[i].sprite_info.x < (MAX_X - b[i].sprite_info.dim) + speed) {
-				b[i].sprite_info.x += speed;
-			} else
-				b[i].alive = 0;
-			}
+			if (b[i].sprite_info.x < (MAX_X - b[i].sprite_info.dim) + speed) b[i].sprite_info.x += speed;
+			else b[i].alive = 0;
 		}
 	}
-
 }
 
 /*Set bullet to alive. Set start coordinates */
@@ -149,7 +161,7 @@ void player_shoot() {
 }
 
 /*Draw or Remove bullet depending on alive state */
-void draw_bullets() {
+void draw_bullets(bullet_t b[], int max) {
 
 	int i;
 
@@ -167,46 +179,46 @@ int main() {
 
 	int quit = 0;
 	init_sprite_controller();
+	init_keyboard();
 	init_player();
 	init_bullets(bullets, MAX_BULLETS);
+ 	
+	state = game;
+	
+	struct usb_keyboard_packet packet;
+	int transferred;
+  	char keystate[12];
 
-	SDL_Event e;
-
+	/*Draw initial game state */
+	draw_player();
 
 	while (quit == 0) {
 
 		if (state == game) {
+			    libusb_interrupt_transfer(keyboard, endpoint_address,
+			      (unsigned char *) &packet, sizeof(packet),
+			      &transferred, 0);
 
-			if (SDL_PollEvent(&e) != 0) {
-				if (e.type == SDL_QUIT) {
-					quit = 1;
-				} else if (e.type == SDL_KEYDOWN) {
-					switch(e.key.keysym.sym) {
-						case SDLK_RIGHT:
+			if (transferred == sizeof(packet)) {
+					switch(packet.keycode[0]) {
+						case RIGHT_ARROW:
+							printf("right pressed\n");
 							move_player(right);
+							draw_player();
 							break;
-						case SDLK_LEFT:
+						case LEFT_ARROW:
+							printf("left pressed\n");
 							move_player(left);
-							break;
-						case SDLK_UP:
-							move_player(up);
-							break;
-						case SDLK_DOWN:
-							move_player(down);
-							break;
-						case SDLK_SPACE:
-							player_shoot();
+							draw_player();
 							break;
 						default:
 							break;
 					}
-				}
+				
 			}
 
-
-			draw_player();
-			draw_bullets(bullets, MAX_BULLETS);
-			move_bullets(bullets, MAX_BULLETS, BULLET_SPEED);
+			//draw_bullets(bullets, MAX_BULLETS);
+			//move_bullets(bullets, MAX_BULLETS, BULLET_SPEED);
 		}
 	}
 

@@ -11,7 +11,7 @@ else
         PWD := $(shell pwd)
 
 
-default: module hello main
+default: module
 
 module:
 	${MAKE} ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- -C ${KERNEL_SOURCE} SUBDIRS=${PWD} modules
@@ -23,8 +23,11 @@ clean:
 hello: hello.c
 	arm-linux-gnueabihf-gcc hello.c -o hello
 
-main: main.c game.h vga_led.h 
-	arm-linux-gnueabihf-gcc main.c -o main
+#Compile from FPGA
+usbkeyboard.o: usbkeyboard.c usbkeyboard.h
+
+main: main.c game.h vga_led.h usbkeyboard.h
+	gcc main.c -o main
 
 socfpga.dtb : socfpga.dtb
 	dtc -O dtb -o socfpga.dtb socfpga.dts
