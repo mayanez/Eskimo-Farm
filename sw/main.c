@@ -6,8 +6,11 @@
 #include <fcntl.h>
 #include <string.h>
 #include <unistd.h>
+#include "SDL.h"
 
 player_t player;
+invaders_t invaders;
+
 int vga_led_fd;
 
 int sprite_slots[MAX_SPRITES];
@@ -57,13 +60,30 @@ void init_player() {
 	player.lives = 3;
 }
 
-void draw_background() {
-	ioctl(vga_led_fd, VGA_CLEAR);
+void init_invaders() {
+	int x;
+
+	invaders.direction = left;
+	invaders.speed = 1;
+	invaders.dim = PIG_DIM; /* Will need to implement for more enemy types */
+
+	x = MAX_X - invaders.dim;
+
+	/* Initializes one enemy */
+	invaders.enemy[0].alive = 1;
+	invaders.enemy[0].sprite_info.x = x;
+	invaders.enemy[0].sprite_info.y = MAX_Y / 2;
+	invaders.enemy[0].sprite_info.id = PIG_ID;
+	invaders.enemy[0].sprite_info.dim = PIG_DIM;
 }
 
 
 void draw_player() {
 	draw_sprite(&player.sprite_info);
+}
+
+void draw_invaders() {
+	draw_sprite(&invaders.enemy[0].sprinte_info);
 }
 
 /* Moves player in all dimensions */
@@ -120,8 +140,8 @@ void player_shoot() {
 	int i;
 	for (i = 0; i < MAX_BULLETS; i++) {
 		if (bullets[i].alive == 0) {
-			bullets[i].sprite_info.x = player.sprite_info.x + 1 + player.sprite_info.dim;
-			bullets[i].sprite_info.y = player.sprite_info.y + 1 + player.sprite_info.dim;
+			bullets[i].sprite_info.x = player.sprite_info.x + 1 + player.sprite_info.dim; /* To the right of the player sprite */
+			bullets[i].sprite_info.y = player.sprite_info.y + (player.sprite_info.dim/4);/* /4 to center bullet with player sprite */
 			bullets[i].alive = 1;
 			break;
 		}
@@ -186,7 +206,7 @@ int main() {
 
 			draw_player();
 			draw_bullets(bullets, MAX_BULLETS);
-			move_bullets(bullets, MAX_BULLETS, 20);
+			move_bullets(bullets, MAX_BULLETS, BULLET_SPEED);
 		}
 	}
 

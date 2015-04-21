@@ -13,6 +13,8 @@
 #define SHIP_DIM 32
 #define BULLET_ID 5
 #define BULLET_DIM 16
+#define PIG_ID 2
+#define PIG_DIM 32
 
 typedef struct {
 	unsigned int s; /* Sprite Number: Must be assigned in Game Logic. eg. Sprite1 == Player, etc.*/
