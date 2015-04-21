@@ -105,7 +105,7 @@ void move_bullet(struct bullet_t *b, int max, int speed) {
 
 	for (i = 0; i < max; i++) {
 		if (b[i].alive == 1) {
-			if (b[i].sprite_info.x < (MAX_X - b[i].sprite_info.dim)) {
+			if (b[i].sprite_info.x < (MAX_X - b[i].sprite_info.dim) + speed) {
 				b[i].sprite_info.x += speed;
 			} else
 				b[i].alive = 0;
@@ -120,8 +120,8 @@ void player_shoot() {
 	int i;
 	for (i = 0; i < MAX_BULLETS; i++) {
 		if (bullets[i].alive == 0) {
-			bullets[i].sprite_info.x = player.sprite_info.x + (player.sprite_info.dim/2);
-			bullets[i].sprite_info.y = player.sprite_info.y + (player.sprite_info.dim/2);
+			bullets[i].sprite_info.x = player.sprite_info.x + 1 + player.sprite_info.dim;
+			bullets[i].sprite_info.y = player.sprite_info.y + 1 + player.sprite_info.dim;
 			bullets[i].alive = 1;
 			break;
 		}
