@@ -94,7 +94,7 @@ void draw_sprite(sprite_t *sprite) {
 		sprite_slots[next_available_sprite_slot] = 1;
 		sprite->s = next_available_sprite_slot;
 
-		while (sprite_slots[next_available_sprite_slot] == 1) {
+		while (sprite_slots[next_available_sprite_slot] != 0) {
 			next_available_sprite_slot++;
 			if (next_available_sprite_slot > MAX_SPRITES) {
 				next_available_sprite_slot = 0;
@@ -146,10 +146,11 @@ void init_invaders() {
 
 	/* Initializes one enemy */
 	invaders.enemy[0].alive = 1;
-	invaders.enemy[0].sprite_info.x = x;
-	invaders.enemy[0].sprite_info.y = MAX_Y / 2;
+	invaders.enemy[0].sprite_info.x = 150;
+	invaders.enemy[0].sprite_info.y = 20;
 	invaders.enemy[0].sprite_info.id = PIG_ID;
 	invaders.enemy[0].sprite_info.dim = PIG_DIM;
+	invaders.enemy[0].sprite_info.s = -1;
 }
 
 void init_mutex() {
@@ -173,19 +174,19 @@ void move_player(enum direction_t direction) {
 
 	if (direction == left) {
 		if (player.sprite_info.x > 0) {
-			player.sprite_info.x -= 2;
+			player.sprite_info.x -= PLAYER_STEP_SIZE;
 		}
 	} else if (direction == right) {
 		if (player.sprite_info.x < (MAX_X - player.sprite_info.dim)) {
-			player.sprite_info.x += 2;
+			player.sprite_info.x += PLAYER_STEP_SIZE;
 		}
 	} else if (direction == up) {
 		if (player.sprite_info.y > 0) {
-			player.sprite_info.y -= 2;
+			player.sprite_info.y -= PLAYER_STEP_SIZE;
 		}
 	} else if (direction == down) {
 		if (player.sprite_info.y < (MAX_Y - player.sprite_info.dim)) {
-			player.sprite_info.y += 2;
+			player.sprite_info.y += PLAYER_STEP_SIZE;
 		}
 	}
 
@@ -225,7 +226,6 @@ void player_shoot() {
 		if (bullets[i].alive == 0) {
 			bullets[i].sprite_info.x = player.sprite_info.x + 2 + player.sprite_info.dim; /* To the right of the player sprite */
 			bullets[i].sprite_info.y = player.sprite_info.y + 8;/* /4 to center bullet with player sprite */
-			printf("player_shoot: %d %d %d %d\n", i, bullets[i].sprite_info.x, bullets[i].sprite_info.y, bullets[i].sprite_info.s);
 			bullets[i].alive = 1;
 			break;
 		}
@@ -253,6 +253,7 @@ int main() {
 	init_keyboard();
 	init_mutex();
 	init_player();
+	init_invaders();
 	init_bullets(MAX_BULLETS);
  	
 	state = game;
@@ -261,7 +262,7 @@ int main() {
 
 	/*Draw initial game state */
 	draw_player();
-
+	draw_invaders();
 	while (quit == 0) {
 
 		if (state == game) {

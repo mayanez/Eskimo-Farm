@@ -3,6 +3,7 @@
 #define MAX_BULLETS 10
 #define BULLET_SPEED 20
 #define MAX_ENEMIES 10
+#define PLAYER_STEP_SIZE 2
 
 enum direction_t {up, down, left, right, stationary};
 enum state_t {menu, game, game_over};
