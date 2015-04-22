@@ -246,6 +246,23 @@ int i;
 	}
 
 }
+
+void move_enemies(){
+	int i;
+    
+	for (i = 0; i <MAX_ENEMIES; i++) {
+		if (enemies[i].alive == 1) {
+			if (enemies[i].sprite_info.x > (MIN_X  + speed) ){
+				enemies[i].sprite_info.x -= speed;
+				enemies[i].hitbox.x = enemies[i].sprite_info.x;
+			} else
+				enemies[i].alive = 0;
+        }
+    }
+}
+
+}
+}
 void enemy_ai(int speed_enemy){
    
 	//Update with Score to change Enemy Levels
