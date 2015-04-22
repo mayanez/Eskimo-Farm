@@ -27,7 +27,7 @@ hello: hello.c
 usbkeyboard.o: usbkeyboard.c usbkeyboard.h
 
 main: main.c game.h vga_led.h usbkeyboard.h
-	gcc main.c -o main
+	gcc main.c game.h vga_led.h usbkeyboard.c usbkeyboard.h -lusb-1.0 -pthread -o main
 
 socfpga.dtb : socfpga.dtb
 	dtc -O dtb -o socfpga.dtb socfpga.dts

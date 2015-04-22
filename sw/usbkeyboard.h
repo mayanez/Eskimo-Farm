@@ -24,6 +24,8 @@
 #define SPACEBAR 0x2C
 #define RIGHT_ARROW 0x4F
 #define LEFT_ARROW 0x50
+#define UP_ARROW 0x52
+#define DOWN_ARROW 0x51
 
 
 static const unsigned char usb_keycode_ascii[256] = {

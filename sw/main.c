@@ -22,10 +22,70 @@ enum state_t state;
 struct libusb_device_handle *keyboard;
 uint8_t endpoint_address;
 
-void init_keyboard() {
+pthread_t input_thread;
+pthread_mutex_t lock;
+
+void player_shoot();
+void move_player(enum direction_t);
+void draw_player();
+void draw_bullets(int);
+
+void *init_keyboard() {
 	if ( (keyboard = openkeyboard(&endpoint_address)) == NULL ) {
 	    fprintf(stderr, "Did not find a keyboard\n");
 	  	exit(1);
+	}
+}
+
+void handle_keyboard_thread_f(void *ignored) {
+		
+	struct usb_keyboard_packet packet;
+	int transferred;
+  	char keystate[12];
+
+	for (;;) {	
+		libusb_interrupt_transfer(keyboard, endpoint_address,
+			      (unsigned char *) &packet, sizeof(packet),
+			      &transferred, 0);
+
+				if (transferred == sizeof(packet)) {
+						switch(packet.keycode[0]) {
+							case RIGHT_ARROW:
+								pthread_mutex_lock(&lock);
+								move_player(right);
+								draw_player();
+								printf("right\n");
+								pthread_mutex_unlock(&lock);
+								break;
+							case LEFT_ARROW:
+								pthread_mutex_lock(&lock);
+								move_player(left);
+								draw_player();
+								pthread_mutex_unlock(&lock);
+								break;
+							case UP_ARROW:
+								pthread_mutex_lock(&lock);
+								move_player(up);
+								draw_player();
+								pthread_mutex_unlock(&lock);
+								break;
+							case DOWN_ARROW:
+								pthread_mutex_lock(&lock);
+								move_player(down);
+								draw_player();
+								pthread_mutex_unlock(&lock);
+								break;
+							case SPACEBAR:
+								pthread_mutex_lock(&lock);
+								printf("shoot\n");								
+								player_shoot();
+								pthread_mutex_unlock(&lock);
+								break;
+							default:
+								break;
+						}
+					
+				}
 	}
 }
 void draw_sprite(sprite_t *sprite) {
@@ -34,9 +94,7 @@ void draw_sprite(sprite_t *sprite) {
 		sprite_slots[next_available_sprite_slot] = 1;
 		sprite->s = next_available_sprite_slot;
 
-
-		next_available_sprite_slot++;
-		while (sprite_slots[next_available_sprite_slot] != 0) {
+		while (sprite_slots[next_available_sprite_slot] == 1) {
 			next_available_sprite_slot++;
 			if (next_available_sprite_slot > MAX_SPRITES) {
 				next_available_sprite_slot = 0;
@@ -48,9 +106,10 @@ void draw_sprite(sprite_t *sprite) {
 }
 
 int remove_sprite(sprite_t *sprite) {
-	sprite->id = 0;
-	ioctl(vga_led_fd, VGA_SET_SPRITE, sprite);
+	sprite_t empty_sprite;
+	ioctl(vga_led_fd, VGA_SET_SPRITE, &empty_sprite);
 	sprite_slots[sprite->s] = 0;
+	sprite->s = -1;
 }
 
 int init_sprite_controller() {
@@ -93,6 +152,13 @@ void init_invaders() {
 	invaders.enemy[0].sprite_info.dim = PIG_DIM;
 }
 
+void init_mutex() {
+	/* Init Mutex */
+  if (pthread_mutex_init(&lock, NULL) != 0) {
+        fprintf(stderr, "mutex init failed\n");
+        exit(1);
+  }
+}
 
 void draw_player() {
 	draw_sprite(&player.sprite_info);
@@ -107,42 +173,47 @@ void move_player(enum direction_t direction) {
 
 	if (direction == left) {
 		if (player.sprite_info.x > 0) {
-			player.sprite_info.x -= 1;
+			player.sprite_info.x -= 2;
 		}
 	} else if (direction == right) {
-		if (player.sprite_info.x < (MAX_X - player.sprite_info.x)) {
-			player.sprite_info.x += 1;
+		if (player.sprite_info.x < (MAX_X - player.sprite_info.dim)) {
+			player.sprite_info.x += 2;
 		}
 	} else if (direction == up) {
 		if (player.sprite_info.y > 0) {
-			player.sprite_info.y -= 1;
+			player.sprite_info.y -= 2;
 		}
 	} else if (direction == down) {
-		if (player.sprite_info.y < (MAX_Y - player.sprite_info.y)) {
-			player.sprite_info.y += 1;
+		if (player.sprite_info.y < (MAX_Y - player.sprite_info.dim)) {
+			player.sprite_info.y += 2;
 		}
 	}
 
 }
 
-void init_bullets(bullet_t *b, int max) {
+void init_bullets() {
 	int i;
 
-	for (i = 0; i < max; i++) {
-		b[i].alive = 0;
-		b[i].sprite_info.dim = BULLET_DIM;
-		b[i].sprite_info.id = BULLET_ID;
+	for (i = 0; i < MAX_BULLETS; i++) {
+		bullets[i].alive = 0;
+		bullets[i].sprite_info.dim = BULLET_DIM;
+		bullets[i].sprite_info.id = BULLET_ID;
+		bullets[i].sprite_info.s = -1;
 	}
 }
 
 /*Moves bullet across X dim */
-void move_bullets(bullet_t *b, int max, int speed) {
+void move_bullets(int max, int speed) {
 	int i;
 
 	for (i = 0; i < max; i++) {
-		if (b[i].alive == 1) {
-			if (b[i].sprite_info.x < (MAX_X - b[i].sprite_info.dim) + speed) b[i].sprite_info.x += speed;
-			else b[i].alive = 0;
+		if (bullets[i].alive == 1) {
+			if (bullets[i].sprite_info.x < (MAX_X - (bullets[i].sprite_info.dim + speed))) {
+				bullets[i].sprite_info.x += speed;
+			}
+			else {
+				bullets[i].alive = 0;
+			}
 		}
 	}
 }
@@ -152,8 +223,9 @@ void player_shoot() {
 	int i;
 	for (i = 0; i < MAX_BULLETS; i++) {
 		if (bullets[i].alive == 0) {
-			bullets[i].sprite_info.x = player.sprite_info.x + 1 + player.sprite_info.dim; /* To the right of the player sprite */
-			bullets[i].sprite_info.y = player.sprite_info.y + (player.sprite_info.dim/4);/* /4 to center bullet with player sprite */
+			bullets[i].sprite_info.x = player.sprite_info.x + 2 + player.sprite_info.dim; /* To the right of the player sprite */
+			bullets[i].sprite_info.y = player.sprite_info.y + 8;/* /4 to center bullet with player sprite */
+			printf("player_shoot: %d %d %d %d\n", i, bullets[i].sprite_info.x, bullets[i].sprite_info.y, bullets[i].sprite_info.s);
 			bullets[i].alive = 1;
 			break;
 		}
@@ -161,16 +233,15 @@ void player_shoot() {
 }
 
 /*Draw or Remove bullet depending on alive state */
-void draw_bullets(bullet_t b[], int max) {
+void draw_bullets(int max) {
 
 	int i;
 
 	for (i = 0; i < max; i++) {
-		if (b[i].alive == 1) {
-			draw_sprite(&b[i].sprite_info);
-		} else if (b[i].alive == 0)
-		{
-			remove_sprite(&b[i].sprite_info);
+		if (bullets[i].alive == 1) {
+			draw_sprite(&bullets[i].sprite_info);
+		} else if (bullets[i].alive == 0) {
+			remove_sprite(&bullets[i].sprite_info);
 		}
 	}
 }
@@ -180,14 +251,13 @@ int main() {
 	int quit = 0;
 	init_sprite_controller();
 	init_keyboard();
+	init_mutex();
 	init_player();
-	init_bullets(bullets, MAX_BULLETS);
+	init_bullets(MAX_BULLETS);
  	
 	state = game;
-	
-	struct usb_keyboard_packet packet;
-	int transferred;
-  	char keystate[12];
+
+	pthread_create(&input_thread, NULL, handle_keyboard_thread_f, NULL);
 
 	/*Draw initial game state */
 	draw_player();
@@ -195,31 +265,21 @@ int main() {
 	while (quit == 0) {
 
 		if (state == game) {
-			    libusb_interrupt_transfer(keyboard, endpoint_address,
-			      (unsigned char *) &packet, sizeof(packet),
-			      &transferred, 0);
-
-			if (transferred == sizeof(packet)) {
-					switch(packet.keycode[0]) {
-						case RIGHT_ARROW:
-							printf("right pressed\n");
-							move_player(right);
-							draw_player();
-							break;
-						case LEFT_ARROW:
-							printf("left pressed\n");
-							move_player(left);
-							draw_player();
-							break;
-						default:
-							break;
-					}
-				
-			}
-
-			//draw_bullets(bullets, MAX_BULLETS);
-			//move_bullets(bullets, MAX_BULLETS, BULLET_SPEED);
+			 
+			pthread_mutex_lock(&lock);
+			draw_bullets(MAX_BULLETS);
+			move_bullets(MAX_BULLETS, BULLET_SPEED);
+			pthread_mutex_unlock(&lock);
+			usleep(30000);
 		}
 	}
+
+	pthread_cancel(input_thread);
+  
+	/* Destroy lock */
+	pthread_mutex_destroy(&lock);
+
+    /* Wait for the network thread to finish */
+	pthread_join(input_thread, NULL);
 
 }
