@@ -10,9 +10,13 @@
 #define MAX_Y 480
 
 #define SHIP_ID 1
+#define PIG_ID 	2
+#define BEE_ID 	3
+#define HEN_ID	4
 #define SHIP_DIM 32
 #define BULLET_ID 5
 #define BULLET_DIM 16
+#define ENEMY_DIM 32
 
 typedef struct {
 	unsigned int s; /* Sprite Number: Must be assigned in Game Logic. eg. Sprite1 == Player, etc.*/
