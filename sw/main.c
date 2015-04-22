@@ -31,6 +31,7 @@ void player_shoot();
 void move_player(enum direction_t);
 void draw_player();
 void draw_bullets(int);
+void draw_invaders();
 
 void init_keyboard() {
     if ( (keyboard = openkeyboard(&endpoint_address)) == NULL ) {
@@ -105,22 +106,16 @@ int draw_sprite(sprite_t *sprite) {
             }
         }
     }
-
-    if (ioctl(vga_led_fd, VGA_SET_SPRITE, sprite) < 0) {
-        printf("Draw - Device Driver Error\n");
-        return -1;
-    }
-
+    ioctl(vga_led_fd, VGA_SET_SPRITE, sprite);
+     
     return 0;
 }
 
 int remove_sprite(sprite_t *sprite) {
     sprite_t empty_sprite;
+    empty_sprite.s = sprite->s;
 
-    if (ioctl(vga_led_fd, VGA_SET_SPRITE, &empty_sprite) < 0) {
-        printf("Remove - Device Driver Error\n");
-        return -1;
-    }
+    ioctl(vga_led_fd, VGA_SET_SPRITE, &empty_sprite); 
 
     sprite_slots[sprite->s] = 0;
     sprite->s = -1;
@@ -175,8 +170,8 @@ void init_invaders() {
 
     /* Initializes one enemy */
     invaders.enemy[0].alive = 1;
-    invaders.enemy[0].sprite_info.x = 150;
-    invaders.enemy[0].sprite_info.y = 20;
+    invaders.enemy[0].sprite_info.x = x;
+    invaders.enemy[0].sprite_info.y = MAX_Y / 2;
     invaders.enemy[0].sprite_info.id = PIG_ID;
     invaders.enemy[0].sprite_info.dim = PIG_DIM;
     invaders.enemy[0].sprite_info.s = -1;
@@ -197,6 +192,8 @@ void init_bullets() {
         bullets[i].alive = 0;
         bullets[i].sprite_info.dim = BULLET_DIM;
         bullets[i].sprite_info.id = BULLET_ID;
+	bullets[i].sprite_info.x = player.sprite_info.x + player.sprite_info.dim;
+	bullets[i].sprite_info.y = player.sprite_info.y;
         bullets[i].sprite_info.s = -1;
     }
 }
@@ -223,7 +220,7 @@ void draw_bullets(int max) {
     for (i = 0; i < max; i++) {
         if (bullets[i].alive == 1) {
             draw_sprite(&bullets[i].sprite_info);
-        } else if (bullets[i].alive == 0) {
+        }else if (bullets[i].alive == 0) {
             remove_sprite(&bullets[i].sprite_info);
         }
     }
@@ -282,20 +279,20 @@ void player_shoot() {
 }
 
 /* Detect a collision between two sprites */
-void detect_collision(sprite_t *a, sprite_t *b) {
-    if (a.y + a.dim < b.y) {
+int detect_collision(sprite_t *a, sprite_t *b) {
+    if (a->y + a->dim < b->y) {
         return 0;
     }
 
-    if (a.y < b.y + b.dim) {
+    if (a->y < b->y + b->dim) {
         return 0;
     }
 
-    if (a.x > b.x + b.w) {
+    if (a->x > b->x + b->dim) {
         return 0;
     }
 
-    if (a.x + a.dim < b.x) {
+    if (a->x + a->dim < b->x) {
         return 0;
     }
 
@@ -310,8 +307,6 @@ void enemy_player_collision() {
 
 }
 
-void
-
 int main() {
 
     int quit = 0;
@@ -325,9 +320,10 @@ int main() {
     state = game;
 
     pthread_create(&input_thread, NULL, handle_keyboard_thread_f, NULL);
-
+    
     /*Draw initial game state */
     pthread_mutex_lock(&lock);
+    draw_background();
     init_state();
     pthread_mutex_unlock(&lock);
 

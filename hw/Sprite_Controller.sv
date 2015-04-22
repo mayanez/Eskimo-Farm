@@ -68,35 +68,35 @@ module Sprite_Controller(   input logic clk,
     assign dim4 = sprite4[31:25];
     assign id4 = sprite4[24:20];
     assign x41 = sprite4[9:0];
-    assign y41 = sprite4[19:0];
+    assign y41 = sprite4[19:10];
     assign x42 = x41 + dim4 - 1;
     assign y42 = y41 + dim4 - 1;
 
     assign dim5 = sprite5[31:25];
     assign id5 = sprite5[24:20];
     assign x51 = sprite5[9:0];
-    assign y51 = sprite5[19:0];
+    assign y51 = sprite5[19:10];
     assign x52 = x51 + dim5 - 1;
     assign y52 = y51 + dim5 - 1;
 
     assign dim6 = sprite6[31:25];
     assign id6 = sprite6[24:20];
     assign x61 = sprite6[9:0];
-    assign y61 = sprite6[19:0];
+    assign y61 = sprite6[19:10];
     assign x62 = x61 + dim6 - 1;
     assign y62 = y61 + dim6 - 1;
 
     assign dim7 = sprite7[31:25];
     assign id7 = sprite7[24:20];
     assign x71 = sprite7[9:0];
-    assign y71 = sprite7[19:0];
+    assign y71 = sprite7[19:10];
     assign x72 = x71 + dim7 - 1;
     assign y72 = y71 + dim7 - 1;
 
     assign dim8 = sprite8[31:25];
     assign id8 = sprite8[24:20];
     assign x81 = sprite8[9:0];
-    assign y81 = sprite8[19:0];
+    assign y81 = sprite8[19:10];
     assign x82 = x81 + dim8 - 1;
     assign y82 = y81 + dim8 - 1;
 
@@ -110,77 +110,77 @@ module Sprite_Controller(   input logic clk,
     assign dim10 = sprite10[31:25];
     assign id10 = sprite10[24:20];
     assign x10_1 = sprite10[9:0];
-    assign y10_1 = sprite10[19:0];
+    assign y10_1 = sprite10[19:10];
     assign x10_2 = x10_1 + dim10 - 1;
     assign y10_2 = y10_1 + dim10 - 1;
 
     assign dim11 = sprite11[31:25];
     assign id11 = sprite11[24:20];
     assign x11_1 = sprite11[9:0];
-    assign y11_1 = sprite11[19:0];
+    assign y11_1 = sprite11[19:10];
     assign x11_2 = x11_1 + dim11 - 1;
     assign y11_2 = y11_1 + dim11 - 1;
 
     assign dim12 = sprite12[31:25];
     assign id12 = sprite12[24:20];
     assign x12_1 = sprite12[9:0];
-    assign y12_1 = sprite12[19:0];
+    assign y12_1 = sprite12[19:10];
     assign x12_2 = x12_1 + dim12 - 1;
     assign y12_2 = y12_1 + dim12 - 1;
 
     assign dim13 = sprite13[31:25];
     assign id13 = sprite13[24:20];
     assign x13_1 = sprite13[9:0];
-    assign y13_1 = sprite13[19:0];
+    assign y13_1 = sprite13[19:10];
     assign x13_2 = x13_1 + dim13 - 1;
     assign y13_2 = y13_1 + dim13 - 1;
 
     assign dim14 = sprite14[31:25];
     assign id14 = sprite14[24:20];
     assign x14_1 = sprite14[9:0];
-    assign y14_1 = sprite14[19:0];
+    assign y14_1 = sprite14[19:10];
     assign x14_2 = x14_1 + dim14 - 1;
     assign y14_2 = y14_1 + dim14 - 1;
 
     assign dim15 = sprite15[31:25];
     assign id15 = sprite15[24:20];
     assign x15_1 = sprite15[9:0];
-    assign y15_1 = sprite15[19:0];
+    assign y15_1 = sprite15[19:10];
     assign x15_2 = x15_1 + dim15 - 1;
     assign y15_2 = y15_1 + dim15 - 1;
     
     assign dim16 = sprite16[31:25];
     assign id16 = sprite16[24:20];
     assign x16_1 = sprite16[9:0];
-    assign y16_1 = sprite16[19:0];
+    assign y16_1 = sprite16[19:10];
     assign x16_2 = x16_1 + dim16 - 1;
     assign y16_2 = y16_1 + dim16 - 1;
     
     assign dim17 = sprite17[31:25];
     assign id17 = sprite17[24:20];
     assign x17_1 = sprite17[9:0];
-    assign y17_1 = sprite17[19:0];
+    assign y17_1 = sprite17[19:10];
     assign x17_2 = x17_1 + dim17 - 1;
     assign y17_2 = y17_1 + dim17 - 1;
     
     assign dim18 = sprite18[31:25];
     assign id18 = sprite18[24:20];
     assign x18_1 = sprite18[9:0];
-    assign y18_1 = sprite18[19:0];
+    assign y18_1 = sprite18[19:10];
     assign x18_2 = x18_1 + dim18 - 1;
     assign y18_2 = y18_1 + dim18 - 1;
     
     assign dim19 = sprite19[31:25];
     assign id19 = sprite19[24:20];
     assign x19_1 = sprite19[9:0];
-    assign y19_1 = sprite19[19:0];
+    assign y19_1 = sprite19[19:10];
     assign x19_2 = x19_1 + dim19 - 1;
     assign y19_2 = y19_1 + dim19 - 1;
     
     assign dim20 = sprite20[31:25];
     assign id20 = sprite20[24:20];
     assign x20_1 = sprite20[9:0];
-    assign y20_1 = sprite20[19:0];
+    assign y20_1 = sprite20[19:10];
     assign x20_2 = x20_1 + dim20 - 1;
     assign y20_2 = y20_1 + dim20 - 1;
     /* END */
