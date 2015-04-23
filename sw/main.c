@@ -25,6 +25,7 @@ unsigned int health;
 int sprite_slots[MAX_SPRITES];
 int next_available_sprite_slot;
 int available_slots;
+unsigned int score;
 
 bullet_t bullets[MAX_BULLETS];
 enum state_t state;
@@ -224,6 +225,7 @@ void init_bullets() {
 void init_state() {
     state = game;
 	health = MAX_LIVES;
+	score = 0;
     draw_player();
 	draw_hud();
 }
@@ -412,6 +414,7 @@ void enemy_bullet_collision () {
 				if (detect_collision(&bullets[i].sprite_info, &invaders.enemy[j].sprite_info)) {
 					invaders.enemy[j].alive = 0;
 					bullets[i].alive = 0;
+					score += invaders.enemy[j].points;
 				}
 			}
 		}
