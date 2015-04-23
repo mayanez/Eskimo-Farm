@@ -6,6 +6,7 @@
 #define MAX_SPRITES 20
 #define MAX_SPRITE_DIM 128
 #define MAX_SPRITE_ID 40 /* Unique number of sprites == # of ROMs */
+#define HUD_BOUNDARY 30;
 #define MAX_X 640
 #define MAX_Y 480
 
@@ -15,6 +16,10 @@
 #define BULLET_DIM 16
 #define PIG_ID 2
 #define PIG_DIM 32
+#define CLOUD_ID 19
+#define CLOUD_DIM 23
+#define LIVES_ID 18
+#define LIVES_DIM 23
 
 typedef struct {
 	unsigned int s; /* Sprite Number: Must be assigned in Game Logic. eg. Sprite1 == Player, etc.*/

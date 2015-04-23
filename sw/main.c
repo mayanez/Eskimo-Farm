@@ -4,15 +4,23 @@
 #include <sys/ioctl.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <time.h>
 #include <fcntl.h>
 #include <string.h>
 #include <unistd.h>
 #include <stdlib.h>
+#include <errno.h>
 
 player_t player;
 invaders_t invaders;
+sprite_t clouds[MAX_CLOUDS];
+life_t lives[MAX_LIVES];
+
+unsigned long ticks;
 
 int vga_led_fd;
+unsigned int init_s;
+unsigned int health;
 
 int sprite_slots[MAX_SPRITES];
 int next_available_sprite_slot;
@@ -32,6 +40,7 @@ void move_player(enum direction_t);
 void draw_player();
 void draw_bullets(int);
 void draw_invaders();
+void draw_hud();
 
 void init_keyboard() {
     if ( (keyboard = openkeyboard(&endpoint_address)) == NULL ) {
@@ -57,7 +66,6 @@ void handle_keyboard_thread_f(void *ignored) {
                     pthread_mutex_lock(&lock);
                     move_player(right);
                     draw_player();
-                    printf("right\n");
                     pthread_mutex_unlock(&lock);
                     break;
                 case LEFT_ARROW:
@@ -80,8 +88,8 @@ void handle_keyboard_thread_f(void *ignored) {
                     break;
                 case SPACEBAR:
                     pthread_mutex_lock(&lock);
-                    printf("shoot\n");
                     player_shoot();
+                    draw_bullets(1);
                     pthread_mutex_unlock(&lock);
                     break;
                 default:
@@ -98,7 +106,7 @@ int draw_sprite(sprite_t *sprite) {
         sprite_slots[next_available_sprite_slot] = 1;
         sprite->s = next_available_sprite_slot;
         available_slots--;
-
+        
         while (sprite_slots[next_available_sprite_slot] != 0 && available_slots > 0) {
             next_available_sprite_slot++;
             if (next_available_sprite_slot >= MAX_SPRITES) {
@@ -113,14 +121,19 @@ int draw_sprite(sprite_t *sprite) {
 
 int remove_sprite(sprite_t *sprite) {
     sprite_t empty_sprite;
+    memset(&empty_sprite, 0, sizeof(sprite_t));
+
     empty_sprite.s = sprite->s;
 	
 	if (sprite->s == -1) {
         return -1;
     }
 
-    ioctl(vga_led_fd, VGA_SET_SPRITE, &empty_sprite); 
+    if (sprite->s == -1) {
+        return -1;
+    }
 
+    ioctl(vga_led_fd, VGA_SET_SPRITE, &empty_sprite); 
     sprite_slots[sprite->s] = 0;
     sprite->s = -1;
     available_slots++;
@@ -160,21 +173,27 @@ void init_player() {
     player.sprite_info.id = SHIP_ID;
     player.sprite_info.dim = SHIP_DIM;
     player.sprite_info.s = -1;
-    player.lives = 3;
 }
 
 void init_invaders() {
-    int x;
+    int i;
 
     invaders.direction = left;
-    invaders.speed = 1;
-    invaders.dim = PIG_DIM; /* Will need to implement for more enemy types */
-
-    x = MAX_X - invaders.dim;
 
     /* Initializes one enemy */
+	for (i = 0; i < MAX_ENEMIES; i++) {
+		invaders.enemy[i].alive = 0;
+		invaders.enemy[i].speed = 0;
+		invaders.enemy[i].sprite_info.x = 0;
+    	invaders.enemy[i].sprite_info.y = 0;
+    	invaders.enemy[i].sprite_info.id = 0;
+    	invaders.enemy[i].sprite_info.dim = 0;
+    	invaders.enemy[i].sprite_info.s = -1;
+	}
+
     invaders.enemy[0].alive = 1;
-    invaders.enemy[0].sprite_info.x = x;
+    invaders.enemy[0].speed = 3;
+    invaders.enemy[0].sprite_info.x = MAX_X - PIG_DIM;
     invaders.enemy[0].sprite_info.y = MAX_Y / 2;
     invaders.enemy[0].sprite_info.id = PIG_ID;
     invaders.enemy[0].sprite_info.dim = PIG_DIM;
@@ -204,8 +223,63 @@ void init_bullets() {
 
 void init_state() {
     state = game;
+	health = MAX_LIVES;
     draw_player();
-    draw_invaders();
+	draw_hud();
+}
+
+void init_clouds() {
+    int i;
+
+    init_s = MAX_SPRITES - 1;
+
+    for (i = 1; i < MAX_CLOUDS; i++) {
+        clouds[i].x = MAX_X - CLOUD_DIM;
+        clouds[i].y = MAX_Y/4 + i*100;
+        clouds[i].dim = CLOUD_DIM;
+        clouds[i].id = CLOUD_ID;
+        clouds[i].s = init_s;
+
+        sprite_slots[init_s] = 1;
+        init_s--;
+        available_slots--;
+    }
+
+    clouds[0].x = MAX_X - CLOUD_DIM - 50;
+    clouds[0].y = MAX_Y/4 + 50;
+    clouds[0].dim = CLOUD_DIM;
+    clouds[0].id = CLOUD_ID;
+    clouds[0].s = init_s;
+    
+    sprite_slots[init_s] = 1;
+    available_slots--;
+ 
+}
+
+void init_hud() {
+	int i;
+
+	for (i = 0; i < MAX_LIVES; i++) {
+		lives[i].alive = 1;
+		lives[i].sprite_info.x = i*LIVES_DIM;
+		lives[i].sprite_info.y = 0;
+		lives[i].sprite_info.s = -1;
+		lives[i].sprite_info.dim = LIVES_DIM;
+		lives[i].sprite_info.id = LIVES_ID;
+	}
+}
+
+void draw_hud() {
+	int i;
+
+	for (i = 0; i < MAX_LIVES; i++) {
+		if (lives[i].alive == 1) {
+			draw_sprite(&lives[i].sprite_info);
+		} else if (lives[i].alive == 0 && lives[i].sprite_info.s != -1) {
+			remove_sprite(&lives[i].sprite_info);
+		}
+	}
+	
 }
 
 void draw_player() {
@@ -213,10 +287,16 @@ void draw_player() {
 }
 
 void draw_invaders() {
-    if (invaders.enemy[0].alive == 1) {
-        draw_sprite(&invaders.enemy[0].sprite_info);
-	} else if (invaders.enemy[0].alive == 0 && invaders.enemy[0].sprite_info.s != -1) {
-		remove_sprite(&invaders.enemy[0].sprite_info);
+	int i;
+
+	for (i = 0; i < MAX_ENEMIES; i++) {
+		if (invaders.enemy[i].alive == 1) {
+			draw_sprite(&invaders.enemy[i].sprite_info);
+		} else if (invaders.enemy[i].alive == 0 && invaders.enemy[i].sprite_info.s != -1) {
+			printf("s %d\n", invaders.enemy[i].sprite_info.s);
+			remove_sprite(&invaders.enemy[i].sprite_info);
+		}
+
 	}
 }
 
@@ -231,6 +311,23 @@ void draw_bullets(int max) {
         }else if (bullets[i].alive == 0 && bullets[i].sprite_info.s != -1) {
             remove_sprite(&bullets[i].sprite_info);
         }
+    }
+}
+
+void draw_clouds() {
+    int i;
+    int speed;
+
+    speed = 2;
+    for (i = 0; i < MAX_CLOUDS; i++) {
+        if (clouds[i].x > 0 + CLOUD_DIM) {
+            clouds[i].x -= speed;
+        } else {
+            clouds[i].x = MAX_X - CLOUD_DIM;
+            speed++;
+        }
+        
+        draw_sprite(&clouds[i]);
     }
 }
 
@@ -315,7 +412,6 @@ void enemy_bullet_collision () {
 				if (detect_collision(&bullets[i].sprite_info, &invaders.enemy[j].sprite_info)) {
 					invaders.enemy[j].alive = 0;
 					bullets[i].alive = 0;
-					printf("COLLIDED\n");
 				}
 			}
 		}
@@ -323,7 +419,54 @@ void enemy_bullet_collision () {
 }
 
 void enemy_player_collision() {
+    int i, j;
+    for (i = 0; i < MAX_ENEMIES; i ++) {
+        if (invaders.enemy[i].alive == 1) {
+            if (detect_collision(&player.sprite_info, &invaders.enemy[i].sprite_info)) {
+				printf("health: %d\n", health);
+                lives[health-1].alive = 0;
+				health--;
+                invaders.enemy[i].alive = 0;
+                remove_sprite(&player.sprite_info);
+                sleep(2);
+                draw_sprite(&player.sprite_info);
+            }
+        }
+    }
+}
 
+void move_enemy(enemy_t *enemy, enum direction_t direction) {
+
+    if (direction == left) {
+        if (enemy->sprite_info.x > 0 + enemy->sprite_info.dim) {
+            enemy->sprite_info.x -= enemy->speed;
+        }
+        else {
+            enemy->alive = 0;
+        }
+    }
+}
+
+void add_enemy() {
+	if (ticks == 140) {
+		invaders.enemy[1].alive = 1;
+    	invaders.enemy[1].speed = 3;
+    	invaders.enemy[1].sprite_info.x = MAX_X - PIG_DIM;
+    	invaders.enemy[1].sprite_info.y = MAX_Y / 2;
+    	invaders.enemy[1].sprite_info.id = PIG_ID;
+    	invaders.enemy[1].sprite_info.dim = PIG_DIM;
+    	invaders.enemy[1].sprite_info.s = -1;
+	}
+}
+void enemy_ai() {
+    int i;
+    
+    for (i = 0; i < MAX_ENEMIES; i++) {
+        if (invaders.enemy[i].alive == 1) {
+            move_enemy(&invaders.enemy[i], invaders.direction);
+        }
+    }
+    
 }
 
 int main() {
@@ -335,28 +478,36 @@ int main() {
     init_player();
     init_invaders();
     init_bullets(MAX_BULLETS);
+    init_clouds();
+	init_hud();
 
     state = game;
-
-    pthread_create(&input_thread, NULL, handle_keyboard_thread_f, NULL);
+	ticks = 0;
     
     /*Draw initial game state */
     pthread_mutex_lock(&lock);
     draw_background();
     init_state();
     pthread_mutex_unlock(&lock);
+	
+    pthread_create(&input_thread, NULL, handle_keyboard_thread_f, NULL);
 
     while (quit == 0) {
-
         if (state == game) {
             pthread_mutex_lock(&lock);
             draw_bullets(MAX_BULLETS);
-            draw_invaders();
-            enemy_bullet_collision();
+			draw_invaders();
+            draw_clouds();
+			draw_hud();
+			enemy_bullet_collision();
+            enemy_player_collision();
             move_bullets(MAX_BULLETS, BULLET_SPEED);
+            enemy_ai();
+			add_enemy();
             pthread_mutex_unlock(&lock);
-            usleep(30000);
+            usleep(40000);
         }
+		ticks++;
     }
 
     pthread_cancel(input_thread);
