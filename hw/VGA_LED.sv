@@ -24,10 +24,12 @@ module VGA_LED( input logic         clk,
                  sprite18, sprite19, sprite20;
    
     logic [9:0]  addr_ship, addr_pig, addr_bee, addr_cow, addr_mcdonald, addr_zero, addr_one, 
-                 addr_two, addr_three, addr_four, addr_five, addr_six, addr_seven, addr_eight, addr_nine, addr_bullet;
+                 addr_two, addr_three, addr_four, addr_five, addr_six, addr_seven, addr_eight, addr_nine, addr_bullet,
+                 addr_title, addr_eskimo, addr_cloud;
     
     logic [23:0] M_ship, M_pig, M_bee, M_cow, M_mcdonald, M_zero, 
-                 M_one, M_two, M_three, M_four, M_five, M_six, M_seven, M_eight, M_nine, M_bullet;
+                 M_one, M_two, M_three, M_four, M_five, M_six, M_seven, M_eight, M_nine, M_bullet,
+                 M_title, M_eskimo, M_cloud;
 
 	/* Given an input and address put into array */
 	always_ff@(posedge clk)
@@ -121,6 +123,9 @@ module VGA_LED( input logic         clk,
     eight e(.clock(VGA_CLK), .address(addr_eight), .q(M_eight));
     nine n(.clock(VGA_CLK), .address(addr_nine), .q(M_nine));
     bullet bu(.clock(VGA_CLK), .address(addr_bullet), .q(M_bullet));
+    title tt(.clock(VGA_CLK), .address(addr_title), .q(M_title));
+    cloud cl(.clock(VGA_CLK), .address(addr_cloud), .q(M_cloud));
+    eskimo es(.clock(VGA_CLK), .address(addr_eskimo), .q(M_eskimo));
    
 	VGA_LED_Emulator led_emulator(.clk50(clk), .*);
     Sprite_Controller sprite_controller(.clk(VGA_CLK), .*);

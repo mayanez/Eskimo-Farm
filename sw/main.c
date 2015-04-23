@@ -94,14 +94,14 @@ void handle_keyboard_thread_f(void *ignored) {
 
 int draw_sprite(sprite_t *sprite) {
 
-    if (sprite->s == -1) {
+    if (sprite->s == -1 && available_slots > 0 && sprite_slots[next_available_sprite_slot] == 0) {
         sprite_slots[next_available_sprite_slot] = 1;
         sprite->s = next_available_sprite_slot;
         available_slots--;
 
         while (sprite_slots[next_available_sprite_slot] != 0 && available_slots > 0) {
             next_available_sprite_slot++;
-            if (next_available_sprite_slot > MAX_SPRITES) {
+            if (next_available_sprite_slot >= MAX_SPRITES) {
                 next_available_sprite_slot = 0;
             }
         }
@@ -114,6 +114,10 @@ int draw_sprite(sprite_t *sprite) {
 int remove_sprite(sprite_t *sprite) {
     sprite_t empty_sprite;
     empty_sprite.s = sprite->s;
+	
+	if (sprite->s == -1) {
+        return -1;
+    }
 
     ioctl(vga_led_fd, VGA_SET_SPRITE, &empty_sprite); 
 
@@ -192,8 +196,8 @@ void init_bullets() {
         bullets[i].alive = 0;
         bullets[i].sprite_info.dim = BULLET_DIM;
         bullets[i].sprite_info.id = BULLET_ID;
-	bullets[i].sprite_info.x = player.sprite_info.x + player.sprite_info.dim;
-	bullets[i].sprite_info.y = player.sprite_info.y;
+		bullets[i].sprite_info.x = player.sprite_info.x + player.sprite_info.dim;
+		bullets[i].sprite_info.y = player.sprite_info.y;
         bullets[i].sprite_info.s = -1;
     }
 }
@@ -209,7 +213,11 @@ void draw_player() {
 }
 
 void draw_invaders() {
-    draw_sprite(&invaders.enemy[0].sprite_info);
+    if (invaders.enemy[0].alive == 1) {
+        draw_sprite(&invaders.enemy[0].sprite_info);
+	} else if (invaders.enemy[0].alive == 0 && invaders.enemy[0].sprite_info.s != -1) {
+		remove_sprite(&invaders.enemy[0].sprite_info);
+	}
 }
 
 /*Draw or Remove bullet depending on alive state */
@@ -220,7 +228,7 @@ void draw_bullets(int max) {
     for (i = 0; i < max; i++) {
         if (bullets[i].alive == 1) {
             draw_sprite(&bullets[i].sprite_info);
-        }else if (bullets[i].alive == 0) {
+        }else if (bullets[i].alive == 0 && bullets[i].sprite_info.s != -1) {
             remove_sprite(&bullets[i].sprite_info);
         }
     }
@@ -284,7 +292,7 @@ int detect_collision(sprite_t *a, sprite_t *b) {
         return 0;
     }
 
-    if (a->y < b->y + b->dim) {
+    if (a->y > b->y + b->dim) {
         return 0;
     }
 
@@ -300,7 +308,18 @@ int detect_collision(sprite_t *a, sprite_t *b) {
 }
 
 void enemy_bullet_collision () {
-
+	int i, j;
+	for (i = 0; i < MAX_BULLETS; i++) {
+		for (j = 0; j < MAX_ENEMIES; j++) {
+			if (bullets[i].alive == 1 && invaders.enemy[j].alive == 1) {
+				if (detect_collision(&bullets[i].sprite_info, &invaders.enemy[j].sprite_info)) {
+					invaders.enemy[j].alive = 0;
+					bullets[i].alive = 0;
+					printf("COLLIDED\n");
+				}
+			}
+		}
+	}
 }
 
 void enemy_player_collision() {
@@ -332,6 +351,8 @@ int main() {
         if (state == game) {
             pthread_mutex_lock(&lock);
             draw_bullets(MAX_BULLETS);
+            draw_invaders();
+            enemy_bullet_collision();
             move_bullets(MAX_BULLETS, BULLET_SPEED);
             pthread_mutex_unlock(&lock);
             usleep(30000);
