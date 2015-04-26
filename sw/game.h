@@ -8,10 +8,10 @@
 #define MAX_LIVES 3
 #define PIG_SCORE 16
 #define BEE_SCORE 40
-#define HEN_SCORE 60
+#define COW_SCORE 60
 #define PIG_SPEED 1
 #define BEE_SPEED 2
-#define HEN_SPEED 3
+#define COW_SPEED 3
 
 enum direction_t {up, down, left, right, stationary};
 enum state_t {menu, game, game_over};
@@ -31,11 +31,11 @@ typedef struct {
 	unsigned int points;
     unsigned int type;
     unsigned int speed;
+    enum direction_t direction;
 } enemy_t;
 
 typedef struct {
 	enemy_t enemy[MAX_ENEMIES];
-	enum direction_t direction;
 } invaders_t;
 
 typedef struct {
