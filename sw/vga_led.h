@@ -22,8 +22,8 @@
 #define LIVES_DIM 23
 #define BEE_ID 3
 #define BEE_DIM 32
-#define COW_ID 4
 #define COW_DIM 32
+#define COW_ID 4
 
 typedef struct {
 	unsigned int s; /* Sprite Number: Must be assigned in Game Logic. eg. Sprite1 == Player, etc.*/
