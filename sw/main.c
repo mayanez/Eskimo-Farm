@@ -24,11 +24,14 @@ unsigned int health;
 
 int sprite_slots[MAX_SPRITES];
 int next_available_sprite_slot;
+int next_available_enemy_slot;
+int current_enemy_count;
 int available_slots;
 unsigned int score;
 
 bullet_t bullets[MAX_BULLETS];
 enum state_t state;
+enum direction_t dir;
 
 struct libusb_device_handle *keyboard;
 uint8_t endpoint_address;
@@ -178,27 +181,46 @@ void init_player() {
 
 void init_invaders() {
     int i;
+    current_enemy_count = 0;
+    next_available_enemy_slot = 0;
 
-    invaders.direction = left;
 
-    /* Initializes one enemy */
+    /* Initializes 2 enemy */
 	for (i = 0; i < MAX_ENEMIES; i++) {
-		invaders.enemy[i].alive = 0;
-		invaders.enemy[i].speed = 0;
-		invaders.enemy[i].sprite_info.x = 0;
+    	invaders.enemy[i].alive = 0;
+    	invaders.enemy[i].speed = 0;
+    	invaders.enemy[i].sprite_info.x = 0;
     	invaders.enemy[i].sprite_info.y = 0;
     	invaders.enemy[i].sprite_info.id = 0;
     	invaders.enemy[i].sprite_info.dim = 0;
     	invaders.enemy[i].sprite_info.s = -1;
+        invaders.enemy[i].points = 0;
+        invaders.enemy[i].direction = left;
 	}
 
     invaders.enemy[0].alive = 1;
-    invaders.enemy[0].speed = 3;
+    invaders.enemy[0].speed = 2;
     invaders.enemy[0].sprite_info.x = MAX_X - PIG_DIM;
-    invaders.enemy[0].sprite_info.y = MAX_Y / 2;
+    invaders.enemy[0].sprite_info.y = MAX_Y - 400;
     invaders.enemy[0].sprite_info.id = PIG_ID;
     invaders.enemy[0].sprite_info.dim = PIG_DIM;
     invaders.enemy[0].sprite_info.s = -1;
+    invaders.enemy[0].points = 1; //PIG
+    invaders.enemy[0].direction = left;
+    current_enemy_count++;
+    next_available_enemy_slot++;
+
+    invaders.enemy[1].alive = 1;
+    invaders.enemy[1].speed = 2;
+    invaders.enemy[1].sprite_info.x = MAX_X - PIG_DIM;
+    invaders.enemy[1].sprite_info.y = MAX_Y - 250;
+    invaders.enemy[1].sprite_info.id = PIG_ID;
+    invaders.enemy[1].sprite_info.dim = PIG_DIM;
+    invaders.enemy[1].sprite_info.s = -1;
+    invaders.enemy[1].points = 1; //PIG
+    invaders.enemy[1].direction = left;
+    current_enemy_count++;
+    next_available_enemy_slot++;
 }
 
 void init_mutex() {
@@ -295,7 +317,7 @@ void draw_invaders() {
 		if (invaders.enemy[i].alive == 1) {
 			draw_sprite(&invaders.enemy[i].sprite_info);
 		} else if (invaders.enemy[i].alive == 0 && invaders.enemy[i].sprite_info.s != -1) {
-			printf("s %d\n", invaders.enemy[i].sprite_info.s);
+			
 			remove_sprite(&invaders.enemy[i].sprite_info);
 		}
 
@@ -413,6 +435,7 @@ void enemy_bullet_collision () {
 			if (bullets[i].alive == 1 && invaders.enemy[j].alive == 1) {
 				if (detect_collision(&bullets[i].sprite_info, &invaders.enemy[j].sprite_info)) {
 					invaders.enemy[j].alive = 0;
+                    current_enemy_count--;
 					bullets[i].alive = 0;
 					score += invaders.enemy[j].points;
 				}
@@ -426,47 +449,144 @@ void enemy_player_collision() {
     for (i = 0; i < MAX_ENEMIES; i ++) {
         if (invaders.enemy[i].alive == 1) {
             if (detect_collision(&player.sprite_info, &invaders.enemy[i].sprite_info)) {
-				printf("health: %d\n", health);
+				
                 lives[health-1].alive = 0;
 				health--;
                 invaders.enemy[i].alive = 0;
+                current_enemy_count--;
                 remove_sprite(&player.sprite_info);
                 sleep(2);
                 draw_sprite(&player.sprite_info);
+
             }
         }
     }
 }
 
-void move_enemy(enemy_t *enemy, enum direction_t direction) {
+void move_enemy(enemy_t *enemy) {
+    
+    if(enemy->direction == left && enemy->alive == 1){
+        if (enemy->sprite_info.x > 0 + enemy->speed)
+          enemy->sprite_info.x -= 2*enemy->speed;
+        else
+          enemy->alive = 0;    
+     }
 
-    if (direction == left) {
-        if (enemy->sprite_info.x > 0 + enemy->sprite_info.dim) {
-            enemy->sprite_info.x -= enemy->speed;
+    else if(enemy->direction == up && enemy->alive == 1){
+       if (enemy->sprite_info.x > 0 + enemy->speed )
+          enemy->sprite_info.x -= enemy->speed;
+       else
+          enemy->alive = 0; 
+       if ((enemy->sprite_info.y > LIVES_DIM + enemy->speed) && enemy->alive == 1)
+          enemy->sprite_info.y = enemy->sprite_info.y - enemy->speed;
+       else if ((enemy->sprite_info.y <= LIVES_DIM + enemy->speed) && enemy->alive == 1){
+          enemy->direction = down;
+          enemy->sprite_info.y = enemy->sprite_info.y + enemy->speed;
         }
-        else {
-            enemy->alive = 0;
+     }
+ 
+     else if(enemy->direction == down && enemy->alive == 1){
+       if (enemy->sprite_info.x >= 0 + enemy->speed)
+          enemy->sprite_info.x -= enemy->speed;
+       else
+          enemy->alive = 0; 
+       if ((enemy->sprite_info.y < MAX_Y - PIG_DIM - enemy->speed) && enemy->alive == 1)
+          enemy->sprite_info.y = enemy->sprite_info.y + enemy->speed;
+       else if ((enemy->sprite_info.y >= MAX_Y - PIG_DIM - enemy->speed) && enemy->alive == 1){
+          enemy->direction = up;
+          enemy->sprite_info.y = enemy->sprite_info.y - enemy->speed;
         }
-    }
+     }
+    if(enemy->sprite_info.id == 3 && enemy->sprite_info.x <= 10){
+  
+    printf("enemy_x : %d\n", enemy->sprite_info.x);
+    printf("enemy_y : %d\n", enemy->sprite_info.y);
+   }
 }
 
 void add_enemy() {
-	if (ticks == 140) {
-		invaders.enemy[1].alive = 1;
-    	invaders.enemy[1].speed = 3;
-    	invaders.enemy[1].sprite_info.x = MAX_X - PIG_DIM;
-    	invaders.enemy[1].sprite_info.y = MAX_Y / 2;
-    	invaders.enemy[1].sprite_info.id = PIG_ID;
-    	invaders.enemy[1].sprite_info.dim = PIG_DIM;
-    	invaders.enemy[1].sprite_info.s = -1;
-	}
+    int index;
+	if ((ticks % 50 == 0 ) && current_enemy_count < MAX_ENEMIES) {
+        if(next_available_enemy_slot >= MAX_ENEMIES){
+            next_available_enemy_slot = 0;
+        }
+
+        while(invaders.enemy[next_available_enemy_slot].alive != 0){
+            next_available_enemy_slot++;
+            if(next_available_enemy_slot >= MAX_ENEMIES){
+                next_available_enemy_slot =0;
+            }
+        }
+
+        index = next_available_enemy_slot;
+        invaders.enemy[index].alive = 1;
+        
+        int ycord = rand() % 448;
+        
+       
+        int value = rand() % 3;
+    
+        if(value == 0)
+               dir = up;
+        else if (value == 1)
+               dir = left;
+        else
+             dir = down;
+
+
+        if(score <= PIG_SCORE){
+            invaders.enemy[index].sprite_info.x = MAX_X - PIG_DIM;           
+            invaders.enemy[index].sprite_info.y = ycord;
+            invaders.enemy[index].sprite_info.id = PIG_ID;
+            invaders.enemy[index].sprite_info.dim = PIG_DIM;
+            invaders.enemy[index].points = 1;
+            invaders.enemy[index].speed = 2;
+            invaders.enemy[index].direction = dir;
+            
+        }else if(score <= BEE_SCORE){
+            invaders.enemy[index].sprite_info.x = MAX_X - BEE_DIM;
+            invaders.enemy[index].sprite_info.y = ycord;
+            invaders.enemy[index].sprite_info.id = BEE_ID;
+            invaders.enemy[index].sprite_info.dim = BEE_DIM;
+            invaders.enemy[index].points = 2;
+            invaders.enemy[index].speed = 3;
+            invaders.enemy[index].direction = dir;
+
+        }else if(score <= COW_SCORE){
+            invaders.enemy[index].sprite_info.x = MAX_X - COW_DIM;
+            invaders.enemy[index].sprite_info.y = ycord;
+            invaders.enemy[index].sprite_info.id = COW_ID;
+            invaders.enemy[index].sprite_info.dim = COW_DIM;
+            invaders.enemy[index].points = 3;
+            invaders.enemy[index].speed = 4;
+            invaders.enemy[index].direction = dir;
+
+        }else{
+            invaders.enemy[index].sprite_info.x = MAX_X - PIG_DIM;
+            invaders.enemy[index].sprite_info.y = ycord;
+            invaders.enemy[index].sprite_info.id = PIG_ID;
+            invaders.enemy[index].sprite_info.dim = PIG_DIM;
+            invaders.enemy[index].points = 1;
+            invaders.enemy[index].speed = 2;
+            invaders.enemy[index].direction = dir;
+        }
+        next_available_enemy_slot++;
+    }
+
+    if(current_enemy_count >= MAX_ENEMIES){
+       printf("ENEMY SLOTS FULL\n");
+      return ;
+    }
+    	
 }
+
+
 void enemy_ai() {
     int i;
     
     for (i = 0; i < MAX_ENEMIES; i++) {
         if (invaders.enemy[i].alive == 1) {
-            move_enemy(&invaders.enemy[i], invaders.direction);
+            move_enemy(&invaders.enemy[i]);
         }
     }
     
