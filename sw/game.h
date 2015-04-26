@@ -1,34 +1,44 @@
 #include "vga_led.h"
 
-#define MAX_BULLETS 10
-#define MAX_ENEMIES 20
+#define MAX_BULLETS 5
+#define BULLET_SPEED 20
+#define MAX_ENEMIES 10
+#define PLAYER_STEP_SIZE 2
+#define MAX_CLOUDS 3
+#define MAX_LIVES 3
+#define PIG_SCORE 16
+#define BEE_SCORE 40
+#define HEN_SCORE 60
+#define PIG_SPEED 1
+#define BEE_SPEED 2
+#define HEN_SPEED 3
 
 enum direction_t {up, down, left, right, stationary};
 enum state_t {menu, game, game_over};
 
 typedef struct {
 	sprite_t sprite_info;
-	unsigned int lives;
-	SDL_Rect hitbox;
 } player_t;
 
 typedef struct {
     sprite_t sprite_info;
-    unsigned int alive; 
- 	SDL_Rect hitbox;   
+    unsigned int alive;
 } bullet_t;
 
 typedef struct {
 	sprite_t sprite_info;
-	unsigned int alive = 0 ; //can be re-allotted to another sprite
+	unsigned int alive;
 	unsigned int points;
-	enum direction_t direction;
-	SDL_Rect hitbox;
-	/*
-		int speed;
-	int state;
-	int state_speed;
-	Uint32 state_time;
-*/
+    unsigned int type;
+    unsigned int speed;
+} enemy_t;
 
-}enemy_t; 
+typedef struct {
+	enemy_t enemy[MAX_ENEMIES];
+	enum direction_t direction;
+} invaders_t;
+
+typedef struct {
+	sprite_t sprite_info;
+	unsigned int alive;
+} life_t;
