@@ -15,6 +15,8 @@ player_t player;
 invaders_t invaders;
 sprite_t clouds[MAX_CLOUDS];
 life_t lives[MAX_LIVES];
+sprite_t score_sprite[5];
+sprite_t score_nums[3];
 
 unsigned long ticks;
 
@@ -56,7 +58,7 @@ void init_keyboard() {
 
 void handle_keyboard_thread_f(void *ignored) {
     
-    struct usb_keyboard_packet packet;
+    struct Xbox360Msg packet;
     int transferred;
     char keystate[12];
     
@@ -64,41 +66,42 @@ void handle_keyboard_thread_f(void *ignored) {
         libusb_interrupt_transfer(keyboard, endpoint_address,
                                   (unsigned char *) &packet, sizeof(packet),
                                   &transferred, 0);
+        printf("up %x down %x left %x right %x \n", packet.dpad_up, packet.dpad_down, packet.dpad_left, packet.dpad_right);
         
         if (transferred == sizeof(packet)) {
-            switch(packet.keycode[0]) {
-                case RIGHT_ARROW:
+           if (packet.dpad_right){
                     pthread_mutex_lock(&lock);
                     move_player(right);
                     draw_player();
                     pthread_mutex_unlock(&lock);
-                    break;
-                case LEFT_ARROW:
+            }
+            
+            if (packet.dpad_left) {
                     pthread_mutex_lock(&lock);
                     move_player(left);
                     draw_player();
                     pthread_mutex_unlock(&lock);
-                    break;
-                case UP_ARROW:
+            }
+
+            if (packet.dpad_up) {
                     pthread_mutex_lock(&lock);
                     move_player(up);
                     draw_player();
                     pthread_mutex_unlock(&lock);
-                    break;
-                case DOWN_ARROW:
+            }
+
+            if (packet.dpad_down) {
                     pthread_mutex_lock(&lock);
                     move_player(down);
                     draw_player();
                     pthread_mutex_unlock(&lock);
-                    break;
-                case SPACEBAR:
+            }
+            
+            if (packet.b) {
                     pthread_mutex_lock(&lock);
                     player_shoot();
                     draw_bullets(1);
                     pthread_mutex_unlock(&lock);
-                    break;
-                default:
-                    break;
             }
             
         }
@@ -134,10 +137,6 @@ int remove_sprite(sprite_t *sprite) {
         return -1;
     }
     
-    if (sprite->s == -1) {
-        return -1;
-    }
-    
     ioctl(vga_led_fd, VGA_SET_SPRITE, &empty_sprite);
     sprite_slots[sprite->s] = 0;
     sprite->s = -1;
@@ -152,7 +151,6 @@ int draw_background() {
         return -1;
     }
     
-    available_slots = MAX_SPRITES;
     memset(&sprite_slots, 0, MAX_SPRITES);
     return 0;
 }
@@ -167,6 +165,7 @@ int init_sprite_controller() {
         return -1;
     }
     
+    init_s = MAX_SPRITES - 1;
     next_available_sprite_slot = 0;
     available_slots = MAX_SPRITES;
     return 0;
@@ -251,16 +250,15 @@ void init_state() {
 	score = 0;
     draw_player();
 	draw_hud();
+    draw_score();
 }
 
 void init_clouds() {
     int i;
     
-    init_s = MAX_SPRITES - 1;
-    
     for (i = 1; i < MAX_CLOUDS; i++) {
         clouds[i].x = MAX_X - CLOUD_DIM;
-        clouds[i].y = MAX_Y/4 + i*100;
+        clouds[i].y = MAX_Y/4 + i*100 + 1;
         clouds[i].dim = CLOUD_DIM;
         clouds[i].id = CLOUD_ID;
         clouds[i].s = init_s;
@@ -271,13 +269,15 @@ void init_clouds() {
     }
     
     clouds[0].x = MAX_X - CLOUD_DIM - 50;
-    clouds[0].y = MAX_Y/4 + 50;
+    clouds[0].y = MAX_Y/4 + 50 + 1;
     clouds[0].dim = CLOUD_DIM;
     clouds[0].id = CLOUD_ID;
     clouds[0].s = init_s;
     
     sprite_slots[init_s] = 1;
     available_slots--;
+
+    init_s--;
     
 }
 
@@ -287,11 +287,37 @@ void init_hud() {
 	for (i = 0; i < MAX_LIVES; i++) {
 		lives[i].alive = 1;
 		lives[i].sprite_info.x = i*LIVES_DIM;
-		lives[i].sprite_info.y = 0;
-		lives[i].sprite_info.s = -1;
+		lives[i].sprite_info.y = 1;
+		lives[i].sprite_info.s = init_s;
 		lives[i].sprite_info.dim = LIVES_DIM;
 		lives[i].sprite_info.id = LIVES_ID;
+
+        sprite_slots[init_s] = 1;
+        init_s--;
+        available_slots--;
 	}
+
+    /*
+    for (i = 0; i < 5; i++) {
+        score_sprite[i].x = SCORE_OFFSET + i*S_DIM;
+        score_sprite[i].y = 1;
+        score_sprite[i].s = init_s;
+        score_sprite[i].dim = S_DIM;
+        score_sprite[i].id = S_ID + i;
+
+        sprite_slots[init_s] = 1;
+        init_s--;
+        available_slots--;
+        draw_sprite(&score_sprite[i]);
+    } */
+    
+    for (i = 0; i < 3; i++) {
+        score_nums[i].s = init_s;
+        sprite_slots[init_s] = 1;
+        init_s--;
+        available_slots--;
+    }
+
 }
 
 void draw_hud() {
@@ -356,8 +382,54 @@ void draw_clouds() {
     }
 }
 
-void draw_score() {
+int find_num_id(unsigned int val) {
     
+    switch(val) {
+        case 0:
+            return ZERO_ID;
+        case 1:
+            return ONE_ID;
+        case 2:
+            return TWO_ID;
+        case 3:
+            return THREE_ID;
+        case 4:
+            return FOUR_ID;
+        case 5:
+            return FIVE_ID;
+        case 6:
+            return SIX_ID;
+        case 7:
+            return SEVEN_ID;
+        case 8:
+            return EIGHT_ID;
+        case 9:
+            return NINE_ID;
+    }
+}
+
+void draw_score() {
+        
+    unsigned int units = score % 10;
+    unsigned int tens = (score / 10) % 10;
+    unsigned int hundreds = (score / 100) % 10;
+    
+    int units_id = find_num_id(units);
+    int tens_id = find_num_id(tens);
+    int hundreds_id = find_num_id(hundreds);
+
+    int ids[3] = { hundreds_id, tens_id, units_id};
+    
+
+    int i;
+
+    for (i = 0; i < 3; i++) {
+        score_nums[i].x = 310 + ZERO_DIM*i;
+        score_nums[i].y = 1;
+        score_nums[i].id = ids[i];
+        score_nums[i].dim = ZERO_DIM;
+        draw_sprite(&score_nums[i]);
+    }
 }
 
 /* Moves player in all dimensions */
@@ -601,7 +673,6 @@ void add_enemy() {
     }
     
     if(current_enemy_count >= MAX_ENEMIES){
-        printf("ENEMY SLOTS FULL\n");
         return ;
     }
     

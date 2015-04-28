@@ -25,41 +25,41 @@
 #define COW_DIM 32
 #define COW_ID 4
 #define FROG_ID 21
-#define FROG_DIM 32
+#define FROG_DIM 128
 #define GOAT_ID 20
-#define GOAT_DIM 32
+#define GOAT_DIM 64
 #define CHICK_ID 22
-#define CHICK_DIM 32
+#define CHICK_DIM 24
 #define ONE_ID 7
-#define ONE_DIM
+#define ONE_DIM 10
 #define TWO_ID 8
-#define TWO_DIM
+#define TWO_DIM 10
 #define THREE_ID 9
-#define THREE_DIM
+#define THREE_DIM 10
 #define FOUR_ID 10
-#define FOUR_DIM
+#define FOUR_DIM 10
 #define FIVE_ID 11
-#define FIVE_DIM
+#define FIVE_DIM 10
 #define SIX_ID 12
-#define SIX_DIM
+#define SIX_DIM 10
 #define SEVEN_ID 13
-#define SEVEN_DIM
+#define SEVEN_DIM 10
 #define EIGHT_ID 14
-#define EIGHT_DIM
+#define EIGHT_DIM 10
 #define NINE_ID 15
-#define NINE_DIM
+#define NINE_DIM 10
 #define ZERO_ID 6
-#define ZERO_DIM
+#define ZERO_DIM 10
 #define S_ID 23
-#define S_DIM
+#define S_DIM 10
 #define C_ID 24
-#define C_DIM
+#define C_DIM 10
 #define O_ID 25
-#define O_DIM
+#define O_DIM 10
 #define R_ID 26
-#define R_DIM
+#define R_DIM 10
 #define E_ID 27
-#define E_DIM
+#define E_DIM 10
 
 typedef struct {
 	unsigned int s; /* Sprite Number: Must be assigned in Game Logic. eg. Sprite1 == Player, etc.*/

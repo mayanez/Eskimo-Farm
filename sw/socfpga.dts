@@ -205,7 +205,7 @@
 
 			vga_led: vga_led@0 {
 				 compatible = "altr,vga_led";
-				 reg = <0x0 0x3f>;
+				 reg = <0x0 0x7f>;
 			};				 
 		};
 	};
