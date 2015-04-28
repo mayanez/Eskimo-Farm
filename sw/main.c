@@ -690,6 +690,13 @@ void enemy_ai() {
     
 }
 
+void game_over_ai() {
+
+    if (health <= 0) {
+        state = game_over;
+    }
+}
+
 int main() {
     
     int quit = 0;
@@ -726,9 +733,23 @@ int main() {
             draw_score();
             enemy_ai();
 			add_enemy();
+            game_over_ai();
             pthread_mutex_unlock(&lock);
             usleep(40000);
+        } else if (state == game_over) {
+            sprite_t game_over;
+
+            game_over.x = MAX_X /2;
+            game_over.y = MAX_Y /2;
+            game_over.id = TITLE_ID;
+            game_over.dim = TITLE_DIM;
+            game_over.s = -1;
+            pthread_mutex_lock(&lock);
+            draw_sprite(&game_over);
+            pthread_mutex_unlock(&lock);
+        
         }
+
 		ticks++;
     }
     

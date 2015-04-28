@@ -60,6 +60,8 @@
 #define R_DIM 10
 #define E_ID 27
 #define E_DIM 10
+#define TITLE_ID 17
+#define TITLE_DIM 128
 
 typedef struct {
 	unsigned int s; /* Sprite Number: Must be assigned in Game Logic. eg. Sprite1 == Player, etc.*/
