@@ -7,10 +7,13 @@ module Sprite_Controller(   input logic clk,
                             input logic reset,
                             input logic [31:0] sprite1, sprite2, sprite3, sprite4, sprite5, sprite6, sprite7, sprite8, sprite9, sprite10,
                                                sprite11, sprite12, sprite13, sprite14, sprite15, sprite16, sprite17, sprite18, sprite19, sprite20,
+                                               sprite21, sprite22, sprite23, sprite24, sprite25, sprite26, sprite27, sprite28, sprite29, sprite30,
                             input logic [9:0]  VGA_HCOUNT, VGA_VCOUNT,
-                            input logic [23:0] M_ship, M_pig, M_bee, M_cow, M_mcdonald, M_bullet, M_zero, M_one, M_two, M_three, M_four, M_five, M_six, M_seven, M_eight, M_nine, M_eskimo, M_cloud, M_title,
+                            input logic [23:0] M_ship, M_pig, M_bee, M_cow, M_mcdonald, M_bullet, M_zero, M_one, M_two, M_three, M_four, M_five, M_six, 
+                                               M_seven, M_eight, M_nine, M_eskimo, M_cloud, M_title, M_goat, M_frog, M_chick, M_s, M_c, M_o, M_r, M_e,
                             output logic [9:0] addr_ship, addr_pig, addr_bee, addr_cow, addr_bullet, addr_mcdonald, addr_zero, addr_one, addr_two,
-                                               addr_three, addr_four, addr_five, addr_six, addr_seven, addr_eight, addr_nine, addr_eskimo, addr_cloud, addr_title,
+                                               addr_three, addr_four, addr_five, addr_six, addr_seven, addr_eight, addr_nine, addr_eskimo, addr_cloud, 
+                                               addr_title, addr_goat, addr_frog, addr_chick, addr_s, addr_c, addr_o, addr_r, addr_e,
                             output logic [7:0] VGA_R, VGA_G, VGA_B);
 
 
@@ -20,12 +23,14 @@ module Sprite_Controller(   input logic clk,
     logic [9:0] addr_sprite1, addr_sprite2, addr_sprite3, addr_sprite4, addr_sprite5, addr_sprite6,
                 addr_sprite7, addr_sprite8, addr_sprite9, addr_sprite10, addr_sprite11, addr_sprite12,
                 addr_sprite13, addr_sprite14, addr_sprite15, addr_sprite16, addr_sprite17, addr_sprite18,
-                addr_sprite19, addr_sprite20;
+                addr_sprite19, addr_sprite20, addr_sprite21, addr_sprite22, addr_sprite23, addr_sprite24,
+                addr_sprite25, addr_sprite26, addr_sprite27, addr_sprite28, addr_sprite29, addr_sprite30;
                 
  
     logic buf_toggle, sprite1_on, sprite2_on, sprite3_on, sprite4_on, sprite5_on, sprite6_on, sprite7_on,
           sprite8_on, sprite9_on, sprite10_on, sprite11_on, sprite12_on, sprite13_on, sprite14_on, sprite15_on, sprite16_on,
-          sprite17_on, sprite18_on, sprite19_on, sprite20_on;
+          sprite17_on, sprite18_on, sprite19_on, sprite20_on, sprite21_on, sprite22_on, sprite23_on, sprite24_on, sprite25_on,
+          sprite26_on, sprite27_on, sprite28_on, sprite29_on, sprite30_on;
           
     logic [9:0] x11, y11, x12, y12, x21, y21, x22, y22, x31, y31, x32, y32,
                 x41, y41, x42, y42, x51, y51, x52, y52, x61, y61, x62, y62,
@@ -35,13 +40,19 @@ module Sprite_Controller(   input logic clk,
                 x14_1, y14_1, x14_2, y14_2, x15_1, y15_1, x15_2, y15_2,
                 x16_1, y16_1, x16_2, y16_2, x17_1, y17_1, x17_2, y17_2,
                 x18_1, y18_1, x18_2, y18_2, x19_1, y19_1, x19_2, y19_2,
-                x20_1, y20_1, x20_2, y20_2;
+                x20_1, y20_1, x20_2, y20_2, x21_1, y21_1, x21_2, y21_2,
+                x22_1, y22_1, x22_2, y22_2, x23_1, y23_1, x23_2, y23_2,
+                x24_1, y24_1, x24_2, y24_2, x25_1, y25_1, x25_2, y25_2,
+                x26_1, y26_1, x26_2, y26_2, x27_1, y27_1, x27_2, y27_2,
+                x28_1, y28_1, x28_2, y28_2, x29_1, y29_1, x29_2, y29_2,
+                x30_1, y30_1, x30_2, y30_2;
 
     logic [6:0] dim1, dim2, dim3, dim4, dim5, dim6, dim7, dim8, dim9, dim10, dim11, dim12, dim13, dim14,
-                dim15, dim16, dim17, dim18, dim19, dim20;
+                dim15, dim16, dim17, dim18, dim19, dim20, dim21, dim22, dim23, dim24, dim25, dim26,
+                dim27, dim28, dim29, dim30;
 
     logic [4:0] id1, id2, id3, id4, id5, id6, id7, id8, id9, id10, id11, id12, id13, id14, id15, id16, id17,
-                id18, id19, id20;
+                id18, id19, id20, id21, id22, id23, id24, id25, id26, id27, id28, id29, id30;
  
     /* Decode inputs */
     assign dim1 = sprite1[31:25];
@@ -103,7 +114,7 @@ module Sprite_Controller(   input logic clk,
     assign dim9 = sprite9[31:25];
     assign id9 = sprite9[24:20];
     assign x91 = sprite9[9:0];
-    assign y91 = sprite9[19:0];
+    assign y91 = sprite9[19:10];
     assign x92 = x91 + dim9 - 1;
     assign y92 = y91 + dim9 - 1;
 
@@ -183,6 +194,76 @@ module Sprite_Controller(   input logic clk,
     assign y20_1 = sprite20[19:10];
     assign x20_2 = x20_1 + dim20 - 1;
     assign y20_2 = y20_1 + dim20 - 1;
+    
+    assign dim21 = sprite21[31:25];
+    assign id21 = sprite21[24:20];
+    assign x21_1 = sprite21[9:0];
+    assign y21_1 = sprite21[19:10];
+    assign x21_2 = x21_1 + dim21 - 1;
+    assign y21_2 = y21_1 + dim21 - 1;
+    
+    assign dim22 = sprite22[31:25];
+    assign id22 = sprite22[24:20];
+    assign x22_1 = sprite22[9:0];
+    assign y22_1 = sprite22[19:10];
+    assign x22_2 = x22_1 + dim22 - 1;
+    assign y22_2 = y22_1 + dim22 - 1;
+    
+    assign dim23 = sprite23[31:25];
+    assign id23 = sprite23[24:20];
+    assign x23_1 = sprite23[9:0];
+    assign y23_1 = sprite23[19:10];
+    assign x23_2 = x23_1 + dim23 - 1;
+    assign y23_2 = y23_1 + dim23 - 1;
+    
+    assign dim24 = sprite24[31:25];
+    assign id24 = sprite24[24:20];
+    assign x24_1 = sprite24[9:0];
+    assign y24_1 = sprite24[19:10];
+    assign x24_2 = x24_1 + dim24 - 1;
+    assign y24_2 = y24_1 + dim24 - 1;
+    
+    assign dim25 = sprite25[31:25];
+    assign id25 = sprite25[24:20];
+    assign x25_1 = sprite25[9:0];
+    assign y25_1 = sprite25[19:10];
+    assign x25_2 = x25_1 + dim25 - 1;
+    assign y25_2 = y25_1 + dim25 - 1;
+    
+    assign dim26 = sprite26[31:25];
+    assign id26 = sprite26[24:20];
+    assign x26_1 = sprite26[9:0];
+    assign y26_1 = sprite26[19:10];
+    assign x26_2 = x26_1 + dim26 - 1;
+    assign y26_2 = y26_1 + dim26 - 1;
+    
+    assign dim27 = sprite27[31:25];
+    assign id27 = sprite27[24:20];
+    assign x27_1 = sprite27[9:0];
+    assign y27_1 = sprite27[19:10];
+    assign x27_2 = x27_1 + dim27 - 1;
+    assign y27_2 = y27_1 + dim27 - 1;
+    
+    assign dim28 = sprite28[31:25];
+    assign id28 = sprite28[24:20];
+    assign x28_1 = sprite28[9:0];
+    assign y28_1 = sprite28[19:10];
+    assign x28_2 = x28_1 + dim28 - 1;
+    assign y28_2 = y28_1 + dim28 - 1;
+    
+    assign dim29 = sprite29[31:25];
+    assign id29 = sprite29[24:20];
+    assign x29_1 = sprite29[9:0];
+    assign y29_1 = sprite29[19:10];
+    assign x29_2 = x29_1 + dim29 - 1;
+    assign y29_2 = y29_1 + dim29 - 1;
+    
+    assign dim30 = sprite30[31:25];
+    assign id30 = sprite30[24:20];
+    assign x30_1 = sprite30[9:0];
+    assign y30_1 = sprite30[19:10];
+    assign x30_2 = x30_1 + dim30 - 1;
+    assign y30_2 = y30_1 + dim30 - 1;
     /* END */
  
     /* Verify if sprite is in region */
@@ -206,6 +287,16 @@ module Sprite_Controller(   input logic clk,
     assign sprite18_on = (sprite18 > 0) ? VGA_VCOUNT >= y18_1 && VGA_VCOUNT <= y18_2 && VGA_HCOUNT >= x18_1 && VGA_HCOUNT <= x18_2 : 0;
     assign sprite19_on = (sprite19 > 0) ? VGA_VCOUNT >= y19_1 && VGA_VCOUNT <= y19_2 && VGA_HCOUNT >= x19_1 && VGA_HCOUNT <= x19_2 : 0;
     assign sprite20_on = (sprite20 > 0) ? VGA_VCOUNT >= y20_1 && VGA_VCOUNT <= y20_2 && VGA_HCOUNT >= x20_1 && VGA_HCOUNT <= x20_2 : 0;
+    assign sprite21_on = (sprite21 > 0) ? VGA_VCOUNT >= y21_1 && VGA_VCOUNT <= y21_2 && VGA_HCOUNT >= x21_1 && VGA_HCOUNT <= x21_2 : 0;
+    assign sprite22_on = (sprite22 > 0) ? VGA_VCOUNT >= y22_1 && VGA_VCOUNT <= y22_2 && VGA_HCOUNT >= x22_1 && VGA_HCOUNT <= x22_2 : 0;
+    assign sprite23_on = (sprite23 > 0) ? VGA_VCOUNT >= y23_1 && VGA_VCOUNT <= y23_2 && VGA_HCOUNT >= x23_1 && VGA_HCOUNT <= x23_2 : 0;
+    assign sprite24_on = (sprite24 > 0) ? VGA_VCOUNT >= y24_1 && VGA_VCOUNT <= y24_2 && VGA_HCOUNT >= x24_1 && VGA_HCOUNT <= x24_2 : 0;
+    assign sprite25_on = (sprite25 > 0) ? VGA_VCOUNT >= y25_1 && VGA_VCOUNT <= y25_2 && VGA_HCOUNT >= x25_1 && VGA_HCOUNT <= x25_2 : 0;
+    assign sprite26_on = (sprite26 > 0) ? VGA_VCOUNT >= y26_1 && VGA_VCOUNT <= y26_2 && VGA_HCOUNT >= x26_1 && VGA_HCOUNT <= x26_2 : 0;
+    assign sprite27_on = (sprite27 > 0) ? VGA_VCOUNT >= y27_1 && VGA_VCOUNT <= y27_2 && VGA_HCOUNT >= x27_1 && VGA_HCOUNT <= x27_2 : 0;
+    assign sprite28_on = (sprite28 > 0) ? VGA_VCOUNT >= y28_1 && VGA_VCOUNT <= y28_2 && VGA_HCOUNT >= x28_1 && VGA_HCOUNT <= x28_2 : 0;
+    assign sprite29_on = (sprite29 > 0) ? VGA_VCOUNT >= y29_1 && VGA_VCOUNT <= y29_2 && VGA_HCOUNT >= x29_1 && VGA_HCOUNT <= x29_2 : 0;
+    assign sprite30_on = (sprite30 > 0) ? VGA_VCOUNT >= y30_1 && VGA_VCOUNT <= y30_2 && VGA_HCOUNT >= x30_1 && VGA_HCOUNT <= x30_2 : 0;
     /* END */
  
     /* Calculate address offset for sprite */
@@ -229,6 +320,16 @@ module Sprite_Controller(   input logic clk,
     assign addr_sprite18 = (VGA_HCOUNT - x18_1) + ((VGA_VCOUNT + 1 - y18_1)*dim18);
     assign addr_sprite19 = (VGA_HCOUNT - x19_1) + ((VGA_VCOUNT + 1 - y19_1)*dim19);
     assign addr_sprite20 = (VGA_HCOUNT - x20_1) + ((VGA_VCOUNT + 1 - y20_1)*dim20);
+    assign addr_sprite21 = (VGA_HCOUNT - x21_1) + ((VGA_VCOUNT + 1 - y21_1)*dim21);
+    assign addr_sprite22 = (VGA_HCOUNT - x22_1) + ((VGA_VCOUNT + 1 - y22_1)*dim22);
+    assign addr_sprite23 = (VGA_HCOUNT - x23_1) + ((VGA_VCOUNT + 1 - y23_1)*dim23);
+    assign addr_sprite24 = (VGA_HCOUNT - x24_1) + ((VGA_VCOUNT + 1 - y24_1)*dim24);
+    assign addr_sprite25 = (VGA_HCOUNT - x25_1) + ((VGA_VCOUNT + 1 - y25_1)*dim25);
+    assign addr_sprite26 = (VGA_HCOUNT - x26_1) + ((VGA_VCOUNT + 1 - y26_1)*dim26);
+    assign addr_sprite27 = (VGA_HCOUNT - x27_1) + ((VGA_VCOUNT + 1 - y27_1)*dim27);
+    assign addr_sprite28 = (VGA_HCOUNT - x28_1) + ((VGA_VCOUNT + 1 - y28_1)*dim28);
+    assign addr_sprite29 = (VGA_HCOUNT - x29_1) + ((VGA_VCOUNT + 1 - y29_1)*dim29);
+    assign addr_sprite30 = (VGA_HCOUNT - x30_1) + ((VGA_VCOUNT + 1 - y30_1)*dim30);
     /* END */
  
 
@@ -252,7 +353,17 @@ module Sprite_Controller(   input logic clk,
                           (sprite17_on && id17 == 1) ? addr_sprite17 :
                           (sprite18_on && id18 == 1) ? addr_sprite18 :
                           (sprite19_on && id19 == 1) ? addr_sprite19 :
-                          (sprite20_on && id20 == 1) ? addr_sprite20 : 0;
+                          (sprite20_on && id20 == 1) ? addr_sprite20 :
+                          (sprite21_on && id21 == 1) ? addr_sprite21 :
+                          (sprite22_on && id22 == 1) ? addr_sprite22 :
+                          (sprite23_on && id23 == 1) ? addr_sprite23 :
+                          (sprite24_on && id24 == 1) ? addr_sprite24 :
+                          (sprite25_on && id25 == 1) ? addr_sprite25 :
+                          (sprite26_on && id26 == 1) ? addr_sprite26 :
+                          (sprite27_on && id27 == 1) ? addr_sprite27 :
+                          (sprite28_on && id28 == 1) ? addr_sprite28 :
+                          (sprite29_on && id29 == 1) ? addr_sprite29 :
+                          (sprite30_on && id30 == 1) ? addr_sprite30 : 0;
                           
     assign addr_pig     = (sprite1_on && id1 == 5'd2) ? addr_sprite1 : 
                           (sprite2_on && id2 == 5'd2) ? addr_sprite2 : 
@@ -273,7 +384,17 @@ module Sprite_Controller(   input logic clk,
                           (sprite17_on && id17 == 5'd2) ? addr_sprite17 :
                           (sprite18_on && id18 == 5'd2) ? addr_sprite18 :
                           (sprite19_on && id19 == 5'd2) ? addr_sprite19 :
-                          (sprite20_on && id20 == 5'd2) ? addr_sprite20 : 0;
+                          (sprite20_on && id20 == 5'd2) ? addr_sprite20 :
+                          (sprite21_on && id21 == 5'd2) ? addr_sprite21 :
+                          (sprite22_on && id22 == 5'd2) ? addr_sprite22 :
+                          (sprite23_on && id23 == 5'd2) ? addr_sprite23 :
+                          (sprite24_on && id24 == 5'd2) ? addr_sprite24 :
+                          (sprite25_on && id25 == 5'd2) ? addr_sprite25 :
+                          (sprite26_on && id26 == 5'd2) ? addr_sprite26 :
+                          (sprite27_on && id27 == 5'd2) ? addr_sprite27 :
+                          (sprite28_on && id28 == 5'd2) ? addr_sprite28 :
+                          (sprite29_on && id29 == 5'd2) ? addr_sprite29 :
+                          (sprite30_on && id30 == 5'd2) ? addr_sprite30 : 0;
                           
     assign addr_bee     = (sprite1_on && id1 == 5'd3) ? addr_sprite1 : 
                           (sprite2_on && id2 == 5'd3) ? addr_sprite2 : 
@@ -294,7 +415,17 @@ module Sprite_Controller(   input logic clk,
                           (sprite17_on && id17 == 5'd3) ? addr_sprite17 :
                           (sprite18_on && id18 == 5'd3) ? addr_sprite18 :
                           (sprite19_on && id19 == 5'd3) ? addr_sprite19 :
-                          (sprite20_on && id20 == 5'd3) ? addr_sprite20 : 0;
+                          (sprite20_on && id20 == 5'd3) ? addr_sprite20 :
+                          (sprite21_on && id21 == 5'd3) ? addr_sprite21 :
+                          (sprite22_on && id22 == 5'd3) ? addr_sprite22 :
+                          (sprite23_on && id23 == 5'd3) ? addr_sprite23 :
+                          (sprite24_on && id24 == 5'd3) ? addr_sprite24 :
+                          (sprite25_on && id25 == 5'd3) ? addr_sprite25 :
+                          (sprite26_on && id26 == 5'd3) ? addr_sprite26 :
+                          (sprite27_on && id27 == 5'd3) ? addr_sprite27 :
+                          (sprite28_on && id28 == 5'd3) ? addr_sprite28 :
+                          (sprite29_on && id29 == 5'd3) ? addr_sprite29 :
+                          (sprite30_on && id30 == 5'd3) ? addr_sprite30 : 0;
     
     assign addr_cow     = (sprite1_on && id1 == 5'd4) ? addr_sprite1 : 
                           (sprite2_on && id2 == 5'd4) ? addr_sprite2 : 
@@ -315,7 +446,17 @@ module Sprite_Controller(   input logic clk,
                           (sprite17_on && id17 == 5'd4) ? addr_sprite17 :
                           (sprite18_on && id18 == 5'd4) ? addr_sprite18 :
                           (sprite19_on && id19 == 5'd4) ? addr_sprite19 :
-                          (sprite20_on && id20 == 5'd4) ? addr_sprite20 : 0;
+                          (sprite20_on && id20 == 5'd4) ? addr_sprite20 :
+                          (sprite21_on && id21 == 5'd4) ? addr_sprite21 :
+                          (sprite22_on && id22 == 5'd4) ? addr_sprite22 :
+                          (sprite23_on && id23 == 5'd4) ? addr_sprite23 :
+                          (sprite24_on && id24 == 5'd4) ? addr_sprite24 :
+                          (sprite25_on && id25 == 5'd4) ? addr_sprite25 :
+                          (sprite26_on && id26 == 5'd4) ? addr_sprite26 :
+                          (sprite27_on && id27 == 5'd4) ? addr_sprite27 :
+                          (sprite28_on && id28 == 5'd4) ? addr_sprite28 :
+                          (sprite29_on && id29 == 5'd4) ? addr_sprite29 :
+                          (sprite30_on && id30 == 5'd4) ? addr_sprite30 : 0;
     
     assign addr_bullet  = (sprite1_on && id1 == 5'd5) ? addr_sprite1 : 
                           (sprite2_on && id2 == 5'd5) ? addr_sprite2 : 
@@ -336,7 +477,17 @@ module Sprite_Controller(   input logic clk,
                           (sprite17_on && id17 == 5'd5) ? addr_sprite17 :
                           (sprite18_on && id18 == 5'd5) ? addr_sprite18 :
                           (sprite19_on && id19 == 5'd5) ? addr_sprite19 :
-                          (sprite20_on && id20 == 5'd5) ? addr_sprite20 : 0;
+                          (sprite20_on && id20 == 5'd5) ? addr_sprite20 :
+                          (sprite21_on && id21 == 5'd5) ? addr_sprite21 :
+                          (sprite22_on && id22 == 5'd5) ? addr_sprite22 :
+                          (sprite23_on && id23 == 5'd5) ? addr_sprite23 :
+                          (sprite24_on && id24 == 5'd5) ? addr_sprite24 :
+                          (sprite25_on && id25 == 5'd5) ? addr_sprite25 :
+                          (sprite26_on && id26 == 5'd5) ? addr_sprite26 :
+                          (sprite27_on && id27 == 5'd5) ? addr_sprite27 :
+                          (sprite28_on && id28 == 5'd5) ? addr_sprite28 :
+                          (sprite29_on && id29 == 5'd5) ? addr_sprite29 :
+                          (sprite30_on && id30 == 5'd5) ? addr_sprite30 : 0;
                           
     assign addr_zero    = (sprite1_on && id1 == 5'd6) ? addr_sprite1 : 
                           (sprite2_on && id2 == 5'd6) ? addr_sprite2 : 
@@ -357,7 +508,17 @@ module Sprite_Controller(   input logic clk,
                           (sprite17_on && id17 == 5'd6) ? addr_sprite17 :
                           (sprite18_on && id18 == 5'd6) ? addr_sprite18 :
                           (sprite19_on && id19 == 5'd6) ? addr_sprite19 :
-                          (sprite20_on && id20 == 5'd6) ? addr_sprite20 : 0;
+                          (sprite20_on && id20 == 5'd6) ? addr_sprite20 :
+                          (sprite21_on && id21 == 5'd6) ? addr_sprite21 :
+                          (sprite22_on && id22 == 5'd6) ? addr_sprite22 :
+                          (sprite23_on && id23 == 5'd6) ? addr_sprite23 :
+                          (sprite24_on && id24 == 5'd6) ? addr_sprite24 :
+                          (sprite25_on && id25 == 5'd6) ? addr_sprite25 :
+                          (sprite26_on && id26 == 5'd6) ? addr_sprite26 :
+                          (sprite27_on && id27 == 5'd6) ? addr_sprite27 :
+                          (sprite28_on && id28 == 5'd6) ? addr_sprite28 :
+                          (sprite29_on && id29 == 5'd6) ? addr_sprite29 :
+                          (sprite30_on && id30 == 5'd6) ? addr_sprite30 : 0;
                           
     assign addr_one     = (sprite1_on && id1 == 5'd7) ? addr_sprite1 : 
                           (sprite2_on && id2 == 5'd7) ? addr_sprite2 : 
@@ -378,7 +539,17 @@ module Sprite_Controller(   input logic clk,
                           (sprite17_on && id17 == 5'd7) ? addr_sprite17 :
                           (sprite18_on && id18 == 5'd7) ? addr_sprite18 :
                           (sprite19_on && id19 == 5'd7) ? addr_sprite19 :
-                          (sprite20_on && id20 == 5'd7) ? addr_sprite20 : 0;
+                          (sprite20_on && id20 == 5'd7) ? addr_sprite20 :
+                          (sprite21_on && id21 == 5'd7) ? addr_sprite21 :
+                          (sprite22_on && id22 == 5'd7) ? addr_sprite22 :
+                          (sprite23_on && id23 == 5'd7) ? addr_sprite23 :
+                          (sprite24_on && id24 == 5'd7) ? addr_sprite24 :
+                          (sprite25_on && id25 == 5'd7) ? addr_sprite25 :
+                          (sprite26_on && id26 == 5'd7) ? addr_sprite26 :
+                          (sprite27_on && id27 == 5'd7) ? addr_sprite27 :
+                          (sprite28_on && id28 == 5'd7) ? addr_sprite28 :
+                          (sprite29_on && id29 == 5'd7) ? addr_sprite29 :
+                          (sprite30_on && id30 == 5'd7) ? addr_sprite30 : 0;
     
     assign addr_two     = (sprite1_on && id1 == 5'd8) ? addr_sprite1 : 
                           (sprite2_on && id2 == 5'd8) ? addr_sprite2 : 
@@ -399,7 +570,17 @@ module Sprite_Controller(   input logic clk,
                           (sprite17_on && id17 == 5'd8) ? addr_sprite17 :
                           (sprite18_on && id18 == 5'd8) ? addr_sprite18 :
                           (sprite19_on && id19 == 5'd8) ? addr_sprite19 :
-                          (sprite20_on && id20 == 5'd8) ? addr_sprite20 : 0;
+                          (sprite20_on && id20 == 5'd8) ? addr_sprite20 :
+                          (sprite21_on && id21 == 5'd8) ? addr_sprite21 :
+                          (sprite22_on && id22 == 5'd8) ? addr_sprite22 :
+                          (sprite23_on && id23 == 5'd8) ? addr_sprite23 :
+                          (sprite24_on && id24 == 5'd8) ? addr_sprite24 :
+                          (sprite25_on && id25 == 5'd8) ? addr_sprite25 :
+                          (sprite26_on && id26 == 5'd8) ? addr_sprite26 :
+                          (sprite27_on && id27 == 5'd8) ? addr_sprite27 :
+                          (sprite28_on && id28 == 5'd8) ? addr_sprite28 :
+                          (sprite29_on && id29 == 5'd8) ? addr_sprite29 :
+                          (sprite30_on && id30 == 5'd8) ? addr_sprite30 : 0;
                           
     assign addr_three   = (sprite1_on && id1 == 5'd9) ? addr_sprite1 : 
                           (sprite2_on && id2 == 5'd9) ? addr_sprite2 : 
@@ -420,7 +601,17 @@ module Sprite_Controller(   input logic clk,
                           (sprite17_on && id17 == 5'd9) ? addr_sprite17 :
                           (sprite18_on && id18 == 5'd9) ? addr_sprite18 :
                           (sprite19_on && id19 == 5'd9) ? addr_sprite19 :
-                          (sprite20_on && id20 == 5'd9) ? addr_sprite20 : 0;
+                          (sprite20_on && id20 == 5'd9) ? addr_sprite20 :
+                          (sprite21_on && id21 == 5'd9) ? addr_sprite21 :
+                          (sprite22_on && id22 == 5'd9) ? addr_sprite22 :
+                          (sprite23_on && id23 == 5'd9) ? addr_sprite23 :
+                          (sprite24_on && id24 == 5'd9) ? addr_sprite24 :
+                          (sprite25_on && id25 == 5'd9) ? addr_sprite25 :
+                          (sprite26_on && id26 == 5'd9) ? addr_sprite26 :
+                          (sprite27_on && id27 == 5'd9) ? addr_sprite27 :
+                          (sprite28_on && id28 == 5'd9) ? addr_sprite28 :
+                          (sprite29_on && id29 == 5'd9) ? addr_sprite29 :
+                          (sprite30_on && id30 == 5'd9) ? addr_sprite30 : 0;
                           
     assign addr_four    = (sprite1_on && id1 == 5'd10) ? addr_sprite1 : 
                           (sprite2_on && id2 == 5'd10) ? addr_sprite2 : 
@@ -441,7 +632,17 @@ module Sprite_Controller(   input logic clk,
                           (sprite17_on && id17 == 5'd10) ? addr_sprite17 :
                           (sprite18_on && id18 == 5'd10) ? addr_sprite18 :
                           (sprite19_on && id19 == 5'd10) ? addr_sprite19 :
-                          (sprite20_on && id20 == 5'd10) ? addr_sprite20 : 0;
+                          (sprite20_on && id20 == 5'd10) ? addr_sprite20 :
+                          (sprite21_on && id21 == 5'd10) ? addr_sprite21 :
+                          (sprite22_on && id22 == 5'd10) ? addr_sprite22 :
+                          (sprite23_on && id23 == 5'd10) ? addr_sprite23 :
+                          (sprite24_on && id24 == 5'd10) ? addr_sprite24 :
+                          (sprite25_on && id25 == 5'd10) ? addr_sprite25 :
+                          (sprite26_on && id26 == 5'd10) ? addr_sprite26 :
+                          (sprite27_on && id27 == 5'd10) ? addr_sprite27 :
+                          (sprite28_on && id28 == 5'd10) ? addr_sprite28 :
+                          (sprite29_on && id29 == 5'd10) ? addr_sprite29 :
+                          (sprite30_on && id30 == 5'd10) ? addr_sprite30 : 0;
                           
     assign addr_five    = (sprite1_on && id1 == 5'd11) ? addr_sprite1 : 
                           (sprite2_on && id2 == 5'd11) ? addr_sprite2 : 
@@ -462,7 +663,17 @@ module Sprite_Controller(   input logic clk,
                           (sprite17_on && id17 == 5'd11) ? addr_sprite17 :
                           (sprite18_on && id18 == 5'd11) ? addr_sprite18 :
                           (sprite19_on && id19 == 5'd11) ? addr_sprite19 :
-                          (sprite20_on && id20 == 5'd11) ? addr_sprite20 : 0;
+                          (sprite20_on && id20 == 5'd11) ? addr_sprite20 :
+                          (sprite21_on && id21 == 5'd11) ? addr_sprite21 :
+                          (sprite22_on && id22 == 5'd11) ? addr_sprite22 :
+                          (sprite23_on && id23 == 5'd11) ? addr_sprite23 :
+                          (sprite24_on && id24 == 5'd11) ? addr_sprite24 :
+                          (sprite25_on && id25 == 5'd11) ? addr_sprite25 :
+                          (sprite26_on && id26 == 5'd11) ? addr_sprite26 :
+                          (sprite27_on && id27 == 5'd11) ? addr_sprite27 :
+                          (sprite28_on && id28 == 5'd11) ? addr_sprite28 :
+                          (sprite29_on && id29 == 5'd11) ? addr_sprite29 :
+                          (sprite30_on && id30 == 5'd11) ? addr_sprite30 : 0;
                           
     assign addr_six     = (sprite1_on && id1 == 5'd12) ? addr_sprite1 : 
                           (sprite2_on && id2 == 5'd12) ? addr_sprite2 : 
@@ -483,7 +694,17 @@ module Sprite_Controller(   input logic clk,
                           (sprite17_on && id17 == 5'd12) ? addr_sprite17 :
                           (sprite18_on && id18 == 5'd12) ? addr_sprite18 :
                           (sprite19_on && id19 == 5'd12) ? addr_sprite19 :
-                          (sprite20_on && id20 == 5'd12) ? addr_sprite20 : 0;
+                          (sprite20_on && id20 == 5'd12) ? addr_sprite20 :
+                          (sprite21_on && id21 == 5'd12) ? addr_sprite21 :
+                          (sprite22_on && id22 == 5'd12) ? addr_sprite22 :
+                          (sprite23_on && id23 == 5'd12) ? addr_sprite23 :
+                          (sprite24_on && id24 == 5'd12) ? addr_sprite24 :
+                          (sprite25_on && id25 == 5'd12) ? addr_sprite25 :
+                          (sprite26_on && id26 == 5'd12) ? addr_sprite26 :
+                          (sprite27_on && id27 == 5'd12) ? addr_sprite27 :
+                          (sprite28_on && id28 == 5'd12) ? addr_sprite28 :
+                          (sprite29_on && id29 == 5'd12) ? addr_sprite29 :
+                          (sprite30_on && id30 == 5'd12) ? addr_sprite30 : 0;
                           
     assign addr_seven   = (sprite1_on && id1 == 5'd13) ? addr_sprite1 : 
                           (sprite2_on && id2 == 5'd13) ? addr_sprite2 : 
@@ -504,7 +725,17 @@ module Sprite_Controller(   input logic clk,
                           (sprite17_on && id17 == 5'd13) ? addr_sprite17 :
                           (sprite18_on && id18 == 5'd13) ? addr_sprite18 :
                           (sprite19_on && id19 == 5'd13) ? addr_sprite19 :
-                          (sprite20_on && id20 == 5'd13) ? addr_sprite20 : 0;
+                          (sprite20_on && id20 == 5'd13) ? addr_sprite20 :
+                          (sprite21_on && id21 == 5'd13) ? addr_sprite21 :
+                          (sprite22_on && id22 == 5'd13) ? addr_sprite22 :
+                          (sprite23_on && id23 == 5'd13) ? addr_sprite23 :
+                          (sprite24_on && id24 == 5'd13) ? addr_sprite24 :
+                          (sprite25_on && id25 == 5'd13) ? addr_sprite25 :
+                          (sprite26_on && id26 == 5'd13) ? addr_sprite26 :
+                          (sprite27_on && id27 == 5'd13) ? addr_sprite27 :
+                          (sprite28_on && id28 == 5'd13) ? addr_sprite28 :
+                          (sprite29_on && id29 == 5'd13) ? addr_sprite29 :
+                          (sprite30_on && id30 == 5'd13) ? addr_sprite30 : 0;
                           
     assign addr_eight   = (sprite1_on && id1 == 5'd14) ? addr_sprite1 : 
                           (sprite2_on && id2 == 5'd14) ? addr_sprite2 : 
@@ -525,7 +756,17 @@ module Sprite_Controller(   input logic clk,
                           (sprite17_on && id17 == 5'd14) ? addr_sprite17 :
                           (sprite18_on && id18 == 5'd14) ? addr_sprite18 :
                           (sprite19_on && id19 == 5'd14) ? addr_sprite19 :
-                          (sprite20_on && id20 == 5'd14) ? addr_sprite20 : 0;
+                          (sprite20_on && id20 == 5'd14) ? addr_sprite20 :
+                          (sprite21_on && id21 == 5'd14) ? addr_sprite21 :
+                          (sprite22_on && id22 == 5'd14) ? addr_sprite22 :
+                          (sprite23_on && id23 == 5'd14) ? addr_sprite23 :
+                          (sprite24_on && id24 == 5'd14) ? addr_sprite24 :
+                          (sprite25_on && id25 == 5'd14) ? addr_sprite25 :
+                          (sprite26_on && id26 == 5'd14) ? addr_sprite26 :
+                          (sprite27_on && id27 == 5'd14) ? addr_sprite27 :
+                          (sprite28_on && id28 == 5'd14) ? addr_sprite28 :
+                          (sprite29_on && id29 == 5'd14) ? addr_sprite29 :
+                          (sprite30_on && id30 == 5'd14) ? addr_sprite30 : 0;
                           
     assign addr_nine    = (sprite1_on && id1 == 5'd15) ? addr_sprite1 : 
                           (sprite2_on && id2 == 5'd15) ? addr_sprite2 : 
@@ -546,7 +787,17 @@ module Sprite_Controller(   input logic clk,
                           (sprite17_on && id17 == 5'd15) ? addr_sprite17 :
                           (sprite18_on && id18 == 5'd15) ? addr_sprite18 :
                           (sprite19_on && id19 == 5'd15) ? addr_sprite19 :
-                          (sprite20_on && id20 == 5'd15) ? addr_sprite20 : 0;
+                          (sprite20_on && id20 == 5'd15) ? addr_sprite20 :
+                          (sprite21_on && id21 == 5'd15) ? addr_sprite21 :
+                          (sprite22_on && id22 == 5'd15) ? addr_sprite22 :
+                          (sprite23_on && id23 == 5'd15) ? addr_sprite23 :
+                          (sprite24_on && id24 == 5'd15) ? addr_sprite24 :
+                          (sprite25_on && id25 == 5'd15) ? addr_sprite25 :
+                          (sprite26_on && id26 == 5'd15) ? addr_sprite26 :
+                          (sprite27_on && id27 == 5'd15) ? addr_sprite27 :
+                          (sprite28_on && id28 == 5'd15) ? addr_sprite28 :
+                          (sprite29_on && id29 == 5'd15) ? addr_sprite29 :
+                          (sprite30_on && id30 == 5'd15) ? addr_sprite30 : 0;
                           
     assign addr_mcdonald= (sprite1_on && id1 == 5'd16) ? addr_sprite1 : 
                           (sprite2_on && id2 == 5'd16) ? addr_sprite2 : 
@@ -567,7 +818,17 @@ module Sprite_Controller(   input logic clk,
                           (sprite17_on && id17 == 5'd16) ? addr_sprite17 :
                           (sprite18_on && id18 == 5'd16) ? addr_sprite18 :
                           (sprite19_on && id19 == 5'd16) ? addr_sprite19 :
-                          (sprite20_on && id20 == 5'd16) ? addr_sprite20 : 0;
+                          (sprite20_on && id20 == 5'd16) ? addr_sprite20 :
+                          (sprite21_on && id21 == 5'd16) ? addr_sprite21 :
+                          (sprite22_on && id22 == 5'd16) ? addr_sprite22 :
+                          (sprite23_on && id23 == 5'd16) ? addr_sprite23 :
+                          (sprite24_on && id24 == 5'd16) ? addr_sprite24 :
+                          (sprite25_on && id25 == 5'd16) ? addr_sprite25 :
+                          (sprite26_on && id26 == 5'd16) ? addr_sprite26 :
+                          (sprite27_on && id27 == 5'd16) ? addr_sprite27 :
+                          (sprite28_on && id28 == 5'd16) ? addr_sprite28 :
+                          (sprite29_on && id29 == 5'd16) ? addr_sprite29 :
+                          (sprite30_on && id30 == 5'd16) ? addr_sprite30 : 0;
 
     assign addr_title =   (sprite1_on && id1 == 5'd17) ? addr_sprite1 : 
                           (sprite2_on && id2 == 5'd17) ? addr_sprite2 : 
@@ -588,7 +849,17 @@ module Sprite_Controller(   input logic clk,
                           (sprite17_on && id17 == 5'd17) ? addr_sprite17 :
                           (sprite18_on && id18 == 5'd17) ? addr_sprite18 :
                           (sprite19_on && id19 == 5'd17) ? addr_sprite19 :
-                          (sprite20_on && id20 == 5'd17) ? addr_sprite20 : 0;
+                          (sprite20_on && id20 == 5'd17) ? addr_sprite20 :
+                          (sprite21_on && id21 == 5'd17) ? addr_sprite21 :
+                          (sprite22_on && id22 == 5'd17) ? addr_sprite22 :
+                          (sprite23_on && id23 == 5'd17) ? addr_sprite23 :
+                          (sprite24_on && id24 == 5'd17) ? addr_sprite24 :
+                          (sprite25_on && id25 == 5'd17) ? addr_sprite25 :
+                          (sprite26_on && id26 == 5'd17) ? addr_sprite26 :
+                          (sprite27_on && id27 == 5'd17) ? addr_sprite27 :
+                          (sprite28_on && id28 == 5'd17) ? addr_sprite28 :
+                          (sprite29_on && id29 == 5'd17) ? addr_sprite29 :
+                          (sprite30_on && id30 == 5'd17) ? addr_sprite30 : 0;
 
     assign addr_eskimo =  (sprite1_on && id1 == 5'd18) ? addr_sprite1 : 
                           (sprite2_on && id2 == 5'd18) ? addr_sprite2 : 
@@ -609,7 +880,17 @@ module Sprite_Controller(   input logic clk,
                           (sprite17_on && id17 == 5'd18) ? addr_sprite17 :
                           (sprite18_on && id18 == 5'd18) ? addr_sprite18 :
                           (sprite19_on && id19 == 5'd18) ? addr_sprite19 :
-                          (sprite20_on && id20 == 5'd18) ? addr_sprite20 : 0;
+                          (sprite20_on && id20 == 5'd18) ? addr_sprite20 :
+                          (sprite21_on && id21 == 5'd18) ? addr_sprite21 :
+                          (sprite22_on && id22 == 5'd18) ? addr_sprite22 :
+                          (sprite23_on && id23 == 5'd18) ? addr_sprite23 :
+                          (sprite24_on && id24 == 5'd18) ? addr_sprite24 :
+                          (sprite25_on && id25 == 5'd18) ? addr_sprite25 :
+                          (sprite26_on && id26 == 5'd18) ? addr_sprite26 :
+                          (sprite27_on && id27 == 5'd18) ? addr_sprite27 :
+                          (sprite28_on && id28 == 5'd18) ? addr_sprite28 :
+                          (sprite29_on && id29 == 5'd18) ? addr_sprite29 :
+                          (sprite30_on && id30 == 5'd18) ? addr_sprite30 : 0;
 
 
     assign addr_cloud  =  (sprite1_on && id1 == 5'd19) ? addr_sprite1 : 
@@ -631,13 +912,270 @@ module Sprite_Controller(   input logic clk,
                           (sprite17_on && id17 == 5'd19) ? addr_sprite17 :
                           (sprite18_on && id18 == 5'd19) ? addr_sprite18 :
                           (sprite19_on && id19 == 5'd19) ? addr_sprite19 :
-                          (sprite20_on && id20 == 5'd19) ? addr_sprite20 : 0;
+                          (sprite20_on && id20 == 5'd19) ? addr_sprite20 :
+                          (sprite21_on && id21 == 5'd19) ? addr_sprite21 :
+                          (sprite22_on && id22 == 5'd19) ? addr_sprite22 :
+                          (sprite23_on && id23 == 5'd19) ? addr_sprite23 :
+                          (sprite24_on && id24 == 5'd19) ? addr_sprite24 :
+                          (sprite25_on && id25 == 5'd19) ? addr_sprite25 :
+                          (sprite26_on && id26 == 5'd19) ? addr_sprite26 :
+                          (sprite27_on && id27 == 5'd19) ? addr_sprite27 :
+                          (sprite28_on && id28 == 5'd19) ? addr_sprite28 :
+                          (sprite29_on && id29 == 5'd19) ? addr_sprite29 :
+                          (sprite30_on && id30 == 5'd19) ? addr_sprite30 : 0;
+                          
+    assign addr_goat   =  (sprite1_on && id1 == 5'd20) ? addr_sprite1 :
+                          (sprite2_on && id2 == 5'd20) ? addr_sprite2 :
+                          (sprite3_on && id3 == 5'd20) ? addr_sprite3 :
+                          (sprite4_on && id4 == 5'd20) ? addr_sprite4 :
+                          (sprite5_on && id5 == 5'd20) ? addr_sprite5 :
+                          (sprite6_on && id6 == 5'd20) ? addr_sprite6 :
+                          (sprite7_on && id7 == 5'd20) ? addr_sprite7 :
+                          (sprite8_on && id8 == 5'd20) ? addr_sprite8 :
+                          (sprite9_on && id9 == 5'd20) ? addr_sprite9 :
+                          (sprite10_on && id10 == 5'd20) ? addr_sprite10 :
+                          (sprite11_on && id11 == 5'd20) ? addr_sprite11 :
+                          (sprite12_on && id12 == 5'd20) ? addr_sprite12 :
+                          (sprite13_on && id13 == 5'd20) ? addr_sprite13 :
+                          (sprite14_on && id14 == 5'd20) ? addr_sprite14 :
+                          (sprite15_on && id15 == 5'd20) ? addr_sprite15 :
+                          (sprite16_on && id16 == 5'd20) ? addr_sprite16 :
+                          (sprite17_on && id17 == 5'd20) ? addr_sprite17 :
+                          (sprite18_on && id18 == 5'd20) ? addr_sprite18 :
+                          (sprite19_on && id19 == 5'd20) ? addr_sprite19 :
+                          (sprite20_on && id20 == 5'd20) ? addr_sprite20 :
+                          (sprite21_on && id21 == 5'd20) ? addr_sprite21 :
+                          (sprite22_on && id22 == 5'd20) ? addr_sprite22 :
+                          (sprite23_on && id23 == 5'd20) ? addr_sprite23 :
+                          (sprite24_on && id24 == 5'd20) ? addr_sprite24 :
+                          (sprite25_on && id25 == 5'd20) ? addr_sprite25 :
+                          (sprite26_on && id26 == 5'd20) ? addr_sprite26 :
+                          (sprite27_on && id27 == 5'd20) ? addr_sprite27 :
+                          (sprite28_on && id28 == 5'd20) ? addr_sprite28 :
+                          (sprite29_on && id29 == 5'd20) ? addr_sprite29 :
+                          (sprite30_on && id30 == 5'd20) ? addr_sprite30 : 0;
+                          
+    assign addr_frog   =  (sprite1_on && id1 == 5'd21) ? addr_sprite1 :
+                            (sprite2_on && id2 == 5'd21) ? addr_sprite2 :
+                            (sprite3_on && id3 == 5'd21) ? addr_sprite3 :
+                            (sprite4_on && id4 == 5'd21) ? addr_sprite4 :
+                            (sprite5_on && id5 == 5'd21) ? addr_sprite5 :
+                            (sprite6_on && id6 == 5'd21) ? addr_sprite6 :
+                            (sprite7_on && id7 == 5'd21) ? addr_sprite7 :
+                            (sprite8_on && id8 == 5'd21) ? addr_sprite8 :
+                            (sprite9_on && id9 == 5'd21) ? addr_sprite9 :
+                            (sprite10_on && id10 == 5'd21) ? addr_sprite10 :
+                            (sprite11_on && id11 == 5'd21) ? addr_sprite11 :
+                            (sprite12_on && id12 == 5'd21) ? addr_sprite12 :
+                            (sprite13_on && id13 == 5'd21) ? addr_sprite13 :
+                            (sprite14_on && id14 == 5'd21) ? addr_sprite14 :
+                            (sprite15_on && id15 == 5'd21) ? addr_sprite15 :
+                            (sprite16_on && id16 == 5'd21) ? addr_sprite16 :
+                            (sprite17_on && id17 == 5'd21) ? addr_sprite17 :
+                            (sprite18_on && id18 == 5'd21) ? addr_sprite18 :
+                            (sprite19_on && id19 == 5'd21) ? addr_sprite19 :
+                            (sprite20_on && id20 == 5'd21) ? addr_sprite20 :
+                            (sprite21_on && id21 == 5'd21) ? addr_sprite21 :
+                            (sprite22_on && id22 == 5'd21) ? addr_sprite22 :
+                            (sprite23_on && id23 == 5'd21) ? addr_sprite23 :
+                            (sprite24_on && id24 == 5'd21) ? addr_sprite24 :
+                            (sprite25_on && id25 == 5'd21) ? addr_sprite25 :
+                            (sprite26_on && id26 == 5'd21) ? addr_sprite26 :
+                            (sprite27_on && id27 == 5'd21) ? addr_sprite27 :
+                            (sprite28_on && id28 == 5'd21) ? addr_sprite28 :
+                            (sprite29_on && id29 == 5'd21) ? addr_sprite29 :
+                            (sprite30_on && id30 == 5'd21) ? addr_sprite30 : 0;
+                            
+    assign addr_chick  =    (sprite1_on && id1 == 5'd22) ? addr_sprite1 :
+                            (sprite2_on && id2 == 5'd22) ? addr_sprite2 :
+                            (sprite3_on && id3 == 5'd22) ? addr_sprite3 :
+                            (sprite4_on && id4 == 5'd22) ? addr_sprite4 :
+                            (sprite5_on && id5 == 5'd22) ? addr_sprite5 :
+                            (sprite6_on && id6 == 5'd22) ? addr_sprite6 :
+                            (sprite7_on && id7 == 5'd22) ? addr_sprite7 :
+                            (sprite8_on && id8 == 5'd22) ? addr_sprite8 :
+                            (sprite9_on && id9 == 5'd22) ? addr_sprite9 :
+                            (sprite10_on && id10 == 5'd22) ? addr_sprite10 :
+                            (sprite11_on && id11 == 5'd22) ? addr_sprite11 :
+                            (sprite12_on && id12 == 5'd22) ? addr_sprite12 :
+                            (sprite13_on && id13 == 5'd22) ? addr_sprite13 :
+                            (sprite14_on && id14 == 5'd22) ? addr_sprite14 :
+                            (sprite15_on && id15 == 5'd22) ? addr_sprite15 :
+                            (sprite16_on && id16 == 5'd22) ? addr_sprite16 :
+                            (sprite17_on && id17 == 5'd22) ? addr_sprite17 :
+                            (sprite18_on && id18 == 5'd22) ? addr_sprite18 :
+                            (sprite19_on && id19 == 5'd22) ? addr_sprite19 :
+                            (sprite20_on && id20 == 5'd22) ? addr_sprite20 :
+                            (sprite21_on && id21 == 5'd22) ? addr_sprite21 :
+                            (sprite22_on && id22 == 5'd22) ? addr_sprite22 :
+                            (sprite23_on && id23 == 5'd22) ? addr_sprite23 :
+                            (sprite24_on && id24 == 5'd22) ? addr_sprite24 :
+                            (sprite25_on && id25 == 5'd22) ? addr_sprite25 :
+                            (sprite26_on && id26 == 5'd22) ? addr_sprite26 :
+                            (sprite27_on && id27 == 5'd22) ? addr_sprite27 :
+                            (sprite28_on && id28 == 5'd22) ? addr_sprite28 :
+                            (sprite29_on && id29 == 5'd22) ? addr_sprite29 :
+                            (sprite30_on && id30 == 5'd22) ? addr_sprite30 : 0;
+                            
+    assign addr_s      =    (sprite1_on && id1 == 5'd23) ? addr_sprite1 :
+                            (sprite2_on && id2 == 5'd23) ? addr_sprite2 :
+                            (sprite3_on && id3 == 5'd23) ? addr_sprite3 :
+                            (sprite4_on && id4 == 5'd23) ? addr_sprite4 :
+                            (sprite5_on && id5 == 5'd23) ? addr_sprite5 :
+                            (sprite6_on && id6 == 5'd23) ? addr_sprite6 :
+                            (sprite7_on && id7 == 5'd23) ? addr_sprite7 :
+                            (sprite8_on && id8 == 5'd23) ? addr_sprite8 :
+                            (sprite9_on && id9 == 5'd23) ? addr_sprite9 :
+                            (sprite10_on && id10 == 5'd23) ? addr_sprite10 :
+                            (sprite11_on && id11 == 5'd23) ? addr_sprite11 :
+                            (sprite12_on && id12 == 5'd23) ? addr_sprite12 :
+                            (sprite13_on && id13 == 5'd23) ? addr_sprite13 :
+                            (sprite14_on && id14 == 5'd23) ? addr_sprite14 :
+                            (sprite15_on && id15 == 5'd23) ? addr_sprite15 :
+                            (sprite16_on && id16 == 5'd23) ? addr_sprite16 :
+                            (sprite17_on && id17 == 5'd23) ? addr_sprite17 :
+                            (sprite18_on && id18 == 5'd23) ? addr_sprite18 :
+                            (sprite19_on && id19 == 5'd23) ? addr_sprite19 :
+                            (sprite20_on && id20 == 5'd23) ? addr_sprite20 :
+                            (sprite21_on && id21 == 5'd23) ? addr_sprite21 :
+                            (sprite22_on && id22 == 5'd23) ? addr_sprite22 :
+                            (sprite23_on && id23 == 5'd23) ? addr_sprite23 :
+                            (sprite24_on && id24 == 5'd23) ? addr_sprite24 :
+                            (sprite25_on && id25 == 5'd23) ? addr_sprite25 :
+                            (sprite26_on && id26 == 5'd23) ? addr_sprite26 :
+                            (sprite27_on && id27 == 5'd23) ? addr_sprite27 :
+                            (sprite28_on && id28 == 5'd23) ? addr_sprite28 :
+                            (sprite29_on && id29 == 5'd23) ? addr_sprite29 :
+                            (sprite30_on && id30 == 5'd23) ? addr_sprite30 : 0;
+    assign addr_c       =   (sprite1_on && id1 == 5'd24) ? addr_sprite1 :
+                            (sprite2_on && id2 == 5'd24) ? addr_sprite2 :
+                            (sprite3_on && id3 == 5'd24) ? addr_sprite3 :
+                            (sprite4_on && id4 == 5'd24) ? addr_sprite4 :
+                            (sprite5_on && id5 == 5'd24) ? addr_sprite5 :
+                            (sprite6_on && id6 == 5'd24) ? addr_sprite6 :
+                            (sprite7_on && id7 == 5'd24) ? addr_sprite7 :
+                            (sprite8_on && id8 == 5'd24) ? addr_sprite8 :
+                            (sprite9_on && id9 == 5'd24) ? addr_sprite9 :
+                            (sprite10_on && id10 == 5'd24) ? addr_sprite10 :
+                            (sprite11_on && id11 == 5'd24) ? addr_sprite11 :
+                            (sprite12_on && id12 == 5'd24) ? addr_sprite12 :
+                            (sprite13_on && id13 == 5'd24) ? addr_sprite13 :
+                            (sprite14_on && id14 == 5'd24) ? addr_sprite14 :
+                            (sprite15_on && id15 == 5'd24) ? addr_sprite15 :
+                            (sprite16_on && id16 == 5'd24) ? addr_sprite16 :
+                            (sprite17_on && id17 == 5'd24) ? addr_sprite17 :
+                            (sprite18_on && id18 == 5'd24) ? addr_sprite18 :
+                            (sprite19_on && id19 == 5'd24) ? addr_sprite19 :
+                            (sprite20_on && id20 == 5'd24) ? addr_sprite20 :
+                            (sprite21_on && id21 == 5'd24) ? addr_sprite21 :
+                            (sprite22_on && id22 == 5'd24) ? addr_sprite22 :
+                            (sprite23_on && id23 == 5'd24) ? addr_sprite23 :
+                            (sprite24_on && id24 == 5'd24) ? addr_sprite24 :
+                            (sprite25_on && id25 == 5'd24) ? addr_sprite25 :
+                            (sprite26_on && id26 == 5'd24) ? addr_sprite26 :
+                            (sprite27_on && id27 == 5'd24) ? addr_sprite27 :
+                            (sprite28_on && id28 == 5'd24) ? addr_sprite28 :
+                            (sprite29_on && id29 == 5'd24) ? addr_sprite29 :
+                            (sprite30_on && id30 == 5'd24) ? addr_sprite30 : 0;
+                            
+    assign addr_o       =   (sprite1_on && id1 == 5'd25) ? addr_sprite1 :
+                            (sprite2_on && id2 == 5'd25) ? addr_sprite2 :
+                            (sprite3_on && id3 == 5'd25) ? addr_sprite3 :
+                            (sprite4_on && id4 == 5'd25) ? addr_sprite4 :
+                            (sprite5_on && id5 == 5'd25) ? addr_sprite5 :
+                            (sprite6_on && id6 == 5'd25) ? addr_sprite6 :
+                            (sprite7_on && id7 == 5'd25) ? addr_sprite7 :
+                            (sprite8_on && id8 == 5'd25) ? addr_sprite8 :
+                            (sprite9_on && id9 == 5'd25) ? addr_sprite9 :
+                            (sprite10_on && id10 == 5'd25) ? addr_sprite10 :
+                            (sprite11_on && id11 == 5'd25) ? addr_sprite11 :
+                            (sprite12_on && id12 == 5'd25) ? addr_sprite12 :
+                            (sprite13_on && id13 == 5'd25) ? addr_sprite13 :
+                            (sprite14_on && id14 == 5'd25) ? addr_sprite14 :
+                            (sprite15_on && id15 == 5'd25) ? addr_sprite15 :
+                            (sprite16_on && id16 == 5'd25) ? addr_sprite16 :
+                            (sprite17_on && id17 == 5'd25) ? addr_sprite17 :
+                            (sprite18_on && id18 == 5'd25) ? addr_sprite18 :
+                            (sprite19_on && id19 == 5'd25) ? addr_sprite19 :
+                            (sprite20_on && id20 == 5'd25) ? addr_sprite20 :
+                            (sprite21_on && id21 == 5'd25) ? addr_sprite21 :
+                            (sprite22_on && id22 == 5'd25) ? addr_sprite22 :
+                            (sprite23_on && id23 == 5'd25) ? addr_sprite23 :
+                            (sprite24_on && id24 == 5'd25) ? addr_sprite24 :
+                            (sprite25_on && id25 == 5'd25) ? addr_sprite25 :
+                            (sprite26_on && id26 == 5'd25) ? addr_sprite26 :
+                            (sprite27_on && id27 == 5'd25) ? addr_sprite27 :
+                            (sprite28_on && id28 == 5'd25) ? addr_sprite28 :
+                            (sprite29_on && id29 == 5'd25) ? addr_sprite29 :
+                            (sprite30_on && id30 == 5'd25) ? addr_sprite30 : 0;
+                            
+    assign addr_r       =   (sprite1_on && id1 == 5'd26) ? addr_sprite1 :
+                            (sprite2_on && id2 == 5'd26) ? addr_sprite2 :
+                            (sprite3_on && id3 == 5'd26) ? addr_sprite3 :
+                            (sprite4_on && id4 == 5'd26) ? addr_sprite4 :
+                            (sprite5_on && id5 == 5'd26) ? addr_sprite5 :
+                            (sprite6_on && id6 == 5'd26) ? addr_sprite6 :
+                            (sprite7_on && id7 == 5'd26) ? addr_sprite7 :
+                            (sprite8_on && id8 == 5'd26) ? addr_sprite8 :
+                            (sprite9_on && id9 == 5'd26) ? addr_sprite9 :
+                            (sprite10_on && id10 == 5'd26) ? addr_sprite10 :
+                            (sprite11_on && id11 == 5'd26) ? addr_sprite11 :
+                            (sprite12_on && id12 == 5'd26) ? addr_sprite12 :
+                            (sprite13_on && id13 == 5'd26) ? addr_sprite13 :
+                            (sprite14_on && id14 == 5'd26) ? addr_sprite14 :
+                            (sprite15_on && id15 == 5'd26) ? addr_sprite15 :
+                            (sprite16_on && id16 == 5'd26) ? addr_sprite16 :
+                            (sprite17_on && id17 == 5'd26) ? addr_sprite17 :
+                            (sprite18_on && id18 == 5'd26) ? addr_sprite18 :
+                            (sprite19_on && id19 == 5'd26) ? addr_sprite19 :
+                            (sprite20_on && id20 == 5'd26) ? addr_sprite20 :
+                            (sprite21_on && id21 == 5'd26) ? addr_sprite21 :
+                            (sprite22_on && id22 == 5'd26) ? addr_sprite22 :
+                            (sprite23_on && id23 == 5'd26) ? addr_sprite23 :
+                            (sprite24_on && id24 == 5'd26) ? addr_sprite24 :
+                            (sprite25_on && id25 == 5'd26) ? addr_sprite25 :
+                            (sprite26_on && id26 == 5'd26) ? addr_sprite26 :
+                            (sprite27_on && id27 == 5'd26) ? addr_sprite27 :
+                            (sprite28_on && id28 == 5'd26) ? addr_sprite28 :
+                            (sprite29_on && id29 == 5'd26) ? addr_sprite29 :
+                            (sprite30_on && id30 == 5'd26) ? addr_sprite30 : 0;
+                            
+    assign addr_e       =   (sprite1_on && id1 == 5'd27) ? addr_sprite1 :
+                            (sprite2_on && id2 == 5'd27) ? addr_sprite2 :
+                            (sprite3_on && id3 == 5'd27) ? addr_sprite3 :
+                            (sprite4_on && id4 == 5'd27) ? addr_sprite4 :
+                            (sprite5_on && id5 == 5'd27) ? addr_sprite5 :
+                            (sprite6_on && id6 == 5'd27) ? addr_sprite6 :
+                            (sprite7_on && id7 == 5'd27) ? addr_sprite7 :
+                            (sprite8_on && id8 == 5'd27) ? addr_sprite8 :
+                            (sprite9_on && id9 == 5'd27) ? addr_sprite9 :
+                            (sprite10_on && id10 == 5'd27) ? addr_sprite10 :
+                            (sprite11_on && id11 == 5'd27) ? addr_sprite11 :
+                            (sprite12_on && id12 == 5'd27) ? addr_sprite12 :
+                            (sprite13_on && id13 == 5'd27) ? addr_sprite13 :
+                            (sprite14_on && id14 == 5'd27) ? addr_sprite14 :
+                            (sprite15_on && id15 == 5'd27) ? addr_sprite15 :
+                            (sprite16_on && id16 == 5'd27) ? addr_sprite16 :
+                            (sprite17_on && id17 == 5'd27) ? addr_sprite17 :
+                            (sprite18_on && id18 == 5'd27) ? addr_sprite18 :
+                            (sprite19_on && id19 == 5'd27) ? addr_sprite19 :
+                            (sprite20_on && id20 == 5'd27) ? addr_sprite20 :
+                            (sprite21_on && id21 == 5'd27) ? addr_sprite21 :
+                            (sprite22_on && id22 == 5'd27) ? addr_sprite22 :
+                            (sprite23_on && id23 == 5'd27) ? addr_sprite23 :
+                            (sprite24_on && id24 == 5'd27) ? addr_sprite24 :
+                            (sprite25_on && id25 == 5'd27) ? addr_sprite25 :
+                            (sprite26_on && id26 == 5'd27) ? addr_sprite26 :
+                            (sprite27_on && id27 == 5'd27) ? addr_sprite27 :
+                            (sprite28_on && id28 == 5'd27) ? addr_sprite28 :
+                            (sprite29_on && id29 == 5'd27) ? addr_sprite29 :
+                            (sprite30_on && id30 == 5'd27) ? addr_sprite30 : 0;
     /* END */
  
-    /* Assign sprite to buffer */
+    /* Assign sprite to buffer - Priority Encoder*/
     always@(*)
     begin
-        if (sprite1_on && id1 == 1)          M_buf = M_ship;
+        if      (sprite1_on && id1 == 1)     M_buf = M_ship;
         else if (sprite1_on && id1 == 5'd2)  M_buf = M_pig;
         else if (sprite1_on && id1 == 5'd3)  M_buf = M_bee;
         else if (sprite1_on && id1 == 5'd4)  M_buf = M_cow;
@@ -656,6 +1194,14 @@ module Sprite_Controller(   input logic clk,
         else if (sprite1_on && id1 == 5'd17) M_buf = M_title;
         else if (sprite1_on && id1 == 5'd18) M_buf = M_eskimo;
         else if (sprite1_on && id1 == 5'd19) M_buf = M_cloud;
+        else if (sprite1_on && id1 == 5'd20) M_buf = M_goat;
+        else if (sprite1_on && id1 == 5'd21) M_buf = M_frog;
+        else if (sprite1_on && id1 == 5'd22) M_buf = M_chick;
+        else if (sprite1_on && id1 == 5'd23) M_buf = M_s;
+        else if (sprite1_on && id1 == 5'd24) M_buf = M_c;
+        else if (sprite1_on && id1 == 5'd25) M_buf = M_o;
+        else if (sprite1_on && id1 == 5'd26) M_buf = M_r;
+        else if (sprite1_on && id1 == 5'd27) M_buf = M_e;
         
         else if (sprite2_on && id2 == 1)     M_buf = M_ship;
         else if (sprite2_on && id2 == 5'd2)  M_buf = M_pig;
@@ -676,6 +1222,14 @@ module Sprite_Controller(   input logic clk,
         else if (sprite2_on && id2 == 5'd17) M_buf = M_title;
         else if (sprite2_on && id2 == 5'd18) M_buf = M_eskimo;
         else if (sprite2_on && id2 == 5'd19) M_buf = M_cloud;
+        else if (sprite2_on && id2 == 5'd20) M_buf = M_goat;
+        else if (sprite2_on && id2 == 5'd21) M_buf = M_frog;
+        else if (sprite2_on && id2 == 5'd22) M_buf = M_chick;
+        else if (sprite2_on && id2 == 5'd23) M_buf = M_s;
+        else if (sprite2_on && id2 == 5'd24) M_buf = M_c;
+        else if (sprite2_on && id2 == 5'd25) M_buf = M_o;
+        else if (sprite2_on && id2 == 5'd26) M_buf = M_r;
+        else if (sprite2_on && id2 == 5'd27) M_buf = M_e;
         
         else if (sprite3_on && id3 == 1)     M_buf = M_ship;
         else if (sprite3_on && id3 == 5'd2)  M_buf = M_pig;
@@ -695,7 +1249,15 @@ module Sprite_Controller(   input logic clk,
         else if (sprite3_on && id3 == 5'd16) M_buf = M_mcdonald;
         else if (sprite3_on && id3 == 5'd17) M_buf = M_title;
         else if (sprite3_on && id3 == 5'd18) M_buf = M_eskimo;
-        else if (sprite3_on && id3 == 5'd19) M_buf = M_cloud;  
+        else if (sprite3_on && id3 == 5'd19) M_buf = M_cloud;
+        else if (sprite3_on && id3 == 5'd20) M_buf = M_goat;
+        else if (sprite3_on && id3 == 5'd21) M_buf = M_frog;
+        else if (sprite3_on && id3 == 5'd22) M_buf = M_chick;
+        else if (sprite3_on && id3 == 5'd23) M_buf = M_s;
+        else if (sprite3_on && id3 == 5'd24) M_buf = M_c;
+        else if (sprite3_on && id3 == 5'd25) M_buf = M_o;
+        else if (sprite3_on && id3 == 5'd26) M_buf = M_r;
+        else if (sprite3_on && id3 == 5'd27) M_buf = M_e;  
   
         else if (sprite4_on && id4 == 1)     M_buf = M_ship;
         else if (sprite4_on && id4 == 5'd2)  M_buf = M_pig;
@@ -716,6 +1278,14 @@ module Sprite_Controller(   input logic clk,
         else if (sprite4_on && id4 == 5'd17) M_buf = M_title;
         else if (sprite4_on && id4 == 5'd18) M_buf = M_eskimo;
         else if (sprite4_on && id4 == 5'd19) M_buf = M_cloud;
+        else if (sprite4_on && id4 == 5'd20) M_buf = M_goat;
+        else if (sprite4_on && id4 == 5'd21) M_buf = M_frog;
+        else if (sprite4_on && id4 == 5'd22) M_buf = M_chick;
+        else if (sprite4_on && id4 == 5'd23) M_buf = M_s;
+        else if (sprite4_on && id4 == 5'd24) M_buf = M_c;
+        else if (sprite4_on && id4 == 5'd25) M_buf = M_o;
+        else if (sprite4_on && id4 == 5'd26) M_buf = M_r;
+        else if (sprite4_on && id4 == 5'd27) M_buf = M_e;
         
         else if (sprite5_on && id5 == 1)     M_buf = M_ship;
         else if (sprite5_on && id5 == 5'd2)  M_buf = M_pig;
@@ -736,6 +1306,14 @@ module Sprite_Controller(   input logic clk,
         else if (sprite5_on && id5 == 5'd17) M_buf = M_title;
         else if (sprite5_on && id5 == 5'd18) M_buf = M_eskimo;
         else if (sprite5_on && id5 == 5'd19) M_buf = M_cloud;
+        else if (sprite5_on && id5 == 5'd20) M_buf = M_goat;
+        else if (sprite5_on && id5 == 5'd21) M_buf = M_frog;
+        else if (sprite5_on && id5 == 5'd22) M_buf = M_chick;
+        else if (sprite5_on && id5 == 5'd23) M_buf = M_s;
+        else if (sprite5_on && id5 == 5'd24) M_buf = M_c;
+        else if (sprite5_on && id5 == 5'd25) M_buf = M_o;
+        else if (sprite5_on && id5 == 5'd26) M_buf = M_r;
+        else if (sprite5_on && id5 == 5'd27) M_buf = M_e;
         
         else if (sprite6_on && id6 == 1)     M_buf = M_ship;
         else if (sprite6_on && id6 == 5'd2)  M_buf = M_pig;
@@ -756,6 +1334,14 @@ module Sprite_Controller(   input logic clk,
         else if (sprite6_on && id6 == 5'd17) M_buf = M_title;
         else if (sprite6_on && id6 == 5'd18) M_buf = M_eskimo;
         else if (sprite6_on && id6 == 5'd19) M_buf = M_cloud;
+        else if (sprite6_on && id6 == 5'd20) M_buf = M_goat;
+        else if (sprite6_on && id6 == 5'd21) M_buf = M_frog;
+        else if (sprite6_on && id6 == 5'd22) M_buf = M_chick;
+        else if (sprite6_on && id6 == 5'd23) M_buf = M_s;
+        else if (sprite6_on && id6 == 5'd24) M_buf = M_c;
+        else if (sprite6_on && id6 == 5'd25) M_buf = M_o;
+        else if (sprite6_on && id6 == 5'd26) M_buf = M_r;
+        else if (sprite6_on && id6 == 5'd27) M_buf = M_e;
         
         else if (sprite7_on && id7 == 1)     M_buf = M_ship;
         else if (sprite7_on && id7 == 5'd2)  M_buf = M_pig;
@@ -776,6 +1362,14 @@ module Sprite_Controller(   input logic clk,
         else if (sprite7_on && id7 == 5'd17) M_buf = M_title;
         else if (sprite7_on && id7 == 5'd18) M_buf = M_eskimo;
         else if (sprite7_on && id7 == 5'd19) M_buf = M_cloud;
+        else if (sprite7_on && id7 == 5'd20) M_buf = M_goat;
+        else if (sprite7_on && id7 == 5'd21) M_buf = M_frog;
+        else if (sprite7_on && id7 == 5'd22) M_buf = M_chick;
+        else if (sprite7_on && id7 == 5'd23) M_buf = M_s;
+        else if (sprite7_on && id7 == 5'd24) M_buf = M_c;
+        else if (sprite7_on && id7 == 5'd25) M_buf = M_o;
+        else if (sprite7_on && id7 == 5'd26) M_buf = M_r;
+        else if (sprite7_on && id7 == 5'd27) M_buf = M_e;
         
         else if (sprite8_on && id8 == 1)     M_buf = M_ship;
         else if (sprite8_on && id8 == 5'd2)  M_buf = M_pig;
@@ -796,6 +1390,14 @@ module Sprite_Controller(   input logic clk,
         else if (sprite8_on && id8 == 5'd17) M_buf = M_title;
         else if (sprite8_on && id8 == 5'd18) M_buf = M_eskimo;
         else if (sprite8_on && id8 == 5'd19) M_buf = M_cloud;
+        else if (sprite8_on && id8 == 5'd20) M_buf = M_goat;
+        else if (sprite8_on && id8 == 5'd21) M_buf = M_frog;
+        else if (sprite8_on && id8 == 5'd22) M_buf = M_chick;
+        else if (sprite8_on && id8 == 5'd23) M_buf = M_s;
+        else if (sprite8_on && id8 == 5'd24) M_buf = M_c;
+        else if (sprite8_on && id8 == 5'd25) M_buf = M_o;
+        else if (sprite8_on && id8 == 5'd26) M_buf = M_r;
+        else if (sprite8_on && id8 == 5'd27) M_buf = M_e;
         
         else if (sprite9_on && id9 == 1)     M_buf = M_ship;
         else if (sprite9_on && id9 == 5'd2)  M_buf = M_pig;
@@ -816,6 +1418,14 @@ module Sprite_Controller(   input logic clk,
         else if (sprite9_on && id9 == 5'd17) M_buf = M_title;
         else if (sprite9_on && id9 == 5'd18) M_buf = M_eskimo;
         else if (sprite9_on && id9 == 5'd19) M_buf = M_cloud;
+        else if (sprite9_on && id9 == 5'd20) M_buf = M_goat;
+        else if (sprite9_on && id9 == 5'd21) M_buf = M_frog;
+        else if (sprite9_on && id9 == 5'd22) M_buf = M_chick;
+        else if (sprite9_on && id9 == 5'd23) M_buf = M_s;
+        else if (sprite9_on && id9 == 5'd24) M_buf = M_c;
+        else if (sprite9_on && id9 == 5'd25) M_buf = M_o;
+        else if (sprite9_on && id9 == 5'd26) M_buf = M_r;
+        else if (sprite9_on && id9 == 5'd27) M_buf = M_e;
         
         else if (sprite10_on && id10 == 1)     M_buf = M_ship;
         else if (sprite10_on && id10 == 5'd2)  M_buf = M_pig;
@@ -836,6 +1446,14 @@ module Sprite_Controller(   input logic clk,
         else if (sprite10_on && id10 == 5'd17) M_buf = M_title;
         else if (sprite10_on && id10 == 5'd18) M_buf = M_eskimo;
         else if (sprite10_on && id10 == 5'd19) M_buf = M_cloud;
+        else if (sprite10_on && id10 == 5'd20) M_buf = M_goat;
+        else if (sprite10_on && id10 == 5'd21) M_buf = M_frog;
+        else if (sprite10_on && id10 == 5'd22) M_buf = M_chick;
+        else if (sprite10_on && id10 == 5'd23) M_buf = M_s;
+        else if (sprite10_on && id10 == 5'd24) M_buf = M_c;
+        else if (sprite10_on && id10 == 5'd25) M_buf = M_o;
+        else if (sprite10_on && id10 == 5'd26) M_buf = M_r;
+        else if (sprite10_on && id10 == 5'd27) M_buf = M_e;
         
         else if (sprite11_on && id11 == 1)     M_buf = M_ship;
         else if (sprite11_on && id11 == 5'd2)  M_buf = M_pig;
@@ -856,6 +1474,14 @@ module Sprite_Controller(   input logic clk,
         else if (sprite11_on && id11 == 5'd17) M_buf = M_title;
         else if (sprite11_on && id11 == 5'd18) M_buf = M_eskimo;
         else if (sprite11_on && id11 == 5'd19) M_buf = M_cloud;
+        else if (sprite11_on && id11 == 5'd20) M_buf = M_goat;
+        else if (sprite11_on && id11 == 5'd21) M_buf = M_frog;
+        else if (sprite11_on && id11 == 5'd22) M_buf = M_chick;
+        else if (sprite11_on && id11 == 5'd23) M_buf = M_s;
+        else if (sprite11_on && id11 == 5'd24) M_buf = M_c;
+        else if (sprite11_on && id11 == 5'd25) M_buf = M_o;
+        else if (sprite11_on && id11 == 5'd26) M_buf = M_r;
+        else if (sprite11_on && id11 == 5'd27) M_buf = M_e;
         
         else if (sprite12_on && id12 == 1)     M_buf = M_ship;
         else if (sprite12_on && id12 == 5'd2)  M_buf = M_pig;
@@ -876,6 +1502,14 @@ module Sprite_Controller(   input logic clk,
         else if (sprite12_on && id12 == 5'd17) M_buf = M_title;
         else if (sprite12_on && id12 == 5'd18) M_buf = M_eskimo;
         else if (sprite12_on && id12 == 5'd19) M_buf = M_cloud;
+        else if (sprite12_on && id12 == 5'd20) M_buf = M_goat;
+        else if (sprite12_on && id12 == 5'd21) M_buf = M_frog;
+        else if (sprite12_on && id12 == 5'd22) M_buf = M_chick;
+        else if (sprite12_on && id12 == 5'd23) M_buf = M_s;
+        else if (sprite12_on && id12 == 5'd24) M_buf = M_c;
+        else if (sprite12_on && id12 == 5'd25) M_buf = M_o;
+        else if (sprite12_on && id12 == 5'd26) M_buf = M_r;
+        else if (sprite12_on && id12 == 5'd27) M_buf = M_e;
         
         else if (sprite13_on && id13 == 1)     M_buf = M_ship;
         else if (sprite13_on && id13 == 5'd2)  M_buf = M_pig;
@@ -896,6 +1530,14 @@ module Sprite_Controller(   input logic clk,
         else if (sprite13_on && id13 == 5'd17) M_buf = M_title;
         else if (sprite13_on && id13 == 5'd18) M_buf = M_eskimo;
         else if (sprite13_on && id13 == 5'd19) M_buf = M_cloud;
+        else if (sprite13_on && id13 == 5'd20) M_buf = M_goat;
+        else if (sprite13_on && id13 == 5'd21) M_buf = M_frog;
+        else if (sprite13_on && id13 == 5'd22) M_buf = M_chick;
+        else if (sprite13_on && id13 == 5'd23) M_buf = M_s;
+        else if (sprite13_on && id13 == 5'd24) M_buf = M_c;
+        else if (sprite13_on && id13 == 5'd25) M_buf = M_o;
+        else if (sprite13_on && id13 == 5'd26) M_buf = M_r;
+        else if (sprite13_on && id13 == 5'd27) M_buf = M_e;
         
         else if (sprite14_on && id14 == 1)     M_buf = M_ship;
         else if (sprite14_on && id14 == 5'd2)  M_buf = M_pig;
@@ -916,6 +1558,14 @@ module Sprite_Controller(   input logic clk,
         else if (sprite14_on && id14 == 5'd17) M_buf = M_title;
         else if (sprite14_on && id14 == 5'd18) M_buf = M_eskimo;
         else if (sprite14_on && id14 == 5'd19) M_buf = M_cloud; 
+        else if (sprite14_on && id14 == 5'd20) M_buf = M_goat;
+        else if (sprite14_on && id14 == 5'd21) M_buf = M_frog;
+        else if (sprite14_on && id14 == 5'd22) M_buf = M_chick;
+        else if (sprite14_on && id14 == 5'd23) M_buf = M_s;
+        else if (sprite14_on && id14 == 5'd24) M_buf = M_c;
+        else if (sprite14_on && id14 == 5'd25) M_buf = M_o;
+        else if (sprite14_on && id14 == 5'd26) M_buf = M_r;
+        else if (sprite14_on && id14 == 5'd27) M_buf = M_e;
         
         else if (sprite15_on && id15 == 1)     M_buf = M_ship;
         else if (sprite15_on && id15 == 5'd2)  M_buf = M_pig;
@@ -936,6 +1586,14 @@ module Sprite_Controller(   input logic clk,
         else if (sprite15_on && id15 == 5'd17) M_buf = M_title;
         else if (sprite15_on && id15 == 5'd18) M_buf = M_eskimo;
         else if (sprite15_on && id15 == 5'd19) M_buf = M_cloud;
+        else if (sprite15_on && id15 == 5'd20) M_buf = M_goat;
+        else if (sprite15_on && id15 == 5'd21) M_buf = M_frog;
+        else if (sprite15_on && id15 == 5'd22) M_buf = M_chick;
+        else if (sprite15_on && id15 == 5'd23) M_buf = M_s;
+        else if (sprite15_on && id15 == 5'd24) M_buf = M_c;
+        else if (sprite15_on && id15 == 5'd25) M_buf = M_o;
+        else if (sprite15_on && id15 == 5'd26) M_buf = M_r;
+        else if (sprite15_on && id15 == 5'd27) M_buf = M_e;
         
         else if (sprite16_on && id16 == 1)     M_buf = M_ship;
         else if (sprite16_on && id16 == 5'd2)  M_buf = M_pig;
@@ -955,7 +1613,15 @@ module Sprite_Controller(   input logic clk,
         else if (sprite16_on && id16 == 5'd16) M_buf = M_mcdonald; 
         else if (sprite16_on && id16 == 5'd17) M_buf = M_title;
         else if (sprite16_on && id16 == 5'd18) M_buf = M_eskimo;
-        else if (sprite16_on && id16 == 5'd19) M_buf = M_cloud;        
+        else if (sprite16_on && id16 == 5'd19) M_buf = M_cloud;  
+        else if (sprite16_on && id16 == 5'd20) M_buf = M_goat;
+        else if (sprite16_on && id16 == 5'd21) M_buf = M_frog;
+        else if (sprite16_on && id16 == 5'd22) M_buf = M_chick;
+        else if (sprite16_on && id16 == 5'd23) M_buf = M_s;
+        else if (sprite16_on && id16 == 5'd24) M_buf = M_c;
+        else if (sprite16_on && id16 == 5'd25) M_buf = M_o;
+        else if (sprite16_on && id16 == 5'd26) M_buf = M_r;
+        else if (sprite16_on && id16 == 5'd27) M_buf = M_e;      
 
         else if (sprite17_on && id17 == 1)     M_buf = M_ship;
         else if (sprite17_on && id17 == 5'd2)  M_buf = M_pig;
@@ -976,6 +1642,14 @@ module Sprite_Controller(   input logic clk,
         else if (sprite17_on && id17 == 5'd17) M_buf = M_title;
         else if (sprite17_on && id17 == 5'd18) M_buf = M_eskimo;
         else if (sprite17_on && id17 == 5'd19) M_buf = M_cloud;
+        else if (sprite17_on && id17 == 5'd20) M_buf = M_goat;
+        else if (sprite17_on && id17 == 5'd21) M_buf = M_frog;
+        else if (sprite17_on && id17 == 5'd22) M_buf = M_chick;
+        else if (sprite17_on && id17 == 5'd23) M_buf = M_s;
+        else if (sprite17_on && id17 == 5'd24) M_buf = M_c;
+        else if (sprite17_on && id17 == 5'd25) M_buf = M_o;
+        else if (sprite17_on && id17 == 5'd26) M_buf = M_r;
+        else if (sprite17_on && id17 == 5'd27) M_buf = M_e;
         
         else if (sprite18_on && id18 == 1)     M_buf = M_ship;
         else if (sprite18_on && id18 == 5'd2)  M_buf = M_pig;
@@ -996,6 +1670,14 @@ module Sprite_Controller(   input logic clk,
         else if (sprite18_on && id18 == 5'd17) M_buf = M_title;
         else if (sprite18_on && id18 == 5'd18) M_buf = M_eskimo;
         else if (sprite18_on && id18 == 5'd19) M_buf = M_cloud;
+        else if (sprite18_on && id18 == 5'd20) M_buf = M_goat;
+        else if (sprite18_on && id18 == 5'd21) M_buf = M_frog;
+        else if (sprite18_on && id18 == 5'd22) M_buf = M_chick;
+        else if (sprite18_on && id18 == 5'd23) M_buf = M_s;
+        else if (sprite18_on && id18 == 5'd24) M_buf = M_c;
+        else if (sprite18_on && id18 == 5'd25) M_buf = M_o;
+        else if (sprite18_on && id18 == 5'd26) M_buf = M_r;
+        else if (sprite18_on && id18 == 5'd27) M_buf = M_e;
         
         else if (sprite19_on && id19 == 1)     M_buf = M_ship;
         else if (sprite19_on && id19 == 5'd2)  M_buf = M_pig;
@@ -1016,6 +1698,14 @@ module Sprite_Controller(   input logic clk,
         else if (sprite19_on && id19 == 5'd17) M_buf = M_title;
         else if (sprite19_on && id19 == 5'd18) M_buf = M_eskimo;
         else if (sprite19_on && id19 == 5'd19) M_buf = M_cloud;
+        else if (sprite19_on && id19 == 5'd20) M_buf = M_goat;
+        else if (sprite19_on && id19 == 5'd21) M_buf = M_frog;
+        else if (sprite19_on && id19 == 5'd22) M_buf = M_chick;
+        else if (sprite19_on && id19 == 5'd23) M_buf = M_s;
+        else if (sprite19_on && id19 == 5'd24) M_buf = M_c;
+        else if (sprite19_on && id19 == 5'd25) M_buf = M_o;
+        else if (sprite19_on && id19 == 5'd26) M_buf = M_r;
+        else if (sprite19_on && id19 == 5'd27) M_buf = M_e;
         
         else if (sprite20_on && id20 == 1)     M_buf = M_ship;
         else if (sprite20_on && id20 == 5'd2)  M_buf = M_pig;
@@ -1036,6 +1726,294 @@ module Sprite_Controller(   input logic clk,
         else if (sprite20_on && id20 == 5'd17) M_buf = M_title;
         else if (sprite20_on && id20 == 5'd18) M_buf = M_eskimo;
         else if (sprite20_on && id20 == 5'd19) M_buf = M_cloud;
+        else if (sprite20_on && id20 == 5'd20) M_buf = M_goat;
+        else if (sprite20_on && id20 == 5'd21) M_buf = M_frog;
+        else if (sprite20_on && id20 == 5'd22) M_buf = M_chick;
+        else if (sprite20_on && id20 == 5'd23) M_buf = M_s;
+        else if (sprite20_on && id20 == 5'd24) M_buf = M_c;
+        else if (sprite20_on && id20 == 5'd25) M_buf = M_o;
+        else if (sprite20_on && id20 == 5'd26) M_buf = M_r;
+        else if (sprite20_on && id20 == 5'd27) M_buf = M_e;
+        
+        else if (sprite21_on && id21 == 1)     M_buf = M_ship;
+        else if (sprite21_on && id21 == 5'd2)  M_buf = M_pig;
+        else if (sprite21_on && id21 == 5'd3)  M_buf = M_bee;
+        else if (sprite21_on && id21 == 5'd4)  M_buf = M_cow;
+        else if (sprite21_on && id21 == 5'd5)  M_buf = M_bullet;
+        else if (sprite21_on && id21 == 5'd6)  M_buf = M_zero;
+        else if (sprite21_on && id21 == 5'd7)  M_buf = M_one;
+        else if (sprite21_on && id21 == 5'd8)  M_buf = M_two;
+        else if (sprite21_on && id21 == 5'd9)  M_buf = M_three;
+        else if (sprite21_on && id21 == 5'd10) M_buf = M_four;
+        else if (sprite21_on && id21 == 5'd11) M_buf = M_five;
+        else if (sprite21_on && id21 == 5'd12) M_buf = M_six;
+        else if (sprite21_on && id21 == 5'd13) M_buf = M_seven;
+        else if (sprite21_on && id21 == 5'd14) M_buf = M_eight;
+        else if (sprite21_on && id21 == 5'd15) M_buf = M_nine;
+        else if (sprite21_on && id21 == 5'd16) M_buf = M_mcdonald; 
+        else if (sprite21_on && id21 == 5'd17) M_buf = M_title;
+        else if (sprite21_on && id21 == 5'd18) M_buf = M_eskimo;
+        else if (sprite21_on && id21 == 5'd19) M_buf = M_cloud;
+        else if (sprite21_on && id21 == 5'd20) M_buf = M_goat;
+        else if (sprite21_on && id21 == 5'd21) M_buf = M_frog;
+        else if (sprite21_on && id21 == 5'd22) M_buf = M_chick;
+        else if (sprite21_on && id21 == 5'd23) M_buf = M_s;
+        else if (sprite21_on && id21 == 5'd24) M_buf = M_c;
+        else if (sprite21_on && id21 == 5'd25) M_buf = M_o;
+        else if (sprite21_on && id21 == 5'd26) M_buf = M_r;
+        else if (sprite21_on && id21 == 5'd27) M_buf = M_e;
+        
+        else if (sprite22_on && id22 == 1)     M_buf = M_ship;
+        else if (sprite22_on && id22 == 5'd2)  M_buf = M_pig;
+        else if (sprite22_on && id22 == 5'd3)  M_buf = M_bee;
+        else if (sprite22_on && id22 == 5'd4)  M_buf = M_cow;
+        else if (sprite22_on && id22 == 5'd5)  M_buf = M_bullet;
+        else if (sprite22_on && id22 == 5'd6)  M_buf = M_zero;
+        else if (sprite22_on && id22 == 5'd7)  M_buf = M_one;
+        else if (sprite22_on && id22 == 5'd8)  M_buf = M_two;
+        else if (sprite22_on && id22 == 5'd9)  M_buf = M_three;
+        else if (sprite22_on && id22 == 5'd10) M_buf = M_four;
+        else if (sprite22_on && id22 == 5'd11) M_buf = M_five;
+        else if (sprite22_on && id22 == 5'd12) M_buf = M_six;
+        else if (sprite22_on && id22 == 5'd13) M_buf = M_seven;
+        else if (sprite22_on && id22 == 5'd14) M_buf = M_eight;
+        else if (sprite22_on && id22 == 5'd15) M_buf = M_nine;
+        else if (sprite22_on && id22 == 5'd16) M_buf = M_mcdonald; 
+        else if (sprite22_on && id22 == 5'd17) M_buf = M_title;
+        else if (sprite22_on && id22 == 5'd18) M_buf = M_eskimo;
+        else if (sprite22_on && id22 == 5'd19) M_buf = M_cloud;
+        else if (sprite22_on && id22 == 5'd20) M_buf = M_goat;
+        else if (sprite22_on && id22 == 5'd21) M_buf = M_frog;
+        else if (sprite22_on && id22 == 5'd22) M_buf = M_chick;
+        else if (sprite22_on && id22 == 5'd23) M_buf = M_s;
+        else if (sprite22_on && id22 == 5'd24) M_buf = M_c;
+        else if (sprite22_on && id22 == 5'd25) M_buf = M_o;
+        else if (sprite22_on && id22 == 5'd26) M_buf = M_r;
+        else if (sprite22_on && id22 == 5'd27) M_buf = M_e;
+        
+        else if (sprite23_on && id23 == 1)     M_buf = M_ship;
+        else if (sprite23_on && id23 == 5'd2)  M_buf = M_pig;
+        else if (sprite23_on && id23 == 5'd3)  M_buf = M_bee;
+        else if (sprite23_on && id23 == 5'd4)  M_buf = M_cow;
+        else if (sprite23_on && id23 == 5'd5)  M_buf = M_bullet;
+        else if (sprite23_on && id23 == 5'd6)  M_buf = M_zero;
+        else if (sprite23_on && id23 == 5'd7)  M_buf = M_one;
+        else if (sprite23_on && id23 == 5'd8)  M_buf = M_two;
+        else if (sprite23_on && id23 == 5'd9)  M_buf = M_three;
+        else if (sprite23_on && id23 == 5'd10) M_buf = M_four;
+        else if (sprite23_on && id23 == 5'd11) M_buf = M_five;
+        else if (sprite23_on && id23 == 5'd12) M_buf = M_six;
+        else if (sprite23_on && id23 == 5'd13) M_buf = M_seven;
+        else if (sprite23_on && id23 == 5'd14) M_buf = M_eight;
+        else if (sprite23_on && id23 == 5'd15) M_buf = M_nine;
+        else if (sprite23_on && id23 == 5'd16) M_buf = M_mcdonald; 
+        else if (sprite23_on && id23 == 5'd17) M_buf = M_title;
+        else if (sprite23_on && id23 == 5'd18) M_buf = M_eskimo;
+        else if (sprite23_on && id23 == 5'd19) M_buf = M_cloud;
+        else if (sprite23_on && id23 == 5'd20) M_buf = M_goat;
+        else if (sprite23_on && id23 == 5'd21) M_buf = M_frog;
+        else if (sprite23_on && id23 == 5'd22) M_buf = M_chick;
+        else if (sprite23_on && id23 == 5'd23) M_buf = M_s;
+        else if (sprite23_on && id23 == 5'd24) M_buf = M_c;
+        else if (sprite23_on && id23 == 5'd25) M_buf = M_o;
+        else if (sprite23_on && id23 == 5'd26) M_buf = M_r;
+        else if (sprite23_on && id23 == 5'd27) M_buf = M_e;
+        
+        else if (sprite24_on && id24 == 1)     M_buf = M_ship;
+        else if (sprite24_on && id24 == 5'd2)  M_buf = M_pig;
+        else if (sprite24_on && id24 == 5'd3)  M_buf = M_bee;
+        else if (sprite24_on && id24 == 5'd4)  M_buf = M_cow;
+        else if (sprite24_on && id24 == 5'd5)  M_buf = M_bullet;
+        else if (sprite24_on && id24 == 5'd6)  M_buf = M_zero;
+        else if (sprite24_on && id24 == 5'd7)  M_buf = M_one;
+        else if (sprite24_on && id24 == 5'd8)  M_buf = M_two;
+        else if (sprite24_on && id24 == 5'd9)  M_buf = M_three;
+        else if (sprite24_on && id24 == 5'd10) M_buf = M_four;
+        else if (sprite24_on && id24 == 5'd11) M_buf = M_five;
+        else if (sprite24_on && id24 == 5'd12) M_buf = M_six;
+        else if (sprite24_on && id24 == 5'd13) M_buf = M_seven;
+        else if (sprite24_on && id24 == 5'd14) M_buf = M_eight;
+        else if (sprite24_on && id24 == 5'd15) M_buf = M_nine;
+        else if (sprite24_on && id24 == 5'd16) M_buf = M_mcdonald; 
+        else if (sprite24_on && id24 == 5'd17) M_buf = M_title;
+        else if (sprite24_on && id24 == 5'd18) M_buf = M_eskimo;
+        else if (sprite24_on && id24 == 5'd19) M_buf = M_cloud;
+        else if (sprite24_on && id24 == 5'd20) M_buf = M_goat;
+        else if (sprite24_on && id24 == 5'd21) M_buf = M_frog;
+        else if (sprite24_on && id24 == 5'd22) M_buf = M_chick;
+        else if (sprite24_on && id24 == 5'd23) M_buf = M_s;
+        else if (sprite24_on && id24 == 5'd24) M_buf = M_c;
+        else if (sprite24_on && id24 == 5'd25) M_buf = M_o;
+        else if (sprite24_on && id24 == 5'd26) M_buf = M_r;
+        else if (sprite24_on && id24 == 5'd27) M_buf = M_e;
+        
+        else if (sprite25_on && id25 == 1)     M_buf = M_ship;
+        else if (sprite25_on && id25 == 5'd2)  M_buf = M_pig;
+        else if (sprite25_on && id25 == 5'd3)  M_buf = M_bee;
+        else if (sprite25_on && id25 == 5'd4)  M_buf = M_cow;
+        else if (sprite25_on && id25 == 5'd5)  M_buf = M_bullet;
+        else if (sprite25_on && id25 == 5'd6)  M_buf = M_zero;
+        else if (sprite25_on && id25 == 5'd7)  M_buf = M_one;
+        else if (sprite25_on && id25 == 5'd8)  M_buf = M_two;
+        else if (sprite25_on && id25 == 5'd9)  M_buf = M_three;
+        else if (sprite25_on && id25 == 5'd10) M_buf = M_four;
+        else if (sprite25_on && id25 == 5'd11) M_buf = M_five;
+        else if (sprite25_on && id25 == 5'd12) M_buf = M_six;
+        else if (sprite25_on && id25 == 5'd13) M_buf = M_seven;
+        else if (sprite25_on && id25 == 5'd14) M_buf = M_eight;
+        else if (sprite25_on && id25 == 5'd15) M_buf = M_nine;
+        else if (sprite25_on && id25 == 5'd16) M_buf = M_mcdonald; 
+        else if (sprite25_on && id25 == 5'd17) M_buf = M_title;
+        else if (sprite25_on && id25 == 5'd18) M_buf = M_eskimo;
+        else if (sprite25_on && id25 == 5'd19) M_buf = M_cloud;
+        else if (sprite25_on && id25 == 5'd20) M_buf = M_goat;
+        else if (sprite25_on && id25 == 5'd21) M_buf = M_frog;
+        else if (sprite25_on && id25 == 5'd22) M_buf = M_chick;
+        else if (sprite25_on && id25 == 5'd23) M_buf = M_s;
+        else if (sprite25_on && id25 == 5'd24) M_buf = M_c;
+        else if (sprite25_on && id25 == 5'd25) M_buf = M_o;
+        else if (sprite25_on && id25 == 5'd26) M_buf = M_r;
+        else if (sprite25_on && id25 == 5'd27) M_buf = M_e;
+        
+        else if (sprite26_on && id26 == 1)     M_buf = M_ship;
+        else if (sprite26_on && id26 == 5'd2)  M_buf = M_pig;
+        else if (sprite26_on && id26 == 5'd3)  M_buf = M_bee;
+        else if (sprite26_on && id26 == 5'd4)  M_buf = M_cow;
+        else if (sprite26_on && id26 == 5'd5)  M_buf = M_bullet;
+        else if (sprite26_on && id26 == 5'd6)  M_buf = M_zero;
+        else if (sprite26_on && id26 == 5'd7)  M_buf = M_one;
+        else if (sprite26_on && id26 == 5'd8)  M_buf = M_two;
+        else if (sprite26_on && id26 == 5'd9)  M_buf = M_three;
+        else if (sprite26_on && id26 == 5'd10) M_buf = M_four;
+        else if (sprite26_on && id26 == 5'd11) M_buf = M_five;
+        else if (sprite26_on && id26 == 5'd12) M_buf = M_six;
+        else if (sprite26_on && id26 == 5'd13) M_buf = M_seven;
+        else if (sprite26_on && id26 == 5'd14) M_buf = M_eight;
+        else if (sprite26_on && id26 == 5'd15) M_buf = M_nine;
+        else if (sprite26_on && id26 == 5'd16) M_buf = M_mcdonald; 
+        else if (sprite26_on && id26 == 5'd17) M_buf = M_title;
+        else if (sprite26_on && id26 == 5'd18) M_buf = M_eskimo;
+        else if (sprite26_on && id26 == 5'd19) M_buf = M_cloud;
+        else if (sprite26_on && id26 == 5'd20) M_buf = M_goat;
+        else if (sprite26_on && id26 == 5'd21) M_buf = M_frog;
+        else if (sprite26_on && id26 == 5'd22) M_buf = M_chick;
+        else if (sprite26_on && id26 == 5'd23) M_buf = M_s;
+        else if (sprite26_on && id26 == 5'd24) M_buf = M_c;
+        else if (sprite26_on && id26 == 5'd25) M_buf = M_o;
+        else if (sprite26_on && id26 == 5'd26) M_buf = M_r;
+        else if (sprite26_on && id26 == 5'd27) M_buf = M_e;
+        
+        else if (sprite27_on && id27 == 1)     M_buf = M_ship;
+        else if (sprite27_on && id27 == 5'd2)  M_buf = M_pig;
+        else if (sprite27_on && id27 == 5'd3)  M_buf = M_bee;
+        else if (sprite27_on && id27 == 5'd4)  M_buf = M_cow;
+        else if (sprite27_on && id27 == 5'd5)  M_buf = M_bullet;
+        else if (sprite27_on && id27 == 5'd6)  M_buf = M_zero;
+        else if (sprite27_on && id27 == 5'd7)  M_buf = M_one;
+        else if (sprite27_on && id27 == 5'd8)  M_buf = M_two;
+        else if (sprite27_on && id27 == 5'd9)  M_buf = M_three;
+        else if (sprite27_on && id27 == 5'd10) M_buf = M_four;
+        else if (sprite27_on && id27 == 5'd11) M_buf = M_five;
+        else if (sprite27_on && id27 == 5'd12) M_buf = M_six;
+        else if (sprite27_on && id27 == 5'd13) M_buf = M_seven;
+        else if (sprite27_on && id27 == 5'd14) M_buf = M_eight;
+        else if (sprite27_on && id27 == 5'd15) M_buf = M_nine;
+        else if (sprite27_on && id27 == 5'd16) M_buf = M_mcdonald; 
+        else if (sprite27_on && id27 == 5'd17) M_buf = M_title;
+        else if (sprite27_on && id27 == 5'd18) M_buf = M_eskimo;
+        else if (sprite27_on && id27 == 5'd19) M_buf = M_cloud;
+        else if (sprite27_on && id27 == 5'd20) M_buf = M_goat;
+        else if (sprite27_on && id27 == 5'd21) M_buf = M_frog;
+        else if (sprite27_on && id27 == 5'd22) M_buf = M_chick;
+        else if (sprite27_on && id27 == 5'd23) M_buf = M_s;
+        else if (sprite27_on && id27 == 5'd24) M_buf = M_c;
+        else if (sprite27_on && id27 == 5'd25) M_buf = M_o;
+        else if (sprite27_on && id27 == 5'd26) M_buf = M_r;
+        else if (sprite27_on && id27 == 5'd27) M_buf = M_e;
+        
+        else if (sprite28_on && id28 == 1)     M_buf = M_ship;
+        else if (sprite28_on && id28 == 5'd2)  M_buf = M_pig;
+        else if (sprite28_on && id28 == 5'd3)  M_buf = M_bee;
+        else if (sprite28_on && id28 == 5'd4)  M_buf = M_cow;
+        else if (sprite28_on && id28 == 5'd5)  M_buf = M_bullet;
+        else if (sprite28_on && id28 == 5'd6)  M_buf = M_zero;
+        else if (sprite28_on && id28 == 5'd7)  M_buf = M_one;
+        else if (sprite28_on && id28 == 5'd8)  M_buf = M_two;
+        else if (sprite28_on && id28 == 5'd9)  M_buf = M_three;
+        else if (sprite28_on && id28 == 5'd10) M_buf = M_four;
+        else if (sprite28_on && id28 == 5'd11) M_buf = M_five;
+        else if (sprite28_on && id28 == 5'd12) M_buf = M_six;
+        else if (sprite28_on && id28 == 5'd13) M_buf = M_seven;
+        else if (sprite28_on && id28 == 5'd14) M_buf = M_eight;
+        else if (sprite28_on && id28 == 5'd15) M_buf = M_nine;
+        else if (sprite28_on && id28 == 5'd16) M_buf = M_mcdonald; 
+        else if (sprite28_on && id28 == 5'd17) M_buf = M_title;
+        else if (sprite28_on && id28 == 5'd18) M_buf = M_eskimo;
+        else if (sprite28_on && id28 == 5'd19) M_buf = M_cloud;
+        else if (sprite28_on && id28 == 5'd20) M_buf = M_goat;
+        else if (sprite28_on && id28 == 5'd21) M_buf = M_frog;
+        else if (sprite28_on && id28 == 5'd22) M_buf = M_chick;
+        else if (sprite28_on && id28 == 5'd23) M_buf = M_s;
+        else if (sprite28_on && id28 == 5'd24) M_buf = M_c;
+        else if (sprite28_on && id28 == 5'd25) M_buf = M_o;
+        else if (sprite28_on && id28 == 5'd26) M_buf = M_r;
+        else if (sprite28_on && id28 == 5'd27) M_buf = M_e;
+        
+        else if (sprite29_on && id29 == 1)     M_buf = M_ship;
+        else if (sprite29_on && id29 == 5'd2)  M_buf = M_pig;
+        else if (sprite29_on && id29 == 5'd3)  M_buf = M_bee;
+        else if (sprite29_on && id29 == 5'd4)  M_buf = M_cow;
+        else if (sprite29_on && id29 == 5'd5)  M_buf = M_bullet;
+        else if (sprite29_on && id29 == 5'd6)  M_buf = M_zero;
+        else if (sprite29_on && id29 == 5'd7)  M_buf = M_one;
+        else if (sprite29_on && id29 == 5'd8)  M_buf = M_two;
+        else if (sprite29_on && id29 == 5'd9)  M_buf = M_three;
+        else if (sprite29_on && id29 == 5'd10) M_buf = M_four;
+        else if (sprite29_on && id29 == 5'd11) M_buf = M_five;
+        else if (sprite29_on && id29 == 5'd12) M_buf = M_six;
+        else if (sprite29_on && id29 == 5'd13) M_buf = M_seven;
+        else if (sprite29_on && id29 == 5'd14) M_buf = M_eight;
+        else if (sprite29_on && id29 == 5'd15) M_buf = M_nine;
+        else if (sprite29_on && id29 == 5'd16) M_buf = M_mcdonald; 
+        else if (sprite29_on && id29 == 5'd17) M_buf = M_title;
+        else if (sprite29_on && id29 == 5'd18) M_buf = M_eskimo;
+        else if (sprite29_on && id29 == 5'd19) M_buf = M_cloud;
+        else if (sprite29_on && id29 == 5'd20) M_buf = M_goat;
+        else if (sprite29_on && id29 == 5'd21) M_buf = M_frog;
+        else if (sprite29_on && id29 == 5'd22) M_buf = M_chick;
+        else if (sprite29_on && id29 == 5'd23) M_buf = M_s;
+        else if (sprite29_on && id29 == 5'd24) M_buf = M_c;
+        else if (sprite29_on && id29 == 5'd25) M_buf = M_o;
+        else if (sprite29_on && id29 == 5'd26) M_buf = M_r;
+        else if (sprite29_on && id29 == 5'd27) M_buf = M_e;
+        
+        else if (sprite30_on && id30 == 1)     M_buf = M_ship;
+        else if (sprite30_on && id30 == 5'd2)  M_buf = M_pig;
+        else if (sprite30_on && id30 == 5'd3)  M_buf = M_bee;
+        else if (sprite30_on && id30 == 5'd4)  M_buf = M_cow;
+        else if (sprite30_on && id30 == 5'd5)  M_buf = M_bullet;
+        else if (sprite30_on && id30 == 5'd6)  M_buf = M_zero;
+        else if (sprite30_on && id30 == 5'd7)  M_buf = M_one;
+        else if (sprite30_on && id30 == 5'd8)  M_buf = M_two;
+        else if (sprite30_on && id30 == 5'd9)  M_buf = M_three;
+        else if (sprite30_on && id30 == 5'd10) M_buf = M_four;
+        else if (sprite30_on && id30 == 5'd11) M_buf = M_five;
+        else if (sprite30_on && id30 == 5'd12) M_buf = M_six;
+        else if (sprite30_on && id30 == 5'd13) M_buf = M_seven;
+        else if (sprite30_on && id30 == 5'd14) M_buf = M_eight;
+        else if (sprite30_on && id30 == 5'd15) M_buf = M_nine;
+        else if (sprite30_on && id30 == 5'd16) M_buf = M_mcdonald; 
+        else if (sprite30_on && id30 == 5'd17) M_buf = M_title;
+        else if (sprite30_on && id30 == 5'd18) M_buf = M_eskimo;
+        else if (sprite30_on && id30 == 5'd19) M_buf = M_cloud;
+        else if (sprite30_on && id30 == 5'd20) M_buf = M_goat;
+        else if (sprite30_on && id30 == 5'd21) M_buf = M_frog;
+        else if (sprite30_on && id30 == 5'd22) M_buf = M_chick;
+        else if (sprite30_on && id30 == 5'd23) M_buf = M_s;
+        else if (sprite30_on && id30 == 5'd24) M_buf = M_c;
+        else if (sprite30_on && id30 == 5'd25) M_buf = M_o;
+        else if (sprite30_on && id30 == 5'd26) M_buf = M_r;
+        else if (sprite30_on && id30 == 5'd27) M_buf = M_e;
   
         else                                 M_buf = 24'd4638972; /* Background color */
     end

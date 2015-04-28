@@ -21,15 +21,16 @@ module VGA_LED( input logic         clk,
 
     logic [31:0] sprite1,sprite2,sprite3, sprite4, sprite5, sprite6, sprite7, sprite8, sprite9,
                  sprite10, sprite11, sprite12, sprite13, sprite14, sprite15, sprite16, sprite17,
-                 sprite18, sprite19, sprite20;
+                 sprite18, sprite19, sprite20, sprite21, sprite22, sprite23, sprite24, sprite25,
+                 sprite26, sprite27, sprite28, sprite29, sprite30;
    
     logic [9:0]  addr_ship, addr_pig, addr_bee, addr_cow, addr_mcdonald, addr_zero, addr_one, 
                  addr_two, addr_three, addr_four, addr_five, addr_six, addr_seven, addr_eight, addr_nine, addr_bullet,
-                 addr_title, addr_eskimo, addr_cloud;
+                 addr_title, addr_eskimo, addr_cloud, addr_frog, addr_goat, addr_chick, addr_s, addr_c, addr_o, addr_r, addr_e;
     
     logic [23:0] M_ship, M_pig, M_bee, M_cow, M_mcdonald, M_zero, 
                  M_one, M_two, M_three, M_four, M_five, M_six, M_seven, M_eight, M_nine, M_bullet,
-                 M_title, M_eskimo, M_cloud;
+                 M_title, M_eskimo, M_cloud, M_frog, M_goat, M_chick, M_s, M_c, M_o, M_r, M_e;
 
 	/* Given an input and address put into array */
 	always_ff@(posedge clk)
@@ -55,6 +56,16 @@ module VGA_LED( input logic         clk,
             sprite18 <= 0;
             sprite19 <= 0;
             sprite20 <= 0;
+            sprite21 <= 0;
+            sprite22 <= 0;
+            sprite23 <= 0;
+            sprite24 <= 0;
+            sprite25 <= 0;
+            sprite26 <= 0;
+            sprite27 <= 0;
+            sprite28 <= 0;
+            sprite29 <= 0;
+            sprite30 <= 0;
 		end
         if (write && chipselect) begin
             case(address)
@@ -78,6 +89,16 @@ module VGA_LED( input logic         clk,
                 5'd17: sprite18 <= gl_input;
                 5'd18: sprite19 <= gl_input;
                 5'd19: sprite20 <= gl_input;
+                5'd20: sprite21 <= gl_input;
+                5'd21: sprite22 <= gl_input;
+                5'd22: sprite23 <= gl_input;
+                5'd23: sprite24 <= gl_input;
+                5'd24: sprite25 <= gl_input;
+                5'd25: sprite26 <= gl_input;
+                5'd26: sprite27 <= gl_input;
+                5'd27: sprite28 <= gl_input;
+                5'd28: sprite29 <= gl_input;
+                5'd29: sprite30 <= gl_input;
                 5'd60: begin
                        sprite1 <= 0;
                        sprite2 <= 0;
@@ -99,6 +120,16 @@ module VGA_LED( input logic         clk,
                        sprite18 <= 0;
                        sprite19 <= 0;
                        sprite20 <= 0;
+                       sprite21 <= 0;
+                       sprite22 <= 0;
+                       sprite23 <= 0;
+                       sprite24 <= 0;
+                       sprite25 <= 0;
+                       sprite26 <= 0;
+                       sprite27 <= 0;
+                       sprite28 <= 0;
+                       sprite29 <= 0;
+                       sprite30 <= 0;
                        end
             endcase
         end
@@ -113,19 +144,27 @@ module VGA_LED( input logic         clk,
     cow  cw(.clock(VGA_CLK), .address(addr_cow), .q(M_cow));
     mcdonald mc(.clock(VGA_CLK), .address(addr_mcdonald), .q(M_mcdonald));
     zero z(.clock(VGA_CLK), .address(addr_zero), .q(M_zero));
-    one o(.clock(VGA_CLK), .address(addr_one), .q(M_one));
+    one on(.clock(VGA_CLK), .address(addr_one), .q(M_one));
     two t(.clock(VGA_CLK), .address(addr_two), .q(M_two));
     three th(.clock(VGA_CLK), .address(addr_three), .q(M_three));
     four f(.clock(VGA_CLK), .address(addr_four), .q(M_four));
     five fi(.clock(VGA_CLK), .address(addr_five), .q(M_five));
-    six s(.clock(VGA_CLK), .address(addr_six), .q(M_six));
+    six si(.clock(VGA_CLK), .address(addr_six), .q(M_six));
     seven se(.clock(VGA_CLK), .address(addr_seven), .q(M_seven));
-    eight e(.clock(VGA_CLK), .address(addr_eight), .q(M_eight));
+    eight ei(.clock(VGA_CLK), .address(addr_eight), .q(M_eight));
     nine n(.clock(VGA_CLK), .address(addr_nine), .q(M_nine));
     bullet bu(.clock(VGA_CLK), .address(addr_bullet), .q(M_bullet));
     title tt(.clock(VGA_CLK), .address(addr_title), .q(M_title));
     cloud cl(.clock(VGA_CLK), .address(addr_cloud), .q(M_cloud));
     eskimo es(.clock(VGA_CLK), .address(addr_eskimo), .q(M_eskimo));
+    frog fr(.clock(VGA_CLK), .address(addr_frog), .q(M_frog));
+    goat go(.clock(VGA_CLK), .address(addr_goat), .q(M_goat));
+    chick ch(.clock(VGA_CLK), .address(addr_chick), .q(M_chick));
+    s ls(.clock(VGA_CLK), .address(addr_s), .q(M_s));
+    c lc(.clock(VGA_CLK), .address(addr_c), .q(M_c));
+    o lo(.clock(VGA_CLK), .address(addr_o), .q(M_o));
+    r lr(.clock(VGA_CLK), .address(addr_r), .q(M_r));
+    e le(.clock(VGA_CLK), .address(addr_e), .q(M_e));
    
 	VGA_LED_Emulator led_emulator(.clk50(clk), .*);
     Sprite_Controller sprite_controller(.clk(VGA_CLK), .*);
