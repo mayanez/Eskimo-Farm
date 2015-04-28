@@ -45,6 +45,7 @@ void draw_player();
 void draw_bullets(int);
 void draw_invaders();
 void draw_hud();
+void draw_score();
 
 void init_keyboard() {
     if ( (keyboard = openkeyboard(&endpoint_address)) == NULL ) {
@@ -54,16 +55,16 @@ void init_keyboard() {
 }
 
 void handle_keyboard_thread_f(void *ignored) {
-
+    
     struct usb_keyboard_packet packet;
     int transferred;
     char keystate[12];
-
+    
     for (;;) {
         libusb_interrupt_transfer(keyboard, endpoint_address,
-                  (unsigned char *) &packet, sizeof(packet),
-                  &transferred, 0);
-
+                                  (unsigned char *) &packet, sizeof(packet),
+                                  &transferred, 0);
+        
         if (transferred == sizeof(packet)) {
             switch(packet.keycode[0]) {
                 case RIGHT_ARROW:
@@ -99,13 +100,13 @@ void handle_keyboard_thread_f(void *ignored) {
                 default:
                     break;
             }
-
+            
         }
     }
 }
 
 int draw_sprite(sprite_t *sprite) {
-
+    
     if (sprite->s == -1 && available_slots > 0 && sprite_slots[next_available_sprite_slot] == 0) {
         sprite_slots[next_available_sprite_slot] = 1;
         sprite->s = next_available_sprite_slot;
@@ -119,29 +120,29 @@ int draw_sprite(sprite_t *sprite) {
         }
     }
     ioctl(vga_led_fd, VGA_SET_SPRITE, sprite);
-     
+    
     return 0;
 }
 
 int remove_sprite(sprite_t *sprite) {
     sprite_t empty_sprite;
     memset(&empty_sprite, 0, sizeof(sprite_t));
-
+    
     empty_sprite.s = sprite->s;
 	
 	if (sprite->s == -1) {
         return -1;
     }
-
+    
     if (sprite->s == -1) {
         return -1;
     }
-
-    ioctl(vga_led_fd, VGA_SET_SPRITE, &empty_sprite); 
+    
+    ioctl(vga_led_fd, VGA_SET_SPRITE, &empty_sprite);
     sprite_slots[sprite->s] = 0;
     sprite->s = -1;
     available_slots++;
-
+    
     return 0;
 }
 
@@ -150,7 +151,7 @@ int draw_background() {
         printf("Clear - Device Driver Error\n");
         return -1;
     }
-
+    
     available_slots = MAX_SPRITES;
     memset(&sprite_slots, 0, MAX_SPRITES);
     return 0;
@@ -158,14 +159,14 @@ int draw_background() {
 
 int init_sprite_controller() {
     static const char filename[] = "/dev/vga_led";
-
+    
     printf("VGA LED Userspace program started\n");
-
+    
     if ( (vga_led_fd = open(filename, O_RDWR)) == -1) {
         printf("Could not open device");
         return -1;
     }
-
+    
     next_available_sprite_slot = 0;
     available_slots = MAX_SPRITES;
     return 0;
@@ -183,8 +184,8 @@ void init_invaders() {
     int i;
     current_enemy_count = 0;
     next_available_enemy_slot = 0;
-
-
+    
+    
     /* Initializes 2 enemy */
 	for (i = 0; i < MAX_ENEMIES; i++) {
     	invaders.enemy[i].alive = 0;
@@ -197,7 +198,7 @@ void init_invaders() {
         invaders.enemy[i].points = 0;
         invaders.enemy[i].direction = left;
 	}
-
+    
     invaders.enemy[0].alive = 1;
     invaders.enemy[0].speed = 2;
     invaders.enemy[0].sprite_info.x = MAX_X - PIG_DIM;
@@ -209,7 +210,7 @@ void init_invaders() {
     invaders.enemy[0].direction = left;
     current_enemy_count++;
     next_available_enemy_slot++;
-
+    
     invaders.enemy[1].alive = 1;
     invaders.enemy[1].speed = 2;
     invaders.enemy[1].sprite_info.x = MAX_X - PIG_DIM;
@@ -233,7 +234,7 @@ void init_mutex() {
 
 void init_bullets() {
     int i;
-
+    
     for (i = 0; i < MAX_BULLETS; i++) {
         bullets[i].alive = 0;
         bullets[i].sprite_info.dim = BULLET_DIM;
@@ -254,21 +255,21 @@ void init_state() {
 
 void init_clouds() {
     int i;
-
+    
     init_s = MAX_SPRITES - 1;
-
+    
     for (i = 1; i < MAX_CLOUDS; i++) {
         clouds[i].x = MAX_X - CLOUD_DIM;
         clouds[i].y = MAX_Y/4 + i*100;
         clouds[i].dim = CLOUD_DIM;
         clouds[i].id = CLOUD_ID;
         clouds[i].s = init_s;
-
+        
         sprite_slots[init_s] = 1;
         init_s--;
         available_slots--;
     }
-
+    
     clouds[0].x = MAX_X - CLOUD_DIM - 50;
     clouds[0].y = MAX_Y/4 + 50;
     clouds[0].dim = CLOUD_DIM;
@@ -277,12 +278,12 @@ void init_clouds() {
     
     sprite_slots[init_s] = 1;
     available_slots--;
- 
+    
 }
 
 void init_hud() {
 	int i;
-
+    
 	for (i = 0; i < MAX_LIVES; i++) {
 		lives[i].alive = 1;
 		lives[i].sprite_info.x = i*LIVES_DIM;
@@ -295,7 +296,7 @@ void init_hud() {
 
 void draw_hud() {
 	int i;
-
+    
 	for (i = 0; i < MAX_LIVES; i++) {
 		if (lives[i].alive == 1) {
 			draw_sprite(&lives[i].sprite_info);
@@ -312,7 +313,7 @@ void draw_player() {
 
 void draw_invaders() {
 	int i;
-
+    
 	for (i = 0; i < MAX_ENEMIES; i++) {
 		if (invaders.enemy[i].alive == 1) {
 			draw_sprite(&invaders.enemy[i].sprite_info);
@@ -320,15 +321,15 @@ void draw_invaders() {
 			
 			remove_sprite(&invaders.enemy[i].sprite_info);
 		}
-
+        
 	}
 }
 
 /*Draw or Remove bullet depending on alive state */
 void draw_bullets(int max) {
-
+    
     int i;
-
+    
     for (i = 0; i < max; i++) {
         if (bullets[i].alive == 1) {
             draw_sprite(&bullets[i].sprite_info);
@@ -341,7 +342,7 @@ void draw_bullets(int max) {
 void draw_clouds() {
     int i;
     int speed;
-
+    
     speed = 2;
     for (i = 0; i < MAX_CLOUDS; i++) {
         if (clouds[i].x > 0 + CLOUD_DIM) {
@@ -355,9 +356,13 @@ void draw_clouds() {
     }
 }
 
+void draw_score() {
+    
+}
+
 /* Moves player in all dimensions */
 void move_player(enum direction_t direction) {
-
+    
     if (direction == left) {
         if (player.sprite_info.x > 0) {
             player.sprite_info.x -= PLAYER_STEP_SIZE;
@@ -375,13 +380,13 @@ void move_player(enum direction_t direction) {
             player.sprite_info.y += PLAYER_STEP_SIZE;
         }
     }
-
+    
 }
 
 /*Moves bullet across X dim */
 void move_bullets(int max, int speed) {
     int i;
-
+    
     for (i = 0; i < max; i++) {
         if (bullets[i].alive == 1) {
             if (bullets[i].sprite_info.x < (MAX_X - (bullets[i].sprite_info.dim + speed))) {
@@ -412,19 +417,19 @@ int detect_collision(sprite_t *a, sprite_t *b) {
     if (a->y + a->dim < b->y) {
         return 0;
     }
-
+    
     if (a->y > b->y + b->dim) {
         return 0;
     }
-
+    
     if (a->x > b->x + b->dim) {
         return 0;
     }
-
+    
     if (a->x + a->dim < b->x) {
         return 0;
     }
-
+    
     return 1;
 }
 
@@ -457,7 +462,7 @@ void enemy_player_collision() {
                 remove_sprite(&player.sprite_info);
                 sleep(2);
                 draw_sprite(&player.sprite_info);
-
+                
             }
         }
     }
@@ -467,41 +472,36 @@ void move_enemy(enemy_t *enemy) {
     
     if(enemy->direction == left && enemy->alive == 1){
         if (enemy->sprite_info.x > 0 + enemy->speed)
-          enemy->sprite_info.x -= 2*enemy->speed;
+            enemy->sprite_info.x -= 2*enemy->speed;
         else
-          enemy->alive = 0;    
-     }
-
+            enemy->alive = 0;
+    }
+    
     else if(enemy->direction == up && enemy->alive == 1){
-       if (enemy->sprite_info.x > 0 + enemy->speed )
-          enemy->sprite_info.x -= enemy->speed;
-       else
-          enemy->alive = 0; 
-       if ((enemy->sprite_info.y > LIVES_DIM + enemy->speed) && enemy->alive == 1)
-          enemy->sprite_info.y = enemy->sprite_info.y - enemy->speed;
-       else if ((enemy->sprite_info.y <= LIVES_DIM + enemy->speed) && enemy->alive == 1){
-          enemy->direction = down;
-          enemy->sprite_info.y = enemy->sprite_info.y + enemy->speed;
+        if (enemy->sprite_info.x > 0 + enemy->speed )
+            enemy->sprite_info.x -= enemy->speed;
+        else
+            enemy->alive = 0;
+        if ((enemy->sprite_info.y > LIVES_DIM + enemy->speed) && enemy->alive == 1)
+            enemy->sprite_info.y = enemy->sprite_info.y - enemy->speed;
+        else if ((enemy->sprite_info.y <= LIVES_DIM + enemy->speed) && enemy->alive == 1){
+            enemy->direction = down;
+            enemy->sprite_info.y = enemy->sprite_info.y + enemy->speed;
         }
-     }
- 
-     else if(enemy->direction == down && enemy->alive == 1){
-       if (enemy->sprite_info.x >= 0 + enemy->speed)
-          enemy->sprite_info.x -= enemy->speed;
-       else
-          enemy->alive = 0; 
-       if ((enemy->sprite_info.y < MAX_Y - PIG_DIM - enemy->speed) && enemy->alive == 1)
-          enemy->sprite_info.y = enemy->sprite_info.y + enemy->speed;
-       else if ((enemy->sprite_info.y >= MAX_Y - PIG_DIM - enemy->speed) && enemy->alive == 1){
-          enemy->direction = up;
-          enemy->sprite_info.y = enemy->sprite_info.y - enemy->speed;
+    }
+    
+    else if(enemy->direction == down && enemy->alive == 1){
+        if (enemy->sprite_info.x >= 0 + enemy->speed)
+            enemy->sprite_info.x -= enemy->speed;
+        else
+            enemy->alive = 0;
+        if ((enemy->sprite_info.y < MAX_Y - PIG_DIM - enemy->speed) && enemy->alive == 1)
+            enemy->sprite_info.y = enemy->sprite_info.y + enemy->speed;
+        else if ((enemy->sprite_info.y >= MAX_Y - PIG_DIM - enemy->speed) && enemy->alive == 1){
+            enemy->direction = up;
+            enemy->sprite_info.y = enemy->sprite_info.y - enemy->speed;
         }
-     }
-    if(enemy->sprite_info.id == 3 && enemy->sprite_info.x <= 10){
-  
-    printf("enemy_x : %d\n", enemy->sprite_info.x);
-    printf("enemy_y : %d\n", enemy->sprite_info.y);
-   }
+    }
 }
 
 void add_enemy() {
@@ -510,58 +510,31 @@ void add_enemy() {
         if(next_available_enemy_slot >= MAX_ENEMIES){
             next_available_enemy_slot = 0;
         }
-
+        
         while(invaders.enemy[next_available_enemy_slot].alive != 0){
             next_available_enemy_slot++;
             if(next_available_enemy_slot >= MAX_ENEMIES){
                 next_available_enemy_slot =0;
             }
         }
-
+        
         index = next_available_enemy_slot;
         invaders.enemy[index].alive = 1;
         
         int ycord = rand() % 448;
         
-       
+        
         int value = rand() % 3;
-    
+        
         if(value == 0)
-               dir = up;
+            dir = up;
         else if (value == 1)
-               dir = left;
+            dir = left;
         else
-             dir = down;
-
-
+            dir = down;
+        
+        
         if(score <= PIG_SCORE){
-            invaders.enemy[index].sprite_info.x = MAX_X - PIG_DIM;           
-            invaders.enemy[index].sprite_info.y = ycord;
-            invaders.enemy[index].sprite_info.id = PIG_ID;
-            invaders.enemy[index].sprite_info.dim = PIG_DIM;
-            invaders.enemy[index].points = 1;
-            invaders.enemy[index].speed = 2;
-            invaders.enemy[index].direction = dir;
-            
-        }else if(score <= BEE_SCORE){
-            invaders.enemy[index].sprite_info.x = MAX_X - BEE_DIM;
-            invaders.enemy[index].sprite_info.y = ycord;
-            invaders.enemy[index].sprite_info.id = BEE_ID;
-            invaders.enemy[index].sprite_info.dim = BEE_DIM;
-            invaders.enemy[index].points = 2;
-            invaders.enemy[index].speed = 3;
-            invaders.enemy[index].direction = dir;
-
-        }else if(score <= COW_SCORE){
-            invaders.enemy[index].sprite_info.x = MAX_X - COW_DIM;
-            invaders.enemy[index].sprite_info.y = ycord;
-            invaders.enemy[index].sprite_info.id = COW_ID;
-            invaders.enemy[index].sprite_info.dim = COW_DIM;
-            invaders.enemy[index].points = 3;
-            invaders.enemy[index].speed = 4;
-            invaders.enemy[index].direction = dir;
-
-        }else{
             invaders.enemy[index].sprite_info.x = MAX_X - PIG_DIM;
             invaders.enemy[index].sprite_info.y = ycord;
             invaders.enemy[index].sprite_info.id = PIG_ID;
@@ -569,15 +542,69 @@ void add_enemy() {
             invaders.enemy[index].points = 1;
             invaders.enemy[index].speed = 2;
             invaders.enemy[index].direction = dir;
+            
+        } else if(score <= BEE_SCORE){
+            invaders.enemy[index].sprite_info.x = MAX_X - BEE_DIM;
+            invaders.enemy[index].sprite_info.y = ycord;
+            invaders.enemy[index].sprite_info.id = BEE_ID;
+            invaders.enemy[index].sprite_info.dim = BEE_DIM;
+            invaders.enemy[index].points = 2;
+            invaders.enemy[index].speed = 3;
+            invaders.enemy[index].direction = dir;
+            
+        } else if(score <= COW_SCORE){
+            invaders.enemy[index].sprite_info.x = MAX_X - COW_DIM;
+            invaders.enemy[index].sprite_info.y = ycord;
+            invaders.enemy[index].sprite_info.id = COW_ID;
+            invaders.enemy[index].sprite_info.dim = COW_DIM;
+            invaders.enemy[index].points = 3;
+            invaders.enemy[index].speed = 4;
+            invaders.enemy[index].direction = dir;
+            
+        } else if(score <= FROG_SCORE){
+            invaders.enemy[index].sprite_info.x = MAX_X - FROG_DIM;
+            invaders.enemy[index].sprite_info.y = ycord;
+            invaders.enemy[index].sprite_info.id = FROG_ID;
+            invaders.enemy[index].sprite_info.dim = FROG_DIM;
+            invaders.enemy[index].points = 3;
+            invaders.enemy[index].speed = 3;
+            invaders.enemy[index].direction = dir;
+            
+        } else if(score <= GOAT_SCORE){
+            invaders.enemy[index].sprite_info.x = MAX_X - GOAT_DIM;
+            invaders.enemy[index].sprite_info.y = ycord;
+            invaders.enemy[index].sprite_info.id = GOAT_ID;
+            invaders.enemy[index].sprite_info.dim = GOAT_DIM;
+            invaders.enemy[index].points = 3;
+            invaders.enemy[index].speed = 3;
+            invaders.enemy[index].direction = dir;
+            
+        } else if (score <= CHICK_SCORE){
+            invaders.enemy[index].sprite_info.x = MAX_X - CHICK_DIM;
+            invaders.enemy[index].sprite_info.y = ycord;
+            invaders.enemy[index].sprite_info.id = CHICK_ID;
+            invaders.enemy[index].sprite_info.dim = CHICK_DIM;
+            invaders.enemy[index].points = 3;
+            invaders.enemy[index].speed = 4;
+            invaders.enemy[index].direction = dir;
+        } else {
+            invaders.enemy[index].sprite_info.x = MAX_X - PIG_DIM;
+            invaders.enemy[index].sprite_info.y = ycord;
+            invaders.enemy[index].sprite_info.id = PIG_ID;
+            invaders.enemy[index].sprite_info.dim = PIG_DIM;
+            invaders.enemy[index].points = 3;
+            invaders.enemy[index].speed = 3;
+            invaders.enemy[index].direction = dir;
         }
+        
         next_available_enemy_slot++;
     }
-
+    
     if(current_enemy_count >= MAX_ENEMIES){
-       printf("ENEMY SLOTS FULL\n");
-      return ;
+        printf("ENEMY SLOTS FULL\n");
+        return ;
     }
-    	
+    
 }
 
 
@@ -593,7 +620,7 @@ void enemy_ai() {
 }
 
 int main() {
-
+    
     int quit = 0;
     init_sprite_controller();
     init_keyboard();
@@ -603,7 +630,7 @@ int main() {
     init_bullets(MAX_BULLETS);
     init_clouds();
 	init_hud();
-
+    
     state = game;
 	ticks = 0;
     
@@ -614,7 +641,7 @@ int main() {
     pthread_mutex_unlock(&lock);
 	
     pthread_create(&input_thread, NULL, handle_keyboard_thread_f, NULL);
-
+    
     while (quit == 0) {
         if (state == game) {
             pthread_mutex_lock(&lock);
@@ -625,6 +652,7 @@ int main() {
 			enemy_bullet_collision();
             enemy_player_collision();
             move_bullets(MAX_BULLETS, BULLET_SPEED);
+            draw_score();
             enemy_ai();
 			add_enemy();
             pthread_mutex_unlock(&lock);
@@ -632,13 +660,13 @@ int main() {
         }
 		ticks++;
     }
-
+    
     pthread_cancel(input_thread);
-
+    
     /* Destroy lock */
     pthread_mutex_destroy(&lock);
-
+    
     /* Wait for the network thread to finish */
     pthread_join(input_thread, NULL);
-
+    
 }
