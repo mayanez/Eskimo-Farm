@@ -27,7 +27,7 @@ module Sprite_Controller(   input logic clk,
                 addr_sprite25, addr_sprite26, addr_sprite27, addr_sprite28, addr_sprite29, addr_sprite30;
                 
  
-    logic buf_toggle, sprite1_on, sprite2_on, sprite3_on, sprite4_on, sprite5_on, sprite6_on, sprite7_on,
+    logic buf_toggle, grass_on, sprite1_on, sprite2_on, sprite3_on, sprite4_on, sprite5_on, sprite6_on, sprite7_on,
           sprite8_on, sprite9_on, sprite10_on, sprite11_on, sprite12_on, sprite13_on, sprite14_on, sprite15_on, sprite16_on,
           sprite17_on, sprite18_on, sprite19_on, sprite20_on, sprite21_on, sprite22_on, sprite23_on, sprite24_on, sprite25_on,
           sprite26_on, sprite27_on, sprite28_on, sprite29_on, sprite30_on;
@@ -46,10 +46,12 @@ module Sprite_Controller(   input logic clk,
                 x26_1, y26_1, x26_2, y26_2, x27_1, y27_1, x27_2, y27_2,
                 x28_1, y28_1, x28_2, y28_2, x29_1, y29_1, x29_2, y29_2,
                 x30_1, y30_1, x30_2, y30_2;
+                
+    logic [9:0] grass_x, grass_y;
 
     logic [6:0] dim1, dim2, dim3, dim4, dim5, dim6, dim7, dim8, dim9, dim10, dim11, dim12, dim13, dim14,
                 dim15, dim16, dim17, dim18, dim19, dim20, dim21, dim22, dim23, dim24, dim25, dim26,
-                dim27, dim28, dim29, dim30;
+                dim27, dim28, dim29, dim30, dim_grass;
 
     logic [4:0] id1, id2, id3, id4, id5, id6, id7, id8, id9, id10, id11, id12, id13, id14, id15, id16, id17,
                 id18, id19, id20, id21, id22, id23, id24, id25, id26, id27, id28, id29, id30;
@@ -264,6 +266,10 @@ module Sprite_Controller(   input logic clk,
     assign y30_1 = sprite30[19:10];
     assign x30_2 = x30_1 + dim30 - 1;
     assign y30_2 = y30_1 + dim30 - 1;
+    
+    assign dim_grass = 7'd32;
+    assign grass_y = 10'd608;
+    
     /* END */
  
     /* Verify if sprite is in region */
@@ -297,6 +303,8 @@ module Sprite_Controller(   input logic clk,
     assign sprite28_on = (sprite28 > 0) ? VGA_VCOUNT >= y28_1 && VGA_VCOUNT <= y28_2 && VGA_HCOUNT >= x28_1 && VGA_HCOUNT <= x28_2 : 0;
     assign sprite29_on = (sprite29 > 0) ? VGA_VCOUNT >= y29_1 && VGA_VCOUNT <= y29_2 && VGA_HCOUNT >= x29_1 && VGA_HCOUNT <= x29_2 : 0;
     assign sprite30_on = (sprite30 > 0) ? VGA_VCOUNT >= y30_1 && VGA_VCOUNT <= y30_2 && VGA_HCOUNT >= x30_1 && VGA_HCOUNT <= x30_2 : 0;
+    
+    assign grass_on = VGA_VCOUNT >= grass_y;
     /* END */
  
     /* Calculate address offset for sprite */
@@ -2014,8 +2022,9 @@ module Sprite_Controller(   input logic clk,
         else if (sprite30_on && id30 == 5'd25) M_buf = M_o;
         else if (sprite30_on && id30 == 5'd26) M_buf = M_r;
         else if (sprite30_on && id30 == 5'd27) M_buf = M_e;
-  
-        else                                 M_buf = 24'd4638972; /* Background color */
+        
+        else if (grass_on)                     M_buf = 24'd3516683; /* Grass Color - Replace with sprite later */
+        else                                   M_buf = 24'd4638972; /* Background color */
     end
     /* END */
 
