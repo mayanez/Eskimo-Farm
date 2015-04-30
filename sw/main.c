@@ -40,6 +40,9 @@ uint8_t endpoint_address;
 
 pthread_t input_thread;
 pthread_mutex_t lock;
+pthread_mutex_t controller_lock;
+
+int control_pressed[6];
 
 void player_shoot();
 void move_player(enum direction_t);
@@ -53,6 +56,53 @@ void init_keyboard() {
     if ( (keyboard = openkeyboard(&endpoint_address)) == NULL ) {
         fprintf(stderr, "Did not find a keyboard\n");
         exit(1);
+    }
+}
+
+void handle_controller_thread_f2(void *ignored) {
+    int i;
+
+    for (;;) {
+        pthread_mutex_lock(&controller_lock);
+
+        if (control_pressed[0]){
+                pthread_mutex_lock(&lock);
+                move_player(right);
+                draw_player();
+                pthread_mutex_unlock(&lock);
+        }
+        
+        if (control_pressed[1]) {
+                pthread_mutex_lock(&lock);
+                move_player(left);
+                draw_player();
+                pthread_mutex_unlock(&lock);
+        }
+
+        if (control_pressed[2]) {
+                pthread_mutex_lock(&lock);
+                move_player(up);
+                draw_player();
+                pthread_mutex_unlock(&lock);
+        }
+
+        if (control_pressed[3]) {
+                pthread_mutex_lock(&lock);
+                move_player(down);
+                draw_player();
+                pthread_mutex_unlock(&lock);
+        }
+        
+        if (control_pressed[4]) {
+                pthread_mutex_lock(&lock);
+                player_shoot();
+                draw_bullets(1);
+                pthread_mutex_unlock(&lock);
+        }
+
+        pthread_mutex_unlock(&controller_lock);
+        usleep(40000);
+
     }
 }
 
@@ -100,9 +150,17 @@ void handle_keyboard_thread_f(void *ignored) {
             if (packet.b) {
                     pthread_mutex_lock(&lock);
                     player_shoot();
-                    draw_bullets(1);
+                    draw_bullets(1); /* Check this */
                     pthread_mutex_unlock(&lock);
             }
+
+            pthread_mutex_lock(&controller_lock);
+            control_pressed[0] = packet.dpad_right;
+            control_pressed[1] = packet.dpad_left;
+            control_pressed[2] = packet.dpad_up;
+            control_pressed[3] = packet.dpad_down;
+            control_pressed[4] = packet.b;
+            pthread_mutex_unlock(&controller_lock);
             
         }
     }
@@ -225,7 +283,7 @@ void init_invaders() {
 
 void init_mutex() {
     /* Init Mutex */
-    if (pthread_mutex_init(&lock, NULL) != 0) {
+    if (pthread_mutex_init(&lock, NULL) != 0 && pthread_mutex_init(&controller_lock, NULL) != 0) {
         fprintf(stderr, "mutex init failed\n");
         exit(1);
     }
@@ -719,6 +777,7 @@ int main() {
     pthread_mutex_unlock(&lock);
 	
     pthread_create(&input_thread, NULL, handle_keyboard_thread_f, NULL);
+    pthread_create(&input_thread, NULL, handle_controller_thread_f2, NULL);
     
     while (quit == 0) {
         if (state == game) {

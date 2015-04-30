@@ -2,7 +2,7 @@
 
 #define MAX_BULLETS 5
 #define BULLET_SPEED 20
-#define MAX_ENEMIES 8
+#define MAX_ENEMIES 5
 #define PLAYER_STEP_SIZE 2
 #define MAX_CLOUDS 3
 #define MAX_LIVES 3
@@ -19,7 +19,7 @@
 #define GOAT_SPEED 3
 #define CHICK_SPEED 3
 #define SCORE_OFFSET 250
-#define TICKS_FREQ 25
+#define TICKS_FREQ 50
 
 enum direction_t {up, down, left, right, stationary};
 enum state_t {menu, game, game_over};
