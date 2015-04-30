@@ -4,6 +4,9 @@
 #include <libusb-1.0/libusb.h>
 
 #define USB_HID_KEYBOARD_PROTOCOL 1
+#define USB_XBOX360_CONTROLLER_PROTOCOL 1
+#define USB_XBOX360_CONTROLLER_INTERFACE 255
+#define USB_XBOX360_CONTROLLER_DEVICE 255
 
 /* Modifier bits */
 #define USB_LCTRL  (1 << 0)
@@ -82,6 +85,7 @@ struct Xbox360Msg
     unsigned int dummy2 :32;
     unsigned int dummy3 :16;
 } __attribute__((__packed__));
+
 
 /* Find and open a USB keyboard device.  Argument should point to
    space to store an endpoint address.  Returns NULL if no keyboard

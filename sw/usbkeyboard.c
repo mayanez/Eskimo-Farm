@@ -45,17 +45,16 @@ struct libusb_device_handle *openkeyboard(uint8_t *endpoint_address) {
       exit(1);
     }
 
-    if (desc.bDeviceClass == 255) {
+    if (desc.bDeviceClass == USB_XBOX360_CONTROLLER_DEVICE) {
       struct libusb_config_descriptor *config;
       libusb_get_config_descriptor(dev, 0, &config);
       for (i = 0 ; i < config->bNumInterfaces ; i++)	       
 	for ( k = 0 ; k < config->interface[i].num_altsetting ; k++ ) {
 	  const struct libusb_interface_descriptor *inter =
 	    config->interface[i].altsetting + k ;
-        printf("class %d protocol %d\n", inter->bInterfaceClass, inter->bInterfaceProtocol);
 
-	  if ( inter->bInterfaceClass == 255 &&
-	       inter->bInterfaceProtocol == 1) {
+	  if ( inter->bInterfaceClass == USB_XBOX360_CONTROLLER_INTERFACE &&
+	       inter->bInterfaceProtocol == USB_XBOX360_CONTROLLER_PROTOCOL) {
 	    int r;
 	    if ((r = libusb_open(dev, &keyboard)) != 0) {
 	      fprintf(stderr, "Error: libusb_open failed: %d\n", r);

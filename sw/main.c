@@ -66,7 +66,7 @@ void handle_keyboard_thread_f(void *ignored) {
         libusb_interrupt_transfer(keyboard, endpoint_address,
                                   (unsigned char *) &packet, sizeof(packet),
                                   &transferred, 0);
-        printf("up %x down %x left %x right %x \n", packet.dpad_up, packet.dpad_down, packet.dpad_left, packet.dpad_right);
+        //printf("up %x down %x left %x right %x \n", packet.dpad_up, packet.dpad_down, packet.dpad_left, packet.dpad_right);
         
         if (transferred == sizeof(packet)) {
            if (packet.dpad_right){
@@ -150,8 +150,7 @@ int draw_background() {
         printf("Clear - Device Driver Error\n");
         return -1;
     }
-    
-    memset(&sprite_slots, 0, MAX_SPRITES);
+
     return 0;
 }
 
@@ -164,7 +163,8 @@ int init_sprite_controller() {
         printf("Could not open device");
         return -1;
     }
-    
+
+    draw_background();
     init_s = MAX_SPRITES - 1;
     next_available_sprite_slot = 0;
     available_slots = MAX_SPRITES;
@@ -371,11 +371,11 @@ void draw_clouds() {
     
     speed = 2;
     for (i = 0; i < MAX_CLOUDS; i++) {
-        if (clouds[i].x > 0 + CLOUD_DIM) {
+        if (clouds[i].x > speed) {
             clouds[i].x -= speed;
         } else {
             clouds[i].x = MAX_X - CLOUD_DIM;
-            speed++;
+            //speed++;
         }
         
         draw_sprite(&clouds[i]);
@@ -578,7 +578,7 @@ void move_enemy(enemy_t *enemy) {
 
 void add_enemy() {
     int index;
-	if ((ticks % 50 == 0 ) && current_enemy_count < MAX_ENEMIES) {
+	if ((ticks % TICKS_FREQ == 0 ) && current_enemy_count < MAX_ENEMIES) {
         if(next_available_enemy_slot >= MAX_ENEMIES){
             next_available_enemy_slot = 0;
         }
@@ -735,7 +735,7 @@ int main() {
 			add_enemy();
             game_over_ai();
             pthread_mutex_unlock(&lock);
-            usleep(40000);
+            usleep(30000);
         } else if (state == game_over) {
             sprite_t game_over;
 

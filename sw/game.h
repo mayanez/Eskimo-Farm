@@ -19,6 +19,7 @@
 #define GOAT_SPEED 3
 #define CHICK_SPEED 3
 #define SCORE_OFFSET 250
+#define TICKS_FREQ 25
 
 enum direction_t {up, down, left, right, stationary};
 enum state_t {menu, game, game_over};
