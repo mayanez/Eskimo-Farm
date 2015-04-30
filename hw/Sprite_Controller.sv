@@ -11,9 +11,9 @@ module Sprite_Controller(   input logic clk,
                             input logic [9:0]  VGA_HCOUNT, VGA_VCOUNT,
                             input logic [23:0] M_ship, M_pig, M_bee, M_cow, M_mcdonald, M_bullet, M_zero, M_one, M_two, M_three, M_four, M_five, M_six, 
                                                M_seven, M_eight, M_nine, M_eskimo, M_cloud, M_title, M_goat, M_frog, M_chick, M_s, M_c, M_o, M_r, M_e,
-                            output logic [9:0] addr_ship, addr_pig, addr_bee, addr_cow, addr_bullet, addr_mcdonald, addr_zero, addr_one, addr_two,
+                            output logic [9:0] addr_ship, addr_pig, addr_bee, addr_cow, addr_bullet, /*addr_mcdonald,*/ addr_zero, addr_one, addr_two,
                                                addr_three, addr_four, addr_five, addr_six, addr_seven, addr_eight, addr_nine, addr_eskimo, addr_cloud, 
-                                               addr_title, addr_goat, addr_frog, addr_chick, addr_s, addr_c, addr_o, addr_r, addr_e,
+                                               /*addr_title, addr_goat, addr_frog,*/ addr_chick, /*addr_s, addr_c, addr_o, addr_r, addr_e,*/
                             output logic [7:0] VGA_R, VGA_G, VGA_B);
 
 
@@ -268,7 +268,7 @@ module Sprite_Controller(   input logic clk,
     assign y30_2 = y30_1 + dim30 - 1;
     
     assign dim_grass = 7'd32;
-    assign grass_y = 10'd608;
+    assign grass_y = 10'd448;
     
     /* END */
  
@@ -807,7 +807,7 @@ module Sprite_Controller(   input logic clk,
                           (sprite29_on && id29 == 5'd15) ? addr_sprite29 :
                           (sprite30_on && id30 == 5'd15) ? addr_sprite30 : 0;
                           
-    assign addr_mcdonald= (sprite1_on && id1 == 5'd16) ? addr_sprite1 : 
+    /*assign addr_mcdonald= (sprite1_on && id1 == 5'd16) ? addr_sprite1 : 
                           (sprite2_on && id2 == 5'd16) ? addr_sprite2 : 
                           (sprite3_on && id3 == 5'd16) ? addr_sprite3 :
                           (sprite4_on && id4 == 5'd16) ? addr_sprite4 :
@@ -867,7 +867,7 @@ module Sprite_Controller(   input logic clk,
                           (sprite27_on && id27 == 5'd17) ? addr_sprite27 :
                           (sprite28_on && id28 == 5'd17) ? addr_sprite28 :
                           (sprite29_on && id29 == 5'd17) ? addr_sprite29 :
-                          (sprite30_on && id30 == 5'd17) ? addr_sprite30 : 0;
+                          (sprite30_on && id30 == 5'd17) ? addr_sprite30 : 0; */
 
     assign addr_eskimo =  (sprite1_on && id1 == 5'd18) ? addr_sprite1 : 
                           (sprite2_on && id2 == 5'd18) ? addr_sprite2 : 
@@ -932,7 +932,7 @@ module Sprite_Controller(   input logic clk,
                           (sprite29_on && id29 == 5'd19) ? addr_sprite29 :
                           (sprite30_on && id30 == 5'd19) ? addr_sprite30 : 0;
                           
-    assign addr_goat   =  (sprite1_on && id1 == 5'd20) ? addr_sprite1 :
+    /*assign addr_goat   =  (sprite1_on && id1 == 5'd20) ? addr_sprite1 :
                           (sprite2_on && id2 == 5'd20) ? addr_sprite2 :
                           (sprite3_on && id3 == 5'd20) ? addr_sprite3 :
                           (sprite4_on && id4 == 5'd20) ? addr_sprite4 :
@@ -992,7 +992,7 @@ module Sprite_Controller(   input logic clk,
                             (sprite27_on && id27 == 5'd21) ? addr_sprite27 :
                             (sprite28_on && id28 == 5'd21) ? addr_sprite28 :
                             (sprite29_on && id29 == 5'd21) ? addr_sprite29 :
-                            (sprite30_on && id30 == 5'd21) ? addr_sprite30 : 0;
+                            (sprite30_on && id30 == 5'd21) ? addr_sprite30 : 0; */
                             
     assign addr_chick  =    (sprite1_on && id1 == 5'd22) ? addr_sprite1 :
                             (sprite2_on && id2 == 5'd22) ? addr_sprite2 :
@@ -1025,7 +1025,7 @@ module Sprite_Controller(   input logic clk,
                             (sprite29_on && id29 == 5'd22) ? addr_sprite29 :
                             (sprite30_on && id30 == 5'd22) ? addr_sprite30 : 0;
                             
-    assign addr_s      =    (sprite1_on && id1 == 5'd23) ? addr_sprite1 :
+    /*assign addr_s      =    (sprite1_on && id1 == 5'd23) ? addr_sprite1 :
                             (sprite2_on && id2 == 5'd23) ? addr_sprite2 :
                             (sprite3_on && id3 == 5'd23) ? addr_sprite3 :
                             (sprite4_on && id4 == 5'd23) ? addr_sprite4 :
@@ -1177,7 +1177,7 @@ module Sprite_Controller(   input logic clk,
                             (sprite27_on && id27 == 5'd27) ? addr_sprite27 :
                             (sprite28_on && id28 == 5'd27) ? addr_sprite28 :
                             (sprite29_on && id29 == 5'd27) ? addr_sprite29 :
-                            (sprite30_on && id30 == 5'd27) ? addr_sprite30 : 0;
+                            (sprite30_on && id30 == 5'd27) ? addr_sprite30 : 0; */
     /* END */
  
     /* Assign sprite to buffer - Priority Encoder*/
@@ -1198,18 +1198,18 @@ module Sprite_Controller(   input logic clk,
         else if (sprite1_on && id1 == 5'd13) M_buf = M_seven;
         else if (sprite1_on && id1 == 5'd14) M_buf = M_eight;
         else if (sprite1_on && id1 == 5'd15) M_buf = M_nine;
-        else if (sprite1_on && id1 == 5'd16) M_buf = M_mcdonald;
-        else if (sprite1_on && id1 == 5'd17) M_buf = M_title;
+        //else if (sprite1_on && id1 == 5'd16) M_buf = M_mcdonald;
+        //else if (sprite1_on && id1 == 5'd17) M_buf = M_title;
         else if (sprite1_on && id1 == 5'd18) M_buf = M_eskimo;
         else if (sprite1_on && id1 == 5'd19) M_buf = M_cloud;
-        else if (sprite1_on && id1 == 5'd20) M_buf = M_goat;
-        else if (sprite1_on && id1 == 5'd21) M_buf = M_frog;
+        //else if (sprite1_on && id1 == 5'd20) M_buf = M_goat;
+        //else if (sprite1_on && id1 == 5'd21) M_buf = M_frog;
         else if (sprite1_on && id1 == 5'd22) M_buf = M_chick;
-        else if (sprite1_on && id1 == 5'd23) M_buf = M_s;
-        else if (sprite1_on && id1 == 5'd24) M_buf = M_c;
-        else if (sprite1_on && id1 == 5'd25) M_buf = M_o;
-        else if (sprite1_on && id1 == 5'd26) M_buf = M_r;
-        else if (sprite1_on && id1 == 5'd27) M_buf = M_e;
+        //else if (sprite1_on && id1 == 5'd23) M_buf = M_s;
+        //else if (sprite1_on && id1 == 5'd24) M_buf = M_c;
+        //else if (sprite1_on && id1 == 5'd25) M_buf = M_o;
+        //else if (sprite1_on && id1 == 5'd26) M_buf = M_r;
+        //else if (sprite1_on && id1 == 5'd27) M_buf = M_e;
         
         else if (sprite2_on && id2 == 1)     M_buf = M_ship;
         else if (sprite2_on && id2 == 5'd2)  M_buf = M_pig;
@@ -1226,18 +1226,18 @@ module Sprite_Controller(   input logic clk,
         else if (sprite2_on && id2 == 5'd13) M_buf = M_seven;
         else if (sprite2_on && id2 == 5'd14) M_buf = M_eight;
         else if (sprite2_on && id2 == 5'd15) M_buf = M_nine;
-        else if (sprite2_on && id2 == 5'd16) M_buf = M_mcdonald;
-        else if (sprite2_on && id2 == 5'd17) M_buf = M_title;
+        //else if (sprite2_on && id2 == 5'd16) M_buf = M_mcdonald;
+        //else if (sprite2_on && id2 == 5'd17) M_buf = M_title;
         else if (sprite2_on && id2 == 5'd18) M_buf = M_eskimo;
         else if (sprite2_on && id2 == 5'd19) M_buf = M_cloud;
-        else if (sprite2_on && id2 == 5'd20) M_buf = M_goat;
-        else if (sprite2_on && id2 == 5'd21) M_buf = M_frog;
+        //else if (sprite2_on && id2 == 5'd20) M_buf = M_goat;
+        //else if (sprite2_on && id2 == 5'd21) M_buf = M_frog;
         else if (sprite2_on && id2 == 5'd22) M_buf = M_chick;
-        else if (sprite2_on && id2 == 5'd23) M_buf = M_s;
-        else if (sprite2_on && id2 == 5'd24) M_buf = M_c;
-        else if (sprite2_on && id2 == 5'd25) M_buf = M_o;
-        else if (sprite2_on && id2 == 5'd26) M_buf = M_r;
-        else if (sprite2_on && id2 == 5'd27) M_buf = M_e;
+        //else if (sprite2_on && id2 == 5'd23) M_buf = M_s;
+        //else if (sprite2_on && id2 == 5'd24) M_buf = M_c;
+        //else if (sprite2_on && id2 == 5'd25) M_buf = M_o;
+        //else if (sprite2_on && id2 == 5'd26) M_buf = M_r;
+        //else if (sprite2_on && id2 == 5'd27) M_buf = M_e;
         
         else if (sprite3_on && id3 == 1)     M_buf = M_ship;
         else if (sprite3_on && id3 == 5'd2)  M_buf = M_pig;
@@ -1254,18 +1254,18 @@ module Sprite_Controller(   input logic clk,
         else if (sprite3_on && id3 == 5'd13) M_buf = M_seven;
         else if (sprite3_on && id3 == 5'd14) M_buf = M_eight;
         else if (sprite3_on && id3 == 5'd15) M_buf = M_nine;
-        else if (sprite3_on && id3 == 5'd16) M_buf = M_mcdonald;
-        else if (sprite3_on && id3 == 5'd17) M_buf = M_title;
+        //else if (sprite3_on && id3 == 5'd16) M_buf = M_mcdonald;
+        //else if (sprite3_on && id3 == 5'd17) M_buf = M_title;
         else if (sprite3_on && id3 == 5'd18) M_buf = M_eskimo;
         else if (sprite3_on && id3 == 5'd19) M_buf = M_cloud;
-        else if (sprite3_on && id3 == 5'd20) M_buf = M_goat;
-        else if (sprite3_on && id3 == 5'd21) M_buf = M_frog;
+        //else if (sprite3_on && id3 == 5'd20) M_buf = M_goat;
+        //else if (sprite3_on && id3 == 5'd21) M_buf = M_frog;
         else if (sprite3_on && id3 == 5'd22) M_buf = M_chick;
-        else if (sprite3_on && id3 == 5'd23) M_buf = M_s;
-        else if (sprite3_on && id3 == 5'd24) M_buf = M_c;
-        else if (sprite3_on && id3 == 5'd25) M_buf = M_o;
-        else if (sprite3_on && id3 == 5'd26) M_buf = M_r;
-        else if (sprite3_on && id3 == 5'd27) M_buf = M_e;  
+        //else if (sprite3_on && id3 == 5'd23) M_buf = M_s;
+        //else if (sprite3_on && id3 == 5'd24) M_buf = M_c;
+        //else if (sprite3_on && id3 == 5'd25) M_buf = M_o;
+        //else if (sprite3_on && id3 == 5'd26) M_buf = M_r;
+        //else if (sprite3_on && id3 == 5'd27) M_buf = M_e;  
   
         else if (sprite4_on && id4 == 1)     M_buf = M_ship;
         else if (sprite4_on && id4 == 5'd2)  M_buf = M_pig;
@@ -1282,18 +1282,18 @@ module Sprite_Controller(   input logic clk,
         else if (sprite4_on && id4 == 5'd13) M_buf = M_seven;
         else if (sprite4_on && id4 == 5'd14) M_buf = M_eight;
         else if (sprite4_on && id4 == 5'd15) M_buf = M_nine;
-        else if (sprite4_on && id4 == 5'd16) M_buf = M_mcdonald; 
-        else if (sprite4_on && id4 == 5'd17) M_buf = M_title;
+        //else if (sprite4_on && id4 == 5'd16) M_buf = M_mcdonald; 
+        //else if (sprite4_on && id4 == 5'd17) M_buf = M_title;
         else if (sprite4_on && id4 == 5'd18) M_buf = M_eskimo;
         else if (sprite4_on && id4 == 5'd19) M_buf = M_cloud;
-        else if (sprite4_on && id4 == 5'd20) M_buf = M_goat;
-        else if (sprite4_on && id4 == 5'd21) M_buf = M_frog;
+        //else if (sprite4_on && id4 == 5'd20) M_buf = M_goat;
+        //else if (sprite4_on && id4 == 5'd21) M_buf = M_frog;
         else if (sprite4_on && id4 == 5'd22) M_buf = M_chick;
-        else if (sprite4_on && id4 == 5'd23) M_buf = M_s;
-        else if (sprite4_on && id4 == 5'd24) M_buf = M_c;
-        else if (sprite4_on && id4 == 5'd25) M_buf = M_o;
-        else if (sprite4_on && id4 == 5'd26) M_buf = M_r;
-        else if (sprite4_on && id4 == 5'd27) M_buf = M_e;
+        //else if (sprite4_on && id4 == 5'd23) M_buf = M_s;
+        //else if (sprite4_on && id4 == 5'd24) M_buf = M_c;
+        //else if (sprite4_on && id4 == 5'd25) M_buf = M_o;
+        //else if (sprite4_on && id4 == 5'd26) M_buf = M_r;
+        //else if (sprite4_on && id4 == 5'd27) M_buf = M_e;
         
         else if (sprite5_on && id5 == 1)     M_buf = M_ship;
         else if (sprite5_on && id5 == 5'd2)  M_buf = M_pig;
@@ -1310,18 +1310,18 @@ module Sprite_Controller(   input logic clk,
         else if (sprite5_on && id5 == 5'd13) M_buf = M_seven;
         else if (sprite5_on && id5 == 5'd14) M_buf = M_eight;
         else if (sprite5_on && id5 == 5'd15) M_buf = M_nine;
-        else if (sprite5_on && id5 == 5'd16) M_buf = M_mcdonald; 
-        else if (sprite5_on && id5 == 5'd17) M_buf = M_title;
+        //else if (sprite5_on && id5 == 5'd16) M_buf = M_mcdonald; 
+        //else if (sprite5_on && id5 == 5'd17) M_buf = M_title;
         else if (sprite5_on && id5 == 5'd18) M_buf = M_eskimo;
         else if (sprite5_on && id5 == 5'd19) M_buf = M_cloud;
-        else if (sprite5_on && id5 == 5'd20) M_buf = M_goat;
-        else if (sprite5_on && id5 == 5'd21) M_buf = M_frog;
+        //else if (sprite5_on && id5 == 5'd20) M_buf = M_goat;
+        //else if (sprite5_on && id5 == 5'd21) M_buf = M_frog;
         else if (sprite5_on && id5 == 5'd22) M_buf = M_chick;
-        else if (sprite5_on && id5 == 5'd23) M_buf = M_s;
-        else if (sprite5_on && id5 == 5'd24) M_buf = M_c;
-        else if (sprite5_on && id5 == 5'd25) M_buf = M_o;
-        else if (sprite5_on && id5 == 5'd26) M_buf = M_r;
-        else if (sprite5_on && id5 == 5'd27) M_buf = M_e;
+        //else if (sprite5_on && id5 == 5'd23) M_buf = M_s;
+        //else if (sprite5_on && id5 == 5'd24) M_buf = M_c;
+        //else if (sprite5_on && id5 == 5'd25) M_buf = M_o;
+        //else if (sprite5_on && id5 == 5'd26) M_buf = M_r;
+        //else if (sprite5_on && id5 == 5'd27) M_buf = M_e;
         
         else if (sprite6_on && id6 == 1)     M_buf = M_ship;
         else if (sprite6_on && id6 == 5'd2)  M_buf = M_pig;
@@ -1338,18 +1338,18 @@ module Sprite_Controller(   input logic clk,
         else if (sprite6_on && id6 == 5'd13) M_buf = M_seven;
         else if (sprite6_on && id6 == 5'd14) M_buf = M_eight;
         else if (sprite6_on && id6 == 5'd15) M_buf = M_nine;
-        else if (sprite6_on && id6 == 5'd16) M_buf = M_mcdonald; 
-        else if (sprite6_on && id6 == 5'd17) M_buf = M_title;
+        //else if (sprite6_on && id6 == 5'd16) M_buf = M_mcdonald; 
+        //else if (sprite6_on && id6 == 5'd17) M_buf = M_title;
         else if (sprite6_on && id6 == 5'd18) M_buf = M_eskimo;
         else if (sprite6_on && id6 == 5'd19) M_buf = M_cloud;
-        else if (sprite6_on && id6 == 5'd20) M_buf = M_goat;
-        else if (sprite6_on && id6 == 5'd21) M_buf = M_frog;
+        //else if (sprite6_on && id6 == 5'd20) M_buf = M_goat;
+        //else if (sprite6_on && id6 == 5'd21) M_buf = M_frog;
         else if (sprite6_on && id6 == 5'd22) M_buf = M_chick;
-        else if (sprite6_on && id6 == 5'd23) M_buf = M_s;
-        else if (sprite6_on && id6 == 5'd24) M_buf = M_c;
-        else if (sprite6_on && id6 == 5'd25) M_buf = M_o;
-        else if (sprite6_on && id6 == 5'd26) M_buf = M_r;
-        else if (sprite6_on && id6 == 5'd27) M_buf = M_e;
+        //else if (sprite6_on && id6 == 5'd23) M_buf = M_s;
+        //else if (sprite6_on && id6 == 5'd24) M_buf = M_c;
+        //else if (sprite6_on && id6 == 5'd25) M_buf = M_o;
+        //else if (sprite6_on && id6 == 5'd26) M_buf = M_r;
+        //else if (sprite6_on && id6 == 5'd27) M_buf = M_e;
         
         else if (sprite7_on && id7 == 1)     M_buf = M_ship;
         else if (sprite7_on && id7 == 5'd2)  M_buf = M_pig;
@@ -1366,18 +1366,18 @@ module Sprite_Controller(   input logic clk,
         else if (sprite7_on && id7 == 5'd13) M_buf = M_seven;
         else if (sprite7_on && id7 == 5'd14) M_buf = M_eight;
         else if (sprite7_on && id7 == 5'd15) M_buf = M_nine;
-        else if (sprite7_on && id7 == 5'd16) M_buf = M_mcdonald; 
-        else if (sprite7_on && id7 == 5'd17) M_buf = M_title;
+        //else if (sprite7_on && id7 == 5'd16) M_buf = M_mcdonald; 
+        //else if (sprite7_on && id7 == 5'd17) M_buf = M_title;
         else if (sprite7_on && id7 == 5'd18) M_buf = M_eskimo;
         else if (sprite7_on && id7 == 5'd19) M_buf = M_cloud;
-        else if (sprite7_on && id7 == 5'd20) M_buf = M_goat;
-        else if (sprite7_on && id7 == 5'd21) M_buf = M_frog;
+        //else if (sprite7_on && id7 == 5'd20) M_buf = M_goat;
+        //else if (sprite7_on && id7 == 5'd21) M_buf = M_frog;
         else if (sprite7_on && id7 == 5'd22) M_buf = M_chick;
-        else if (sprite7_on && id7 == 5'd23) M_buf = M_s;
-        else if (sprite7_on && id7 == 5'd24) M_buf = M_c;
-        else if (sprite7_on && id7 == 5'd25) M_buf = M_o;
-        else if (sprite7_on && id7 == 5'd26) M_buf = M_r;
-        else if (sprite7_on && id7 == 5'd27) M_buf = M_e;
+        //else if (sprite7_on && id7 == 5'd23) M_buf = M_s;
+        //else if (sprite7_on && id7 == 5'd24) M_buf = M_c;
+        //else if (sprite7_on && id7 == 5'd25) M_buf = M_o;
+        //else if (sprite7_on && id7 == 5'd26) M_buf = M_r;
+        //else if (sprite7_on && id7 == 5'd27) M_buf = M_e;
         
         else if (sprite8_on && id8 == 1)     M_buf = M_ship;
         else if (sprite8_on && id8 == 5'd2)  M_buf = M_pig;
@@ -1394,18 +1394,18 @@ module Sprite_Controller(   input logic clk,
         else if (sprite8_on && id8 == 5'd13) M_buf = M_seven;
         else if (sprite8_on && id8 == 5'd14) M_buf = M_eight;
         else if (sprite8_on && id8 == 5'd15) M_buf = M_nine;
-        else if (sprite8_on && id8 == 5'd16) M_buf = M_mcdonald; 
-        else if (sprite8_on && id8 == 5'd17) M_buf = M_title;
+        //else if (sprite8_on && id8 == 5'd16) M_buf = M_mcdonald; 
+        //else if (sprite8_on && id8 == 5'd17) M_buf = M_title;
         else if (sprite8_on && id8 == 5'd18) M_buf = M_eskimo;
         else if (sprite8_on && id8 == 5'd19) M_buf = M_cloud;
-        else if (sprite8_on && id8 == 5'd20) M_buf = M_goat;
-        else if (sprite8_on && id8 == 5'd21) M_buf = M_frog;
+        //else if (sprite8_on && id8 == 5'd20) M_buf = M_goat;
+        //else if (sprite8_on && id8 == 5'd21) M_buf = M_frog;
         else if (sprite8_on && id8 == 5'd22) M_buf = M_chick;
-        else if (sprite8_on && id8 == 5'd23) M_buf = M_s;
-        else if (sprite8_on && id8 == 5'd24) M_buf = M_c;
-        else if (sprite8_on && id8 == 5'd25) M_buf = M_o;
-        else if (sprite8_on && id8 == 5'd26) M_buf = M_r;
-        else if (sprite8_on && id8 == 5'd27) M_buf = M_e;
+        //else if (sprite8_on && id8 == 5'd23) M_buf = M_s;
+        //else if (sprite8_on && id8 == 5'd24) M_buf = M_c;
+        //else if (sprite8_on && id8 == 5'd25) M_buf = M_o;
+        //else if (sprite8_on && id8 == 5'd26) M_buf = M_r;
+        //else if (sprite8_on && id8 == 5'd27) M_buf = M_e;
         
         else if (sprite9_on && id9 == 1)     M_buf = M_ship;
         else if (sprite9_on && id9 == 5'd2)  M_buf = M_pig;
@@ -1422,18 +1422,18 @@ module Sprite_Controller(   input logic clk,
         else if (sprite9_on && id9 == 5'd13) M_buf = M_seven;
         else if (sprite9_on && id9 == 5'd14) M_buf = M_eight;
         else if (sprite9_on && id9 == 5'd15) M_buf = M_nine;
-        else if (sprite9_on && id9 == 5'd16) M_buf = M_mcdonald; 
-        else if (sprite9_on && id9 == 5'd17) M_buf = M_title;
+        //else if (sprite9_on && id9 == 5'd16) M_buf = M_mcdonald; 
+        //else if (sprite9_on && id9 == 5'd17) M_buf = M_title;
         else if (sprite9_on && id9 == 5'd18) M_buf = M_eskimo;
         else if (sprite9_on && id9 == 5'd19) M_buf = M_cloud;
-        else if (sprite9_on && id9 == 5'd20) M_buf = M_goat;
-        else if (sprite9_on && id9 == 5'd21) M_buf = M_frog;
+        //else if (sprite9_on && id9 == 5'd20) M_buf = M_goat;
+        //else if (sprite9_on && id9 == 5'd21) M_buf = M_frog;
         else if (sprite9_on && id9 == 5'd22) M_buf = M_chick;
-        else if (sprite9_on && id9 == 5'd23) M_buf = M_s;
-        else if (sprite9_on && id9 == 5'd24) M_buf = M_c;
-        else if (sprite9_on && id9 == 5'd25) M_buf = M_o;
-        else if (sprite9_on && id9 == 5'd26) M_buf = M_r;
-        else if (sprite9_on && id9 == 5'd27) M_buf = M_e;
+        //else if (sprite9_on && id9 == 5'd23) M_buf = M_s;
+        //else if (sprite9_on && id9 == 5'd24) M_buf = M_c;
+        //else if (sprite9_on && id9 == 5'd25) M_buf = M_o;
+        //else if (sprite9_on && id9 == 5'd26) M_buf = M_r;
+        //else if (sprite9_on && id9 == 5'd27) M_buf = M_e;
         
         else if (sprite10_on && id10 == 1)     M_buf = M_ship;
         else if (sprite10_on && id10 == 5'd2)  M_buf = M_pig;
@@ -1450,18 +1450,18 @@ module Sprite_Controller(   input logic clk,
         else if (sprite10_on && id10 == 5'd13) M_buf = M_seven;
         else if (sprite10_on && id10 == 5'd14) M_buf = M_eight;
         else if (sprite10_on && id10 == 5'd15) M_buf = M_nine;
-        else if (sprite10_on && id10 == 5'd16) M_buf = M_mcdonald; 
-        else if (sprite10_on && id10 == 5'd17) M_buf = M_title;
+        //else if (sprite10_on && id10 == 5'd16) M_buf = M_mcdonald; 
+        //else if (sprite10_on && id10 == 5'd17) M_buf = M_title;
         else if (sprite10_on && id10 == 5'd18) M_buf = M_eskimo;
         else if (sprite10_on && id10 == 5'd19) M_buf = M_cloud;
-        else if (sprite10_on && id10 == 5'd20) M_buf = M_goat;
-        else if (sprite10_on && id10 == 5'd21) M_buf = M_frog;
+        //else if (sprite10_on && id10 == 5'd20) M_buf = M_goat;
+        //else if (sprite10_on && id10 == 5'd21) M_buf = M_frog;
         else if (sprite10_on && id10 == 5'd22) M_buf = M_chick;
-        else if (sprite10_on && id10 == 5'd23) M_buf = M_s;
-        else if (sprite10_on && id10 == 5'd24) M_buf = M_c;
-        else if (sprite10_on && id10 == 5'd25) M_buf = M_o;
-        else if (sprite10_on && id10 == 5'd26) M_buf = M_r;
-        else if (sprite10_on && id10 == 5'd27) M_buf = M_e;
+        //else if (sprite10_on && id10 == 5'd23) M_buf = M_s;
+        //else if (sprite10_on && id10 == 5'd24) M_buf = M_c;
+        //else if (sprite10_on && id10 == 5'd25) M_buf = M_o;
+        //else if (sprite10_on && id10 == 5'd26) M_buf = M_r;
+        //else if (sprite10_on && id10 == 5'd27) M_buf = M_e;
         
         else if (sprite11_on && id11 == 1)     M_buf = M_ship;
         else if (sprite11_on && id11 == 5'd2)  M_buf = M_pig;
@@ -1478,18 +1478,18 @@ module Sprite_Controller(   input logic clk,
         else if (sprite11_on && id11 == 5'd13) M_buf = M_seven;
         else if (sprite11_on && id11 == 5'd14) M_buf = M_eight;
         else if (sprite11_on && id11 == 5'd15) M_buf = M_nine;
-        else if (sprite11_on && id11 == 5'd16) M_buf = M_mcdonald; 
-        else if (sprite11_on && id11 == 5'd17) M_buf = M_title;
+        //else if (sprite11_on && id11 == 5'd16) M_buf = M_mcdonald; 
+        //else if (sprite11_on && id11 == 5'd17) M_buf = M_title;
         else if (sprite11_on && id11 == 5'd18) M_buf = M_eskimo;
         else if (sprite11_on && id11 == 5'd19) M_buf = M_cloud;
-        else if (sprite11_on && id11 == 5'd20) M_buf = M_goat;
-        else if (sprite11_on && id11 == 5'd21) M_buf = M_frog;
+        //else if (sprite11_on && id11 == 5'd20) M_buf = M_goat;
+        //else if (sprite11_on && id11 == 5'd21) M_buf = M_frog;
         else if (sprite11_on && id11 == 5'd22) M_buf = M_chick;
-        else if (sprite11_on && id11 == 5'd23) M_buf = M_s;
-        else if (sprite11_on && id11 == 5'd24) M_buf = M_c;
-        else if (sprite11_on && id11 == 5'd25) M_buf = M_o;
-        else if (sprite11_on && id11 == 5'd26) M_buf = M_r;
-        else if (sprite11_on && id11 == 5'd27) M_buf = M_e;
+        //else if (sprite11_on && id11 == 5'd23) M_buf = M_s;
+        //else if (sprite11_on && id11 == 5'd24) M_buf = M_c;
+        //else if (sprite11_on && id11 == 5'd25) M_buf = M_o;
+        //else if (sprite11_on && id11 == 5'd26) M_buf = M_r;
+        //else if (sprite11_on && id11 == 5'd27) M_buf = M_e;
         
         else if (sprite12_on && id12 == 1)     M_buf = M_ship;
         else if (sprite12_on && id12 == 5'd2)  M_buf = M_pig;
@@ -1506,18 +1506,18 @@ module Sprite_Controller(   input logic clk,
         else if (sprite12_on && id12 == 5'd13) M_buf = M_seven;
         else if (sprite12_on && id12 == 5'd14) M_buf = M_eight;
         else if (sprite12_on && id12 == 5'd15) M_buf = M_nine;
-        else if (sprite12_on && id12 == 5'd16) M_buf = M_mcdonald; 
-        else if (sprite12_on && id12 == 5'd17) M_buf = M_title;
+        //else if (sprite12_on && id12 == 5'd16) M_buf = M_mcdonald; 
+        //else if (sprite12_on && id12 == 5'd17) M_buf = M_title;
         else if (sprite12_on && id12 == 5'd18) M_buf = M_eskimo;
         else if (sprite12_on && id12 == 5'd19) M_buf = M_cloud;
-        else if (sprite12_on && id12 == 5'd20) M_buf = M_goat;
-        else if (sprite12_on && id12 == 5'd21) M_buf = M_frog;
+        //else if (sprite12_on && id12 == 5'd20) M_buf = M_goat;
+        //else if (sprite12_on && id12 == 5'd21) M_buf = M_frog;
         else if (sprite12_on && id12 == 5'd22) M_buf = M_chick;
-        else if (sprite12_on && id12 == 5'd23) M_buf = M_s;
-        else if (sprite12_on && id12 == 5'd24) M_buf = M_c;
-        else if (sprite12_on && id12 == 5'd25) M_buf = M_o;
-        else if (sprite12_on && id12 == 5'd26) M_buf = M_r;
-        else if (sprite12_on && id12 == 5'd27) M_buf = M_e;
+        //else if (sprite12_on && id12 == 5'd23) M_buf = M_s;
+        //else if (sprite12_on && id12 == 5'd24) M_buf = M_c;
+        //else if (sprite12_on && id12 == 5'd25) M_buf = M_o;
+        //else if (sprite12_on && id12 == 5'd26) M_buf = M_r;
+        //else if (sprite12_on && id12 == 5'd27) M_buf = M_e;
         
         else if (sprite13_on && id13 == 1)     M_buf = M_ship;
         else if (sprite13_on && id13 == 5'd2)  M_buf = M_pig;
@@ -1534,18 +1534,18 @@ module Sprite_Controller(   input logic clk,
         else if (sprite13_on && id13 == 5'd13) M_buf = M_seven;
         else if (sprite13_on && id13 == 5'd14) M_buf = M_eight;
         else if (sprite13_on && id13 == 5'd15) M_buf = M_nine;
-        else if (sprite13_on && id13 == 5'd16) M_buf = M_mcdonald; 
-        else if (sprite13_on && id13 == 5'd17) M_buf = M_title;
+        //else if (sprite13_on && id13 == 5'd16) M_buf = M_mcdonald; 
+        //else if (sprite13_on && id13 == 5'd17) M_buf = M_title;
         else if (sprite13_on && id13 == 5'd18) M_buf = M_eskimo;
         else if (sprite13_on && id13 == 5'd19) M_buf = M_cloud;
-        else if (sprite13_on && id13 == 5'd20) M_buf = M_goat;
-        else if (sprite13_on && id13 == 5'd21) M_buf = M_frog;
+        //else if (sprite13_on && id13 == 5'd20) M_buf = M_goat;
+        //else if (sprite13_on && id13 == 5'd21) M_buf = M_frog;
         else if (sprite13_on && id13 == 5'd22) M_buf = M_chick;
-        else if (sprite13_on && id13 == 5'd23) M_buf = M_s;
-        else if (sprite13_on && id13 == 5'd24) M_buf = M_c;
-        else if (sprite13_on && id13 == 5'd25) M_buf = M_o;
-        else if (sprite13_on && id13 == 5'd26) M_buf = M_r;
-        else if (sprite13_on && id13 == 5'd27) M_buf = M_e;
+        //else if (sprite13_on && id13 == 5'd23) M_buf = M_s;
+        //else if (sprite13_on && id13 == 5'd24) M_buf = M_c;
+        //else if (sprite13_on && id13 == 5'd25) M_buf = M_o;
+        //else if (sprite13_on && id13 == 5'd26) M_buf = M_r;
+        //else if (sprite13_on && id13 == 5'd27) M_buf = M_e;
         
         else if (sprite14_on && id14 == 1)     M_buf = M_ship;
         else if (sprite14_on && id14 == 5'd2)  M_buf = M_pig;
@@ -1562,18 +1562,18 @@ module Sprite_Controller(   input logic clk,
         else if (sprite14_on && id14 == 5'd13) M_buf = M_seven;
         else if (sprite14_on && id14 == 5'd14) M_buf = M_eight;
         else if (sprite14_on && id14 == 5'd15) M_buf = M_nine;
-        else if (sprite14_on && id14 == 5'd16) M_buf = M_mcdonald;
-        else if (sprite14_on && id14 == 5'd17) M_buf = M_title;
+        //else if (sprite14_on && id14 == 5'd16) M_buf = M_mcdonald;
+        //else if (sprite14_on && id14 == 5'd17) M_buf = M_title;
         else if (sprite14_on && id14 == 5'd18) M_buf = M_eskimo;
         else if (sprite14_on && id14 == 5'd19) M_buf = M_cloud; 
-        else if (sprite14_on && id14 == 5'd20) M_buf = M_goat;
-        else if (sprite14_on && id14 == 5'd21) M_buf = M_frog;
+        //else if (sprite14_on && id14 == 5'd20) M_buf = M_goat;
+        //else if (sprite14_on && id14 == 5'd21) M_buf = M_frog;
         else if (sprite14_on && id14 == 5'd22) M_buf = M_chick;
-        else if (sprite14_on && id14 == 5'd23) M_buf = M_s;
-        else if (sprite14_on && id14 == 5'd24) M_buf = M_c;
-        else if (sprite14_on && id14 == 5'd25) M_buf = M_o;
-        else if (sprite14_on && id14 == 5'd26) M_buf = M_r;
-        else if (sprite14_on && id14 == 5'd27) M_buf = M_e;
+        //else if (sprite14_on && id14 == 5'd23) M_buf = M_s;
+        //else if (sprite14_on && id14 == 5'd24) M_buf = M_c;
+        //else if (sprite14_on && id14 == 5'd25) M_buf = M_o;
+        //else if (sprite14_on && id14 == 5'd26) M_buf = M_r;
+        //else if (sprite14_on && id14 == 5'd27) M_buf = M_e;
         
         else if (sprite15_on && id15 == 1)     M_buf = M_ship;
         else if (sprite15_on && id15 == 5'd2)  M_buf = M_pig;
@@ -1590,18 +1590,18 @@ module Sprite_Controller(   input logic clk,
         else if (sprite15_on && id15 == 5'd13) M_buf = M_seven;
         else if (sprite15_on && id15 == 5'd14) M_buf = M_eight;
         else if (sprite15_on && id15 == 5'd15) M_buf = M_nine;
-        else if (sprite15_on && id15 == 5'd16) M_buf = M_mcdonald; 
-        else if (sprite15_on && id15 == 5'd17) M_buf = M_title;
+        //else if (sprite15_on && id15 == 5'd16) M_buf = M_mcdonald; 
+        //else if (sprite15_on && id15 == 5'd17) M_buf = M_title;
         else if (sprite15_on && id15 == 5'd18) M_buf = M_eskimo;
         else if (sprite15_on && id15 == 5'd19) M_buf = M_cloud;
-        else if (sprite15_on && id15 == 5'd20) M_buf = M_goat;
-        else if (sprite15_on && id15 == 5'd21) M_buf = M_frog;
+        //else if (sprite15_on && id15 == 5'd20) M_buf = M_goat;
+        //else if (sprite15_on && id15 == 5'd21) M_buf = M_frog;
         else if (sprite15_on && id15 == 5'd22) M_buf = M_chick;
-        else if (sprite15_on && id15 == 5'd23) M_buf = M_s;
-        else if (sprite15_on && id15 == 5'd24) M_buf = M_c;
-        else if (sprite15_on && id15 == 5'd25) M_buf = M_o;
-        else if (sprite15_on && id15 == 5'd26) M_buf = M_r;
-        else if (sprite15_on && id15 == 5'd27) M_buf = M_e;
+        //else if (sprite15_on && id15 == 5'd23) M_buf = M_s;
+        //else if (sprite15_on && id15 == 5'd24) M_buf = M_c;
+        //else if (sprite15_on && id15 == 5'd25) M_buf = M_o;
+        //else if (sprite15_on && id15 == 5'd26) M_buf = M_r;
+        //else if (sprite15_on && id15 == 5'd27) M_buf = M_e;
         
         else if (sprite16_on && id16 == 1)     M_buf = M_ship;
         else if (sprite16_on && id16 == 5'd2)  M_buf = M_pig;
@@ -1618,18 +1618,18 @@ module Sprite_Controller(   input logic clk,
         else if (sprite16_on && id16 == 5'd13) M_buf = M_seven;
         else if (sprite16_on && id16 == 5'd14) M_buf = M_eight;
         else if (sprite16_on && id16 == 5'd15) M_buf = M_nine;
-        else if (sprite16_on && id16 == 5'd16) M_buf = M_mcdonald; 
-        else if (sprite16_on && id16 == 5'd17) M_buf = M_title;
+        //else if (sprite16_on && id16 == 5'd16) M_buf = M_mcdonald; 
+        //else if (sprite16_on && id16 == 5'd17) M_buf = M_title;
         else if (sprite16_on && id16 == 5'd18) M_buf = M_eskimo;
         else if (sprite16_on && id16 == 5'd19) M_buf = M_cloud;  
-        else if (sprite16_on && id16 == 5'd20) M_buf = M_goat;
-        else if (sprite16_on && id16 == 5'd21) M_buf = M_frog;
+        //else if (sprite16_on && id16 == 5'd20) M_buf = M_goat;
+        //else if (sprite16_on && id16 == 5'd21) M_buf = M_frog;
         else if (sprite16_on && id16 == 5'd22) M_buf = M_chick;
-        else if (sprite16_on && id16 == 5'd23) M_buf = M_s;
-        else if (sprite16_on && id16 == 5'd24) M_buf = M_c;
-        else if (sprite16_on && id16 == 5'd25) M_buf = M_o;
-        else if (sprite16_on && id16 == 5'd26) M_buf = M_r;
-        else if (sprite16_on && id16 == 5'd27) M_buf = M_e;      
+        //else if (sprite16_on && id16 == 5'd23) M_buf = M_s;
+        //else if (sprite16_on && id16 == 5'd24) M_buf = M_c;
+        //else if (sprite16_on && id16 == 5'd25) M_buf = M_o;
+        //else if (sprite16_on && id16 == 5'd26) M_buf = M_r;
+        //else if (sprite16_on && id16 == 5'd27) M_buf = M_e;      
 
         else if (sprite17_on && id17 == 1)     M_buf = M_ship;
         else if (sprite17_on && id17 == 5'd2)  M_buf = M_pig;
@@ -1646,18 +1646,18 @@ module Sprite_Controller(   input logic clk,
         else if (sprite17_on && id17 == 5'd13) M_buf = M_seven;
         else if (sprite17_on && id17 == 5'd14) M_buf = M_eight;
         else if (sprite17_on && id17 == 5'd15) M_buf = M_nine;
-        else if (sprite17_on && id17 == 5'd16) M_buf = M_mcdonald; 
-        else if (sprite17_on && id17 == 5'd17) M_buf = M_title;
+        //else if (sprite17_on && id17 == 5'd16) M_buf = M_mcdonald; 
+        //else if (sprite17_on && id17 == 5'd17) M_buf = M_title;
         else if (sprite17_on && id17 == 5'd18) M_buf = M_eskimo;
         else if (sprite17_on && id17 == 5'd19) M_buf = M_cloud;
-        else if (sprite17_on && id17 == 5'd20) M_buf = M_goat;
-        else if (sprite17_on && id17 == 5'd21) M_buf = M_frog;
+        //else if (sprite17_on && id17 == 5'd20) M_buf = M_goat;
+        //else if (sprite17_on && id17 == 5'd21) M_buf = M_frog;
         else if (sprite17_on && id17 == 5'd22) M_buf = M_chick;
-        else if (sprite17_on && id17 == 5'd23) M_buf = M_s;
-        else if (sprite17_on && id17 == 5'd24) M_buf = M_c;
-        else if (sprite17_on && id17 == 5'd25) M_buf = M_o;
-        else if (sprite17_on && id17 == 5'd26) M_buf = M_r;
-        else if (sprite17_on && id17 == 5'd27) M_buf = M_e;
+        //else if (sprite17_on && id17 == 5'd23) M_buf = M_s;
+        //else if (sprite17_on && id17 == 5'd24) M_buf = M_c;
+        //else if (sprite17_on && id17 == 5'd25) M_buf = M_o;
+        //else if (sprite17_on && id17 == 5'd26) M_buf = M_r;
+        //else if (sprite17_on && id17 == 5'd27) M_buf = M_e;
         
         else if (sprite18_on && id18 == 1)     M_buf = M_ship;
         else if (sprite18_on && id18 == 5'd2)  M_buf = M_pig;
@@ -1674,18 +1674,18 @@ module Sprite_Controller(   input logic clk,
         else if (sprite18_on && id18 == 5'd13) M_buf = M_seven;
         else if (sprite18_on && id18 == 5'd14) M_buf = M_eight;
         else if (sprite18_on && id18 == 5'd15) M_buf = M_nine;
-        else if (sprite18_on && id18 == 5'd16) M_buf = M_mcdonald; 
-        else if (sprite18_on && id18 == 5'd17) M_buf = M_title;
+        //else if (sprite18_on && id18 == 5'd16) M_buf = M_mcdonald; 
+        //else if (sprite18_on && id18 == 5'd17) M_buf = M_title;
         else if (sprite18_on && id18 == 5'd18) M_buf = M_eskimo;
         else if (sprite18_on && id18 == 5'd19) M_buf = M_cloud;
-        else if (sprite18_on && id18 == 5'd20) M_buf = M_goat;
-        else if (sprite18_on && id18 == 5'd21) M_buf = M_frog;
+        //else if (sprite18_on && id18 == 5'd20) M_buf = M_goat;
+        //else if (sprite18_on && id18 == 5'd21) M_buf = M_frog;
         else if (sprite18_on && id18 == 5'd22) M_buf = M_chick;
-        else if (sprite18_on && id18 == 5'd23) M_buf = M_s;
-        else if (sprite18_on && id18 == 5'd24) M_buf = M_c;
-        else if (sprite18_on && id18 == 5'd25) M_buf = M_o;
-        else if (sprite18_on && id18 == 5'd26) M_buf = M_r;
-        else if (sprite18_on && id18 == 5'd27) M_buf = M_e;
+         //else if (sprite18_on && id18 == 5'd23) M_buf = M_s;
+        //else if (sprite18_on && id18 == 5'd24) M_buf = M_c;
+        //else if (sprite18_on && id18 == 5'd25) M_buf = M_o;
+        //else if (sprite18_on && id18 == 5'd26) M_buf = M_r;
+        //else if (sprite18_on && id18 == 5'd27) M_buf = M_e;
         
         else if (sprite19_on && id19 == 1)     M_buf = M_ship;
         else if (sprite19_on && id19 == 5'd2)  M_buf = M_pig;
@@ -1702,18 +1702,18 @@ module Sprite_Controller(   input logic clk,
         else if (sprite19_on && id19 == 5'd13) M_buf = M_seven;
         else if (sprite19_on && id19 == 5'd14) M_buf = M_eight;
         else if (sprite19_on && id19 == 5'd15) M_buf = M_nine;
-        else if (sprite19_on && id19 == 5'd16) M_buf = M_mcdonald; 
-        else if (sprite19_on && id19 == 5'd17) M_buf = M_title;
+        //else if (sprite19_on && id19 == 5'd16) M_buf = M_mcdonald; 
+        //else if (sprite19_on && id19 == 5'd17) M_buf = M_title;
         else if (sprite19_on && id19 == 5'd18) M_buf = M_eskimo;
         else if (sprite19_on && id19 == 5'd19) M_buf = M_cloud;
-        else if (sprite19_on && id19 == 5'd20) M_buf = M_goat;
-        else if (sprite19_on && id19 == 5'd21) M_buf = M_frog;
+        //else if (sprite19_on && id19 == 5'd20) M_buf = M_goat;
+        //else if (sprite19_on && id19 == 5'd21) M_buf = M_frog;
         else if (sprite19_on && id19 == 5'd22) M_buf = M_chick;
-        else if (sprite19_on && id19 == 5'd23) M_buf = M_s;
-        else if (sprite19_on && id19 == 5'd24) M_buf = M_c;
-        else if (sprite19_on && id19 == 5'd25) M_buf = M_o;
-        else if (sprite19_on && id19 == 5'd26) M_buf = M_r;
-        else if (sprite19_on && id19 == 5'd27) M_buf = M_e;
+        //else if (sprite19_on && id19 == 5'd23) M_buf = M_s;
+        //else if (sprite19_on && id19 == 5'd24) M_buf = M_c;
+        //else if (sprite19_on && id19 == 5'd25) M_buf = M_o;
+        //else if (sprite19_on && id19 == 5'd26) M_buf = M_r;
+        //else if (sprite19_on && id19 == 5'd27) M_buf = M_e;
         
         else if (sprite20_on && id20 == 1)     M_buf = M_ship;
         else if (sprite20_on && id20 == 5'd2)  M_buf = M_pig;
@@ -1730,18 +1730,18 @@ module Sprite_Controller(   input logic clk,
         else if (sprite20_on && id20 == 5'd13) M_buf = M_seven;
         else if (sprite20_on && id20 == 5'd14) M_buf = M_eight;
         else if (sprite20_on && id20 == 5'd15) M_buf = M_nine;
-        else if (sprite20_on && id20 == 5'd16) M_buf = M_mcdonald; 
-        else if (sprite20_on && id20 == 5'd17) M_buf = M_title;
+        //else if (sprite20_on && id20 == 5'd16) M_buf = M_mcdonald; 
+        //else if (sprite20_on && id20 == 5'd17) M_buf = M_title;
         else if (sprite20_on && id20 == 5'd18) M_buf = M_eskimo;
         else if (sprite20_on && id20 == 5'd19) M_buf = M_cloud;
-        else if (sprite20_on && id20 == 5'd20) M_buf = M_goat;
-        else if (sprite20_on && id20 == 5'd21) M_buf = M_frog;
+        //else if (sprite20_on && id20 == 5'd20) M_buf = M_goat;
+        //else if (sprite20_on && id20 == 5'd21) M_buf = M_frog;
         else if (sprite20_on && id20 == 5'd22) M_buf = M_chick;
-        else if (sprite20_on && id20 == 5'd23) M_buf = M_s;
-        else if (sprite20_on && id20 == 5'd24) M_buf = M_c;
-        else if (sprite20_on && id20 == 5'd25) M_buf = M_o;
-        else if (sprite20_on && id20 == 5'd26) M_buf = M_r;
-        else if (sprite20_on && id20 == 5'd27) M_buf = M_e;
+        //else if (sprite20_on && id20 == 5'd23) M_buf = M_s;
+        //else if (sprite20_on && id20 == 5'd24) M_buf = M_c;
+        //else if (sprite20_on && id20 == 5'd25) M_buf = M_o;
+        //else if (sprite20_on && id20 == 5'd26) M_buf = M_r;
+        //else if (sprite20_on && id20 == 5'd27) M_buf = M_e;
         
         else if (sprite21_on && id21 == 1)     M_buf = M_ship;
         else if (sprite21_on && id21 == 5'd2)  M_buf = M_pig;
@@ -1758,18 +1758,18 @@ module Sprite_Controller(   input logic clk,
         else if (sprite21_on && id21 == 5'd13) M_buf = M_seven;
         else if (sprite21_on && id21 == 5'd14) M_buf = M_eight;
         else if (sprite21_on && id21 == 5'd15) M_buf = M_nine;
-        else if (sprite21_on && id21 == 5'd16) M_buf = M_mcdonald; 
-        else if (sprite21_on && id21 == 5'd17) M_buf = M_title;
+        //else if (sprite21_on && id21 == 5'd16) M_buf = M_mcdonald; 
+        //else if (sprite21_on && id21 == 5'd17) M_buf = M_title;
         else if (sprite21_on && id21 == 5'd18) M_buf = M_eskimo;
         else if (sprite21_on && id21 == 5'd19) M_buf = M_cloud;
-        else if (sprite21_on && id21 == 5'd20) M_buf = M_goat;
-        else if (sprite21_on && id21 == 5'd21) M_buf = M_frog;
+        //else if (sprite21_on && id21 == 5'd20) M_buf = M_goat;
+        //else if (sprite21_on && id21 == 5'd21) M_buf = M_frog;
         else if (sprite21_on && id21 == 5'd22) M_buf = M_chick;
-        else if (sprite21_on && id21 == 5'd23) M_buf = M_s;
-        else if (sprite21_on && id21 == 5'd24) M_buf = M_c;
-        else if (sprite21_on && id21 == 5'd25) M_buf = M_o;
-        else if (sprite21_on && id21 == 5'd26) M_buf = M_r;
-        else if (sprite21_on && id21 == 5'd27) M_buf = M_e;
+        //else if (sprite21_on && id21 == 5'd23) M_buf = M_s;
+        //else if (sprite21_on && id21 == 5'd24) M_buf = M_c;
+        //else if (sprite21_on && id21 == 5'd25) M_buf = M_o;
+        //else if (sprite21_on && id21 == 5'd26) M_buf = M_r;
+        //else if (sprite21_on && id21 == 5'd27) M_buf = M_e;
         
         else if (sprite22_on && id22 == 1)     M_buf = M_ship;
         else if (sprite22_on && id22 == 5'd2)  M_buf = M_pig;
@@ -1786,18 +1786,18 @@ module Sprite_Controller(   input logic clk,
         else if (sprite22_on && id22 == 5'd13) M_buf = M_seven;
         else if (sprite22_on && id22 == 5'd14) M_buf = M_eight;
         else if (sprite22_on && id22 == 5'd15) M_buf = M_nine;
-        else if (sprite22_on && id22 == 5'd16) M_buf = M_mcdonald; 
-        else if (sprite22_on && id22 == 5'd17) M_buf = M_title;
+        //else if (sprite22_on && id22 == 5'd16) M_buf = M_mcdonald; 
+        //else if (sprite22_on && id22 == 5'd17) M_buf = M_title;
         else if (sprite22_on && id22 == 5'd18) M_buf = M_eskimo;
         else if (sprite22_on && id22 == 5'd19) M_buf = M_cloud;
-        else if (sprite22_on && id22 == 5'd20) M_buf = M_goat;
-        else if (sprite22_on && id22 == 5'd21) M_buf = M_frog;
+        //else if (sprite22_on && id22 == 5'd20) M_buf = M_goat;
+        //else if (sprite22_on && id22 == 5'd21) M_buf = M_frog;
         else if (sprite22_on && id22 == 5'd22) M_buf = M_chick;
-        else if (sprite22_on && id22 == 5'd23) M_buf = M_s;
-        else if (sprite22_on && id22 == 5'd24) M_buf = M_c;
-        else if (sprite22_on && id22 == 5'd25) M_buf = M_o;
-        else if (sprite22_on && id22 == 5'd26) M_buf = M_r;
-        else if (sprite22_on && id22 == 5'd27) M_buf = M_e;
+        //else if (sprite22_on && id22 == 5'd23) M_buf = M_s;
+        //else if (sprite22_on && id22 == 5'd24) M_buf = M_c;
+        //else if (sprite22_on && id22 == 5'd25) M_buf = M_o;
+        //else if (sprite22_on && id22 == 5'd26) M_buf = M_r;
+        //else if (sprite22_on && id22 == 5'd27) M_buf = M_e;
         
         else if (sprite23_on && id23 == 1)     M_buf = M_ship;
         else if (sprite23_on && id23 == 5'd2)  M_buf = M_pig;
@@ -1814,18 +1814,18 @@ module Sprite_Controller(   input logic clk,
         else if (sprite23_on && id23 == 5'd13) M_buf = M_seven;
         else if (sprite23_on && id23 == 5'd14) M_buf = M_eight;
         else if (sprite23_on && id23 == 5'd15) M_buf = M_nine;
-        else if (sprite23_on && id23 == 5'd16) M_buf = M_mcdonald; 
-        else if (sprite23_on && id23 == 5'd17) M_buf = M_title;
+        //else if (sprite23_on && id23 == 5'd16) M_buf = M_mcdonald; 
+        //else if (sprite23_on && id23 == 5'd17) M_buf = M_title;
         else if (sprite23_on && id23 == 5'd18) M_buf = M_eskimo;
         else if (sprite23_on && id23 == 5'd19) M_buf = M_cloud;
-        else if (sprite23_on && id23 == 5'd20) M_buf = M_goat;
-        else if (sprite23_on && id23 == 5'd21) M_buf = M_frog;
+        //else if (sprite23_on && id23 == 5'd20) M_buf = M_goat;
+        //else if (sprite23_on && id23 == 5'd21) M_buf = M_frog;
         else if (sprite23_on && id23 == 5'd22) M_buf = M_chick;
-        else if (sprite23_on && id23 == 5'd23) M_buf = M_s;
-        else if (sprite23_on && id23 == 5'd24) M_buf = M_c;
-        else if (sprite23_on && id23 == 5'd25) M_buf = M_o;
-        else if (sprite23_on && id23 == 5'd26) M_buf = M_r;
-        else if (sprite23_on && id23 == 5'd27) M_buf = M_e;
+        //else if (sprite23_on && id23 == 5'd23) M_buf = M_s;
+        //else if (sprite23_on && id23 == 5'd24) M_buf = M_c;
+        //else if (sprite23_on && id23 == 5'd25) M_buf = M_o;
+        //else if (sprite23_on && id23 == 5'd26) M_buf = M_r;
+        //else if (sprite23_on && id23 == 5'd27) M_buf = M_e;
         
         else if (sprite24_on && id24 == 1)     M_buf = M_ship;
         else if (sprite24_on && id24 == 5'd2)  M_buf = M_pig;
@@ -1842,18 +1842,18 @@ module Sprite_Controller(   input logic clk,
         else if (sprite24_on && id24 == 5'd13) M_buf = M_seven;
         else if (sprite24_on && id24 == 5'd14) M_buf = M_eight;
         else if (sprite24_on && id24 == 5'd15) M_buf = M_nine;
-        else if (sprite24_on && id24 == 5'd16) M_buf = M_mcdonald; 
-        else if (sprite24_on && id24 == 5'd17) M_buf = M_title;
+        //else if (sprite24_on && id24 == 5'd16) M_buf = M_mcdonald; 
+        //else if (sprite24_on && id24 == 5'd17) M_buf = M_title;
         else if (sprite24_on && id24 == 5'd18) M_buf = M_eskimo;
         else if (sprite24_on && id24 == 5'd19) M_buf = M_cloud;
-        else if (sprite24_on && id24 == 5'd20) M_buf = M_goat;
-        else if (sprite24_on && id24 == 5'd21) M_buf = M_frog;
+        //else if (sprite24_on && id24 == 5'd20) M_buf = M_goat;
+        //else if (sprite24_on && id24 == 5'd21) M_buf = M_frog;
         else if (sprite24_on && id24 == 5'd22) M_buf = M_chick;
-        else if (sprite24_on && id24 == 5'd23) M_buf = M_s;
-        else if (sprite24_on && id24 == 5'd24) M_buf = M_c;
-        else if (sprite24_on && id24 == 5'd25) M_buf = M_o;
-        else if (sprite24_on && id24 == 5'd26) M_buf = M_r;
-        else if (sprite24_on && id24 == 5'd27) M_buf = M_e;
+        //else if (sprite24_on && id24 == 5'd23) M_buf = M_s;
+        //else if (sprite24_on && id24 == 5'd24) M_buf = M_c;
+        //else if (sprite24_on && id24 == 5'd25) M_buf = M_o;
+        //else if (sprite24_on && id24 == 5'd26) M_buf = M_r;
+        //else if (sprite24_on && id24 == 5'd27) M_buf = M_e;
         
         else if (sprite25_on && id25 == 1)     M_buf = M_ship;
         else if (sprite25_on && id25 == 5'd2)  M_buf = M_pig;
@@ -1870,18 +1870,18 @@ module Sprite_Controller(   input logic clk,
         else if (sprite25_on && id25 == 5'd13) M_buf = M_seven;
         else if (sprite25_on && id25 == 5'd14) M_buf = M_eight;
         else if (sprite25_on && id25 == 5'd15) M_buf = M_nine;
-        else if (sprite25_on && id25 == 5'd16) M_buf = M_mcdonald; 
-        else if (sprite25_on && id25 == 5'd17) M_buf = M_title;
+        //else if (sprite25_on && id25 == 5'd16) M_buf = M_mcdonald; 
+        //else if (sprite25_on && id25 == 5'd17) M_buf = M_title;
         else if (sprite25_on && id25 == 5'd18) M_buf = M_eskimo;
         else if (sprite25_on && id25 == 5'd19) M_buf = M_cloud;
-        else if (sprite25_on && id25 == 5'd20) M_buf = M_goat;
-        else if (sprite25_on && id25 == 5'd21) M_buf = M_frog;
+        //else if (sprite25_on && id25 == 5'd20) M_buf = M_goat;
+        //else if (sprite25_on && id25 == 5'd21) M_buf = M_frog;
         else if (sprite25_on && id25 == 5'd22) M_buf = M_chick;
-        else if (sprite25_on && id25 == 5'd23) M_buf = M_s;
-        else if (sprite25_on && id25 == 5'd24) M_buf = M_c;
-        else if (sprite25_on && id25 == 5'd25) M_buf = M_o;
-        else if (sprite25_on && id25 == 5'd26) M_buf = M_r;
-        else if (sprite25_on && id25 == 5'd27) M_buf = M_e;
+        //else if (sprite25_on && id25 == 5'd23) M_buf = M_s;
+        //else if (sprite25_on && id25 == 5'd24) M_buf = M_c;
+        //else if (sprite25_on && id25 == 5'd25) M_buf = M_o;
+        //else if (sprite25_on && id25 == 5'd26) M_buf = M_r;
+        //else if (sprite25_on && id25 == 5'd27) M_buf = M_e;
         
         else if (sprite26_on && id26 == 1)     M_buf = M_ship;
         else if (sprite26_on && id26 == 5'd2)  M_buf = M_pig;
@@ -1898,18 +1898,18 @@ module Sprite_Controller(   input logic clk,
         else if (sprite26_on && id26 == 5'd13) M_buf = M_seven;
         else if (sprite26_on && id26 == 5'd14) M_buf = M_eight;
         else if (sprite26_on && id26 == 5'd15) M_buf = M_nine;
-        else if (sprite26_on && id26 == 5'd16) M_buf = M_mcdonald; 
-        else if (sprite26_on && id26 == 5'd17) M_buf = M_title;
+        //else if (sprite26_on && id26 == 5'd16) M_buf = M_mcdonald; 
+        //else if (sprite26_on && id26 == 5'd17) M_buf = M_title;
         else if (sprite26_on && id26 == 5'd18) M_buf = M_eskimo;
         else if (sprite26_on && id26 == 5'd19) M_buf = M_cloud;
-        else if (sprite26_on && id26 == 5'd20) M_buf = M_goat;
-        else if (sprite26_on && id26 == 5'd21) M_buf = M_frog;
+        //else if (sprite26_on && id26 == 5'd20) M_buf = M_goat;
+        //else if (sprite26_on && id26 == 5'd21) M_buf = M_frog;
         else if (sprite26_on && id26 == 5'd22) M_buf = M_chick;
-        else if (sprite26_on && id26 == 5'd23) M_buf = M_s;
-        else if (sprite26_on && id26 == 5'd24) M_buf = M_c;
-        else if (sprite26_on && id26 == 5'd25) M_buf = M_o;
-        else if (sprite26_on && id26 == 5'd26) M_buf = M_r;
-        else if (sprite26_on && id26 == 5'd27) M_buf = M_e;
+        //else if (sprite26_on && id26 == 5'd23) M_buf = M_s;
+        //else if (sprite26_on && id26 == 5'd24) M_buf = M_c;
+        //else if (sprite26_on && id26 == 5'd25) M_buf = M_o;
+        //else if (sprite26_on && id26 == 5'd26) M_buf = M_r;
+        //else if (sprite26_on && id26 == 5'd27) M_buf = M_e;
         
         else if (sprite27_on && id27 == 1)     M_buf = M_ship;
         else if (sprite27_on && id27 == 5'd2)  M_buf = M_pig;
@@ -1926,18 +1926,18 @@ module Sprite_Controller(   input logic clk,
         else if (sprite27_on && id27 == 5'd13) M_buf = M_seven;
         else if (sprite27_on && id27 == 5'd14) M_buf = M_eight;
         else if (sprite27_on && id27 == 5'd15) M_buf = M_nine;
-        else if (sprite27_on && id27 == 5'd16) M_buf = M_mcdonald; 
-        else if (sprite27_on && id27 == 5'd17) M_buf = M_title;
+        //else if (sprite27_on && id27 == 5'd16) M_buf = M_mcdonald; 
+        //else if (sprite27_on && id27 == 5'd17) M_buf = M_title;
         else if (sprite27_on && id27 == 5'd18) M_buf = M_eskimo;
         else if (sprite27_on && id27 == 5'd19) M_buf = M_cloud;
-        else if (sprite27_on && id27 == 5'd20) M_buf = M_goat;
-        else if (sprite27_on && id27 == 5'd21) M_buf = M_frog;
+        //else if (sprite27_on && id27 == 5'd20) M_buf = M_goat;
+        //else if (sprite27_on && id27 == 5'd21) M_buf = M_frog;
         else if (sprite27_on && id27 == 5'd22) M_buf = M_chick;
-        else if (sprite27_on && id27 == 5'd23) M_buf = M_s;
-        else if (sprite27_on && id27 == 5'd24) M_buf = M_c;
-        else if (sprite27_on && id27 == 5'd25) M_buf = M_o;
-        else if (sprite27_on && id27 == 5'd26) M_buf = M_r;
-        else if (sprite27_on && id27 == 5'd27) M_buf = M_e;
+        //else if (sprite27_on && id27 == 5'd23) M_buf = M_s;
+        //else if (sprite27_on && id27 == 5'd24) M_buf = M_c;
+        //else if (sprite27_on && id27 == 5'd25) M_buf = M_o;
+        //else if (sprite27_on && id27 == 5'd26) M_buf = M_r;
+        //else if (sprite27_on && id27 == 5'd27) M_buf = M_e;
         
         else if (sprite28_on && id28 == 1)     M_buf = M_ship;
         else if (sprite28_on && id28 == 5'd2)  M_buf = M_pig;
@@ -1954,18 +1954,18 @@ module Sprite_Controller(   input logic clk,
         else if (sprite28_on && id28 == 5'd13) M_buf = M_seven;
         else if (sprite28_on && id28 == 5'd14) M_buf = M_eight;
         else if (sprite28_on && id28 == 5'd15) M_buf = M_nine;
-        else if (sprite28_on && id28 == 5'd16) M_buf = M_mcdonald; 
-        else if (sprite28_on && id28 == 5'd17) M_buf = M_title;
+        //else if (sprite28_on && id28 == 5'd16) M_buf = M_mcdonald; 
+        //else if (sprite28_on && id28 == 5'd17) M_buf = M_title;
         else if (sprite28_on && id28 == 5'd18) M_buf = M_eskimo;
         else if (sprite28_on && id28 == 5'd19) M_buf = M_cloud;
-        else if (sprite28_on && id28 == 5'd20) M_buf = M_goat;
-        else if (sprite28_on && id28 == 5'd21) M_buf = M_frog;
+        //else if (sprite28_on && id28 == 5'd20) M_buf = M_goat;
+        //else if (sprite28_on && id28 == 5'd21) M_buf = M_frog;
         else if (sprite28_on && id28 == 5'd22) M_buf = M_chick;
-        else if (sprite28_on && id28 == 5'd23) M_buf = M_s;
-        else if (sprite28_on && id28 == 5'd24) M_buf = M_c;
-        else if (sprite28_on && id28 == 5'd25) M_buf = M_o;
-        else if (sprite28_on && id28 == 5'd26) M_buf = M_r;
-        else if (sprite28_on && id28 == 5'd27) M_buf = M_e;
+        //else if (sprite28_on && id28 == 5'd23) M_buf = M_s;
+        //else if (sprite28_on && id28 == 5'd24) M_buf = M_c;
+        //else if (sprite28_on && id28 == 5'd25) M_buf = M_o;
+        //else if (sprite28_on && id28 == 5'd26) M_buf = M_r;
+        //else if (sprite28_on && id28 == 5'd27) M_buf = M_e;
         
         else if (sprite29_on && id29 == 1)     M_buf = M_ship;
         else if (sprite29_on && id29 == 5'd2)  M_buf = M_pig;
@@ -1982,18 +1982,18 @@ module Sprite_Controller(   input logic clk,
         else if (sprite29_on && id29 == 5'd13) M_buf = M_seven;
         else if (sprite29_on && id29 == 5'd14) M_buf = M_eight;
         else if (sprite29_on && id29 == 5'd15) M_buf = M_nine;
-        else if (sprite29_on && id29 == 5'd16) M_buf = M_mcdonald; 
-        else if (sprite29_on && id29 == 5'd17) M_buf = M_title;
+        //else if (sprite29_on && id29 == 5'd16) M_buf = M_mcdonald; 
+        //else if (sprite29_on && id29 == 5'd17) M_buf = M_title;
         else if (sprite29_on && id29 == 5'd18) M_buf = M_eskimo;
         else if (sprite29_on && id29 == 5'd19) M_buf = M_cloud;
-        else if (sprite29_on && id29 == 5'd20) M_buf = M_goat;
-        else if (sprite29_on && id29 == 5'd21) M_buf = M_frog;
+        //else if (sprite29_on && id29 == 5'd20) M_buf = M_goat;
+        //else if (sprite29_on && id29 == 5'd21) M_buf = M_frog;
         else if (sprite29_on && id29 == 5'd22) M_buf = M_chick;
-        else if (sprite29_on && id29 == 5'd23) M_buf = M_s;
-        else if (sprite29_on && id29 == 5'd24) M_buf = M_c;
-        else if (sprite29_on && id29 == 5'd25) M_buf = M_o;
-        else if (sprite29_on && id29 == 5'd26) M_buf = M_r;
-        else if (sprite29_on && id29 == 5'd27) M_buf = M_e;
+        //else if (sprite29_on && id29 == 5'd23) M_buf = M_s;
+        //else if (sprite29_on && id29 == 5'd24) M_buf = M_c;
+        //else if (sprite29_on && id29 == 5'd25) M_buf = M_o;
+        //else if (sprite29_on && id29 == 5'd26) M_buf = M_r;
+        //else if (sprite29_on && id29 == 5'd27) M_buf = M_e;
         
         else if (sprite30_on && id30 == 1)     M_buf = M_ship;
         else if (sprite30_on && id30 == 5'd2)  M_buf = M_pig;
@@ -2010,18 +2010,18 @@ module Sprite_Controller(   input logic clk,
         else if (sprite30_on && id30 == 5'd13) M_buf = M_seven;
         else if (sprite30_on && id30 == 5'd14) M_buf = M_eight;
         else if (sprite30_on && id30 == 5'd15) M_buf = M_nine;
-        else if (sprite30_on && id30 == 5'd16) M_buf = M_mcdonald; 
-        else if (sprite30_on && id30 == 5'd17) M_buf = M_title;
+        //else if (sprite30_on && id30 == 5'd16) M_buf = M_mcdonald; 
+        //else if (sprite30_on && id30 == 5'd17) M_buf = M_title;
         else if (sprite30_on && id30 == 5'd18) M_buf = M_eskimo;
         else if (sprite30_on && id30 == 5'd19) M_buf = M_cloud;
-        else if (sprite30_on && id30 == 5'd20) M_buf = M_goat;
-        else if (sprite30_on && id30 == 5'd21) M_buf = M_frog;
+        //else if (sprite30_on && id30 == 5'd20) M_buf = M_goat;
+        //else if (sprite30_on && id30 == 5'd21) M_buf = M_frog;
         else if (sprite30_on && id30 == 5'd22) M_buf = M_chick;
-        else if (sprite30_on && id30 == 5'd23) M_buf = M_s;
-        else if (sprite30_on && id30 == 5'd24) M_buf = M_c;
-        else if (sprite30_on && id30 == 5'd25) M_buf = M_o;
-        else if (sprite30_on && id30 == 5'd26) M_buf = M_r;
-        else if (sprite30_on && id30 == 5'd27) M_buf = M_e;
+        //else if (sprite30_on && id30 == 5'd23) M_buf = M_s;
+        //else if (sprite30_on && id30 == 5'd24) M_buf = M_c;
+        //else if (sprite30_on && id30 == 5'd25) M_buf = M_o;
+        //else if (sprite30_on && id30 == 5'd26) M_buf = M_r;
+        //else if (sprite30_on && id30 == 5'd27) M_buf = M_e;
         
         else if (grass_on)                     M_buf = 24'd3516683; /* Grass Color - Replace with sprite later */
         else                                   M_buf = 24'd4638972; /* Background color */

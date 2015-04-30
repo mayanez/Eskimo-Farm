@@ -63,7 +63,7 @@ module VGA_LED_Emulator(
    assign VGA_HS = !( (hcount[10:8] == 3'b101) & !(hcount[7:5] == 3'b111));
    assign VGA_VS = !( vcount[9:1] == (VACTIVE + VFRONT_PORCH) / 2);
 
-   assign VGA_SYNC_n = 1; // For adding sync to video signals; not used for VGA
+   assign VGA_SYNC_n = VGA_VS; // For adding sync to video signals; not used for VGA
    
    // Horizontal active: 0 to 1279     Vertical active: 0 to 479
    // 101 0000 0000  1280	       01 1110 0000  480

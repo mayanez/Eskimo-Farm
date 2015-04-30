@@ -8,16 +8,18 @@
 module VGA_LED( input logic         clk,
                 input logic 	  	reset,
                 input logic [31:0] 	gl_input,
-                input logic [4:0] 	address,
+                input logic [5:0] 	address,
                 input logic 	  	write,
+                input logic         read,
                 input logic 		chipselect,
                 output logic [7:0]  VGA_R, VGA_G, VGA_B,
-                output logic 	  	VGA_CLK, VGA_HS, VGA_VS, VGA_BLANK_n,
-                output logic 	  	VGA_SYNC_n);
+                output logic 	  	VGA_CLK, VGA_HS, VGA_VS, VGA_BLANK_n, VGA_SYNC_n,
+                output logic[31:0] 	readdata);
 
     logic [9:0] VGA_HCOUNT;
     logic [9:0] VGA_VCOUNT;
     logic VGA_CLOCK;
+    logic [31:0] vsync;
 
     logic [31:0] sprite1,sprite2,sprite3, sprite4, sprite5, sprite6, sprite7, sprite8, sprite9,
                  sprite10, sprite11, sprite12, sprite13, sprite14, sprite15, sprite16, sprite17,
@@ -131,6 +133,7 @@ module VGA_LED( input logic         clk,
                        sprite29 <= 0;
                        sprite30 <= 0;
                        end
+                5'd61: readdata <= vsync;
             endcase
         end
     end
@@ -142,7 +145,7 @@ module VGA_LED( input logic         clk,
     pig  pg(.clock(VGA_CLK), .address(addr_pig), .q(M_pig));
     bee  be(.clock(VGA_CLK), .address(addr_bee), .q(M_bee));
     cow  cw(.clock(VGA_CLK), .address(addr_cow), .q(M_cow));
-    mcdonald mc(.clock(VGA_CLK), .address(addr_mcdonald), .q(M_mcdonald));
+    //mcdonald mc(.clock(VGA_CLK), .address(addr_mcdonald), .q(M_mcdonald));
     zero z(.clock(VGA_CLK), .address(addr_zero), .q(M_zero));
     one on(.clock(VGA_CLK), .address(addr_one), .q(M_one));
     two t(.clock(VGA_CLK), .address(addr_two), .q(M_two));
@@ -154,19 +157,19 @@ module VGA_LED( input logic         clk,
     eight ei(.clock(VGA_CLK), .address(addr_eight), .q(M_eight));
     nine n(.clock(VGA_CLK), .address(addr_nine), .q(M_nine));
     bullet bu(.clock(VGA_CLK), .address(addr_bullet), .q(M_bullet));
-    title tt(.clock(VGA_CLK), .address(addr_title), .q(M_title));
+    //title tt(.clock(VGA_CLK), .address(addr_title), .q(M_title));
     cloud cl(.clock(VGA_CLK), .address(addr_cloud), .q(M_cloud));
     eskimo es(.clock(VGA_CLK), .address(addr_eskimo), .q(M_eskimo));
-    frog fr(.clock(VGA_CLK), .address(addr_frog), .q(M_frog));
-    goat go(.clock(VGA_CLK), .address(addr_goat), .q(M_goat));
+    //frog fr(.clock(VGA_CLK), .address(addr_frog), .q(M_frog));
+    //goat go(.clock(VGA_CLK), .address(addr_goat), .q(M_goat));
     chick ch(.clock(VGA_CLK), .address(addr_chick), .q(M_chick));
-    s ls(.clock(VGA_CLK), .address(addr_s), .q(M_s));
-    c lc(.clock(VGA_CLK), .address(addr_c), .q(M_c));
-    o lo(.clock(VGA_CLK), .address(addr_o), .q(M_o));
-    r lr(.clock(VGA_CLK), .address(addr_r), .q(M_r));
-    e le(.clock(VGA_CLK), .address(addr_e), .q(M_e));
+    //s ls(.clock(VGA_CLK), .address(addr_s), .q(M_s));
+    //c lc(.clock(VGA_CLK), .address(addr_c), .q(M_c));
+    //o lo(.clock(VGA_CLK), .address(addr_o), .q(M_o));
+    //r lr(.clock(VGA_CLK), .address(addr_r), .q(M_r));
+    //e le(.clock(VGA_CLK), .address(addr_e), .q(M_e));
    
-	VGA_LED_Emulator led_emulator(.clk50(clk), .*);
+	VGA_LED_Emulator led_emulator(.clk50(clk), .VGA_SYNC_n(vsync[0]), .*);
     Sprite_Controller sprite_controller(.clk(VGA_CLK), .*);
 
 endmodule

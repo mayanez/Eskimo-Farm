@@ -775,7 +775,6 @@ int main() {
     
     /*Draw initial game state */
     pthread_mutex_lock(&lock);
-    draw_background();
     init_state();
     pthread_mutex_unlock(&lock);
 	
