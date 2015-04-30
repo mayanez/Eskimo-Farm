@@ -6,7 +6,7 @@
 #define MAX_SPRITES 20
 #define MAX_SPRITE_DIM 128
 #define MAX_SPRITE_ID 40 /* Unique number of sprites == # of ROMs */
-#define HUD_BOUNDARY 30;
+#define HUD_BOUNDARY 30
 #define MAX_X 640
 #define MAX_Y 480
 

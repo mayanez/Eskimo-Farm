@@ -101,7 +101,7 @@ void handle_controller_thread_f2(void *ignored) {
         }
 
         pthread_mutex_unlock(&controller_lock);
-        usleep(40000);
+        usleep(27000);
 
     }
 }
@@ -116,7 +116,6 @@ void handle_keyboard_thread_f(void *ignored) {
         libusb_interrupt_transfer(keyboard, endpoint_address,
                                   (unsigned char *) &packet, sizeof(packet),
                                   &transferred, 0);
-        //printf("up %x down %x left %x right %x \n", packet.dpad_up, packet.dpad_down, packet.dpad_left, packet.dpad_right);
         
         if (transferred == sizeof(packet)) {
            if (packet.dpad_right){
@@ -427,7 +426,7 @@ void draw_clouds() {
     int i;
     int speed;
     
-    speed = 2;
+    speed = 3;
     for (i = 0; i < MAX_CLOUDS; i++) {
         if (clouds[i].x > speed) {
             clouds[i].x -= speed;
@@ -502,7 +501,7 @@ void move_player(enum direction_t direction) {
             player.sprite_info.x += PLAYER_STEP_SIZE;
         }
     } else if (direction == up) {
-        if (player.sprite_info.y > 0) {
+        if (player.sprite_info.y > HUD_BOUNDARY) {
             player.sprite_info.y -= PLAYER_STEP_SIZE;
         }
     } else if (direction == down) {
@@ -603,17 +602,21 @@ void move_enemy(enemy_t *enemy) {
     if(enemy->direction == left && enemy->alive == 1){
         if (enemy->sprite_info.x > 0 + enemy->speed)
             enemy->sprite_info.x -= 2*enemy->speed;
-        else
-            enemy->alive = 0;
+        else {
+            enemy->sprite_info.x = MAX_X - enemy->sprite_info.dim;
+        }
     }
     
     else if(enemy->direction == up && enemy->alive == 1){
         if (enemy->sprite_info.x > 0 + enemy->speed )
             enemy->sprite_info.x -= enemy->speed;
-        else
-            enemy->alive = 0;
+        else {
+            enemy->sprite_info.x = MAX_X - enemy->sprite_info.dim;
+        }
+
         if ((enemy->sprite_info.y > LIVES_DIM + enemy->speed) && enemy->alive == 1)
             enemy->sprite_info.y = enemy->sprite_info.y - enemy->speed;
+
         else if ((enemy->sprite_info.y <= LIVES_DIM + enemy->speed) && enemy->alive == 1){
             enemy->direction = down;
             enemy->sprite_info.y = enemy->sprite_info.y + enemy->speed;
@@ -623,10 +626,13 @@ void move_enemy(enemy_t *enemy) {
     else if(enemy->direction == down && enemy->alive == 1){
         if (enemy->sprite_info.x >= 0 + enemy->speed)
             enemy->sprite_info.x -= enemy->speed;
-        else
-            enemy->alive = 0;
+        else {
+            enemy->sprite_info.x = MAX_X - enemy->sprite_info.dim;
+        }
+
         if ((enemy->sprite_info.y < MAX_Y - PIG_DIM - enemy->speed) && enemy->alive == 1)
             enemy->sprite_info.y = enemy->sprite_info.y + enemy->speed;
+        
         else if ((enemy->sprite_info.y >= MAX_Y - PIG_DIM - enemy->speed) && enemy->alive == 1){
             enemy->direction = up;
             enemy->sprite_info.y = enemy->sprite_info.y - enemy->speed;
@@ -647,11 +653,11 @@ void add_enemy() {
                 next_available_enemy_slot =0;
             }
         }
-        
+
         index = next_available_enemy_slot;
         invaders.enemy[index].alive = 1;
         
-        int ycord = rand() % 448;
+        int ycord = rand() % (MAX_Y - 32);
         
         
         int value = rand() % 3;
@@ -728,10 +734,7 @@ void add_enemy() {
         }
         
         next_available_enemy_slot++;
-    }
-    
-    if(current_enemy_count >= MAX_ENEMIES){
-        return ;
+        current_enemy_count++;
     }
     
 }
@@ -794,7 +797,7 @@ int main() {
 			add_enemy();
             game_over_ai();
             pthread_mutex_unlock(&lock);
-            usleep(30000);
+            usleep(27000);
         } else if (state == game_over) {
             sprite_t game_over;
 
