@@ -43,6 +43,7 @@ pthread_mutex_t lock;
 pthread_mutex_t controller_lock;
 
 int control_pressed[6];
+int start_prev_state;
 
 void player_shoot();
 void move_player(enum direction_t);
@@ -65,35 +66,35 @@ void handle_controller_thread_f2(void *ignored) {
     for (;;) {
         pthread_mutex_lock(&controller_lock);
 
-        if (control_pressed[0]){
+        if (state == game && control_pressed[0]){
                 pthread_mutex_lock(&lock);
                 move_player(right);
                 draw_player();
                 pthread_mutex_unlock(&lock);
         }
         
-        if (control_pressed[1]) {
+        if (state == game && control_pressed[1]) {
                 pthread_mutex_lock(&lock);
                 move_player(left);
                 draw_player();
                 pthread_mutex_unlock(&lock);
         }
 
-        if (control_pressed[2]) {
+        if (state == game && control_pressed[2]) {
                 pthread_mutex_lock(&lock);
                 move_player(up);
                 draw_player();
                 pthread_mutex_unlock(&lock);
         }
 
-        if (control_pressed[3]) {
+        if (state == game && control_pressed[3]) {
                 pthread_mutex_lock(&lock);
                 move_player(down);
                 draw_player();
                 pthread_mutex_unlock(&lock);
         }
         
-        if (control_pressed[4]) {
+        if (state == game && control_pressed[4]) {
                 pthread_mutex_lock(&lock);
                 player_shoot();
                 draw_bullets(1);
@@ -118,48 +119,68 @@ void handle_keyboard_thread_f(void *ignored) {
                                   &transferred, 0);
         
         if (transferred == sizeof(packet)) {
-           if (packet.dpad_right){
+
+            if (packet.start && start_prev_state == 0) {
+               if (state == start) {
+                    state = game;
+               } else if (state == game) {
+                    state = game_pause;
+               } else if (state == game_pause) {
+                    state = game;
+               }
+                start_prev_state = 1;
+            }
+            
+            if (packet.start == 0 && start_prev_state == 1) {
+                start_prev_state = 0;
+            }
+
+           if (state == game && packet.dpad_right){
                     pthread_mutex_lock(&lock);
                     move_player(right);
                     draw_player();
                     pthread_mutex_unlock(&lock);
             }
             
-            if (packet.dpad_left) {
+            if (state == game && packet.dpad_left) {
                     pthread_mutex_lock(&lock);
                     move_player(left);
                     draw_player();
                     pthread_mutex_unlock(&lock);
             }
 
-            if (packet.dpad_up) {
+            if (state == game && packet.dpad_up) {
                     pthread_mutex_lock(&lock);
                     move_player(up);
                     draw_player();
                     pthread_mutex_unlock(&lock);
             }
 
-            if (packet.dpad_down) {
+            if (state == game && packet.dpad_down) {
                     pthread_mutex_lock(&lock);
                     move_player(down);
                     draw_player();
                     pthread_mutex_unlock(&lock);
             }
             
-            if (packet.b) {
+            if (state == game && packet.b) {
                     pthread_mutex_lock(&lock);
                     player_shoot();
                     draw_bullets(1); /* Check this */
                     pthread_mutex_unlock(&lock);
             }
 
-            pthread_mutex_lock(&controller_lock);
-            control_pressed[0] = packet.dpad_right;
-            control_pressed[1] = packet.dpad_left;
-            control_pressed[2] = packet.dpad_up;
-            control_pressed[3] = packet.dpad_down;
-            control_pressed[4] = packet.b;
-            pthread_mutex_unlock(&controller_lock);
+            
+
+            if (state == game) {
+                pthread_mutex_lock(&controller_lock);
+                control_pressed[0] = packet.dpad_right;
+                control_pressed[1] = packet.dpad_left;
+                control_pressed[2] = packet.dpad_up;
+                control_pressed[3] = packet.dpad_down;
+                control_pressed[4] = packet.b;
+                pthread_mutex_unlock(&controller_lock);
+            }
             
         }
     }
@@ -302,7 +323,8 @@ void init_bullets() {
 }
 
 void init_state() {
-    state = game;
+    state = start;
+    start_prev_state = 0;
 	health = MAX_LIVES;
 	score = 0;
     draw_player();
@@ -313,7 +335,7 @@ void init_state() {
 void init_clouds() {
     int i;
     
-    for (i = 1; i < MAX_CLOUDS; i++) {
+    for (i = 1; i < 3; i++) {
         clouds[i].x = MAX_X - CLOUD_DIM;
         clouds[i].y = MAX_Y/4 + i*100 + 1;
         clouds[i].dim = CLOUD_DIM;
@@ -330,6 +352,36 @@ void init_clouds() {
     clouds[0].dim = CLOUD_DIM;
     clouds[0].id = CLOUD_ID;
     clouds[0].s = init_s;
+    sprite_slots[init_s] = 1;
+    init_s--;
+    available_slots--;
+    
+    clouds[3].x = MAX_X - CLOUD_DIM - 50;
+    clouds[3].y = MAX_Y/4 + 10 + 1;
+    clouds[3].dim = CLOUD_DIM;
+    clouds[3].id = CLOUD_ID;
+    clouds[3].s = init_s;
+    sprite_slots[init_s] = 1;
+    init_s--;
+    available_slots--;
+
+    clouds[4].x = MAX_X - CLOUD_DIM - 50;
+    clouds[4].y = MAX_Y/4 + 10 + 1;
+    clouds[4].dim = CLOUD_DIM;
+    clouds[4].id = CLOUD_ID;
+    clouds[4].s = init_s;
+    sprite_slots[init_s] = 1;
+    init_s--;
+    available_slots--;
+
+    clouds[5].x = MAX_X - CLOUD_DIM - 50;
+    clouds[5].y = MAX_Y/4 + 10 + 1;
+    clouds[5].dim = CLOUD_DIM;
+    clouds[5].id = CLOUD_ID;
+    clouds[5].s = init_s;
+    sprite_slots[init_s] = 1;
+    init_s--;
+    available_slots--;
     
     sprite_slots[init_s] = 1;
     available_slots--;
@@ -353,20 +405,6 @@ void init_hud() {
         init_s--;
         available_slots--;
 	}
-
-    /*
-    for (i = 0; i < 5; i++) {
-        score_sprite[i].x = SCORE_OFFSET + i*S_DIM;
-        score_sprite[i].y = 1;
-        score_sprite[i].s = init_s;
-        score_sprite[i].dim = S_DIM;
-        score_sprite[i].id = S_ID + i;
-
-        sprite_slots[init_s] = 1;
-        init_s--;
-        available_slots--;
-        draw_sprite(&score_sprite[i]);
-    } */
     
     for (i = 0; i < 3; i++) {
         score_nums[i].s = init_s;
@@ -481,7 +519,7 @@ void draw_score() {
     int i;
 
     for (i = 0; i < 3; i++) {
-        score_nums[i].x = 310 + ZERO_DIM*i;
+        score_nums[i].x = SCORE_OFFSET + ZERO_DIM*i;
         score_nums[i].y = 1;
         score_nums[i].id = ids[i];
         score_nums[i].dim = ZERO_DIM;
@@ -782,7 +820,11 @@ int main() {
     pthread_create(&input_thread, NULL, handle_controller_thread_f2, NULL);
     
     while (quit == 0) {
-        if (state == game) {
+
+        if (state == start) {
+            continue;
+        }
+        else if (state == game) {
             pthread_mutex_lock(&lock);
             draw_bullets(MAX_BULLETS);
 			draw_invaders();
@@ -809,7 +851,10 @@ int main() {
             draw_sprite(&game_over);
             pthread_mutex_unlock(&lock);
         
+        } else if (state == game_pause) {
+            continue;
         }
+            
 
 		ticks++;
     }

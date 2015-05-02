@@ -2,9 +2,9 @@
 
 #define MAX_BULLETS 5
 #define BULLET_SPEED 20
-#define MAX_ENEMIES 5
+#define MAX_ENEMIES 2
 #define PLAYER_STEP_SIZE 2
-#define MAX_CLOUDS 3
+#define MAX_CLOUDS 6
 #define MAX_LIVES 3
 #define PIG_SCORE 16
 #define BEE_SCORE 40
@@ -18,11 +18,11 @@
 #define FROG_SPEED 3
 #define GOAT_SPEED 3
 #define CHICK_SPEED 3
-#define SCORE_OFFSET 250
+#define SCORE_OFFSET 280
 #define TICKS_FREQ 50
 
 enum direction_t {up, down, left, right, stationary};
-enum state_t {menu, game, game_over};
+enum state_t {game, start, game_pause, game_over};
 
 typedef struct {
 	sprite_t sprite_info;
