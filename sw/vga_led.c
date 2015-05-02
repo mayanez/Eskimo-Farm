@@ -53,6 +53,7 @@ struct vga_led_dev {
 static long vga_led_ioctl(struct file *f, unsigned int cmd, unsigned long arg)
 {
 	sprite_t sprite;
+    unsigned int vga_ready;
 
 	switch (cmd) {
 		case VGA_SET_SPRITE:
@@ -78,6 +79,12 @@ static long vga_led_ioctl(struct file *f, unsigned int cmd, unsigned long arg)
 			iowrite32(NULL, dev.virtbase + (60 << 2));
 
 			break;
+
+        case VGA_READY:
+            vga_ready = ioread32(dev.virtbase + (61 << 2));
+            if (copy_to_user((unsigned int *) arg, &vga_ready, sizeof(unsigned int)))
+                return -EACCES;
+            break;
 		default:
 			return -EINVAL;
 	}

@@ -39,6 +39,7 @@ struct libusb_device_handle *keyboard;
 uint8_t endpoint_address;
 
 pthread_t input_thread;
+
 pthread_mutex_t lock;
 pthread_mutex_t controller_lock;
 
@@ -60,6 +61,15 @@ void init_keyboard() {
     }
 }
 
+int check_vga_ready() {
+    unsigned int vga_ready;
+    if (vga_ready = ioctl(vga_led_fd, VGA_READY) < 0) {
+        printf("Clear - Device Driver Error\n");
+        return -1;
+    }
+
+    return vga_ready;
+}
 void handle_controller_thread_f2(void *ignored) {
     int i;
 
@@ -103,7 +113,7 @@ void handle_controller_thread_f2(void *ignored) {
 
         pthread_mutex_unlock(&controller_lock);
         usleep(27000);
-
+        while(check_vga_ready() != 0);
     }
 }
 
@@ -855,8 +865,8 @@ int main() {
             continue;
         }
             
-
-		ticks++;
+        while(check_vga_ready() != 0);
+		ticks++;    
     }
     
     pthread_cancel(input_thread);

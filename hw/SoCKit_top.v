@@ -662,7 +662,19 @@ module SoCKit_Top(
 				.vga_HS (VGA_HS),
 				.vga_VS (VGA_VS),
 				.vga_BLANK_n (VGA_BLANK_n),
-				.vga_SYNC_n (VGA_SYNC_n)
+				.vga_SYNC_n (VGA_SYNC_n),
+
+               .aud_AUD_ADCLRCK(AUD_ADCLRCK),
+               .aud_AUD_ADCDAT(AUD_ADCDAT),
+               .aud_AUD_DACLRCK (AUD_DACLRCK),
+               .aud_AUD_DACDAT (AUD_DACDAT),
+               .aud_AUD_XCK (AUD_XCK),
+                .aud_AUD_BCLK (AUD_BCLK),
+                .aud_AUD_I2C_SCLK (AUD_I2C_SCLK),
+                .aud_AUD_I2C_SDAT  (AUD_I2C_SDAT),
+                .aud_AUD_MUTE (AUD_MUTE),
+            	 .aud_SW(SW),
+            	 .aud_KEY(KEY)
 	    );
 
 endmodule
