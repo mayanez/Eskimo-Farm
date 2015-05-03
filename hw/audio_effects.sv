@@ -1,8 +1,8 @@
 
-//Original audio codec code taken from
-//Howard Mao's FPGA blog
-//http://zhehaomao.com/blog/fpga/2014/01/15/sockit-8.html
-//MOdified as needed
+/* Original audio codec code taken from
+ * Howard Mao's FPGA blog
+ * http://zhehaomao.com/blog/fpga/2014/01/15/sockit-8.html
+ * /
 
 /* audio_effects.sv
     Reads the audio data from the ROM blocks and sends them to the 
@@ -10,19 +10,19 @@
 */
 
 module audio_effects (
-    input  clk, //audio clock
-    input  sample_end, //sample ends
-    input  sample_req, //request new sample
-	 input [15:0] audio_sample, //get audio sample from audio codec interface, not needed here
-    output [15:0] audio_output, //sends audio sample to audio codec
-    input [15:0] M_city,    //city sound ROM data
-    output [14:0] addr_city,
-    input  [3:0] control    //Control from avalon bus
+    input               clk, //audio clock
+    input               sample_end, //sample ends
+    input               sample_req, //request new sample
+	input [15:0]        audio_sample, //get audio sample from audio codec interface, not needed here
+    output [15:0]       audio_output, //sends audio sample to audio codec
+    input [15:0]        M_city,    //city sound ROM data
+    output [14:0]       addr_city,
+    input  [3:0]        control    //Control from avalon bus
 );
 
 
-reg  [15:0]  index = 15'd0;     //index through the sound ROM data for different sounds
-reg [15:0] count = 15'd0;
+reg[15:0]   index = 15'd0;     //index through the sound ROM data for different sounds
+reg[15:0]   count = 15'd0;
 
 
 reg [15:0] dat;
@@ -31,15 +31,10 @@ assign audio_output = dat;
 
 //assign index to ROM addresses
 always @(posedge clk) begin
-    
-
     addr_city <= index;
-
 end
 
-//Keep playing background (city) sound if control is off
-//Play sword sound if control is ON
-
+//Play sound if control is ON
 always @(posedge clk) begin
 
     if (sample_req) begin
@@ -54,7 +49,7 @@ always @(posedge clk) begin
     
 	end
 	else
-            dat <= 16'd0;
+        dat <= 16'd0;
 end
 
 endmodule

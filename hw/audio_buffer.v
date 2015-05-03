@@ -1,10 +1,10 @@
-module audio_buffer ( rclk,		// read from avalon bus
-	  wclk,		// write to audio_effects
-     reset,
-	 audio_ip,
-	  read,     //sample_req from audio_codec
-     audio_out,
-	  audio_irq
+module audio_buffer (   rclk,
+                        wclk,
+                        reset,
+                        audio_ip,
+                        read,
+                        audio_out,
+                        audio_irq
 );
 
 
@@ -35,20 +35,20 @@ assign irq_edge = audio_irq & (~irq_prev);
 
 
 always @(posedge rclk) begin
- if (reset ) begin
-		start_read <= 0;
+    if (reset) begin
+        start_read <= 0;
 		indexr <= 7'd00;
 	end else if (irq_edge)
-	indexr_prev <= 0;
-   else if (indexr_prev < 100) begin
-                start_read <= 1'd1;
-					 indexr_prev <= indexr;
-						indexr <= indexr + 1'b1;
+        indexr_prev <= 0;
+    else if (indexr_prev < 100) begin
+        start_read <= 1'd1;
+        indexr_prev <= indexr;
+        indexr <= indexr + 1'b1;
 	end else begin 
-                start_read <= 1'd0;
-					 indexr <= 0;
+        start_read <= 1'd0;
+        indexr <= 0;
 	end
-	end
+end
 	
 					 
 always @(posedge rclk) begin
@@ -62,24 +62,24 @@ end
 
 
 always @(posedge wclk) begin
-		if (reset ) begin
-		indexw <= 7'd00;
-	   irq <= 0;
+	if (reset ) begin
+        indexw <= 7'd00;
+        irq <= 0;
+	end
+	else if (read) begin
+		if (indexw == 7'd99) begin
+            indexw <= 7'd00;
+            buf_cnt <= buf_cnt + 1'b1;
+			irq <= 1;
 		end
-		else if (read) begin
-			if (indexw == 7'd99) begin
-                indexw <= 7'd00;
-					 buf_cnt <= buf_cnt + 1'b1;
-					 irq <= 1;
-			end
-			else begin
-                indexw <= indexw + 1'b1;
-					 irq <= 0;
-				end
-			if (buf_cnt==0)
-				 audio_out <= buffer2[indexw];
-			else 
-				audio_out <= buffer1[indexw];
+		else begin
+            indexw <= indexw + 1'b1;
+            irq <= 0;
+		end
+		if (buf_cnt==0)
+            audio_out <= buffer2[indexw];
+		else 
+			audio_out <= buffer1[indexw];
 	end			
 end
 

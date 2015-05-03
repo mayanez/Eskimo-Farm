@@ -1,10 +1,7 @@
-
-
-
-// Original audio codec code taken from
-//Howard Mao's FPGA blog
-//http://zhehaomao.com/blog/fpga/2014/01/15/sockit-8.html
-//MOdified as needed
+/* Original audio codec code taken from
+ * Howard Mao's FPGA blog
+ * http://zhehaomao.com/blog/fpga/2014/01/15/sockit-8.html
+ * /
 
 /*
 audio_codec.sv 

@@ -1,8 +1,8 @@
 
-// Original audio codec code taken from
-//Howard Mao's FPGA blog
-//http://zhehaomao.com/blog/fpga/2014/01/15/sockit-8.html
-//MOdified as needed
+/* Original audio codec code taken from
+ * Howard Mao's FPGA blog
+ * http://zhehaomao.com/blog/fpga/2014/01/15/sockit-8.html
+ * /
 
 /* Audio_top.sv
 Contains the top-level audio controller. Instantiates sprite ROM blocks and
@@ -114,10 +114,8 @@ audio_effects ae (
      end
 	else if (chipselect && write)
 	begin
-		 
-	 case(address)
-	1'b0:	ctrl <= writedata[0]; // to turn the audio codec on/ off
-	1'b1: audio_sw <= writedata;	// read audio sample (16 bits) from the software/ audio file
-	endcase
+		case(address)
+            1'b0:	ctrl <= writedata[0]; // to turn the audio codec on/ off
+        endcase
 	end
 endmodule
