@@ -1,14 +1,21 @@
 #ifndef _VGA_LED_H
 #define _VGA_LED_H
 
+#ifndef _VGA_LED_H
+#define _VGA_LED_H
+
 //#include <linux/ioctl.h>
 
-#define MAX_SPRITES 20
+#define MAX_SPRITES 30
 #define MAX_SPRITE_DIM 128
 #define MAX_SPRITE_ID 40 /* Unique number of sprites == # of ROMs */
 #define HUD_BOUNDARY 30
 #define MAX_X 640
 #define MAX_Y 480
+#define START_NUM 5
+#define PAUSE_NUM 5
+#define GAMEOVER_NUM 8
+#define WIN_NUM 3
 
 #define SHIP_ID 1
 #define SHIP_DIM 32
@@ -50,18 +57,40 @@
 #define NINE_DIM 23
 #define ZERO_ID 6
 #define ZERO_DIM 23
-#define S_ID 23
-#define S_DIM 23
-#define C_ID 24
-#define C_DIM 23
-#define O_ID 25
-#define O_DIM 23
-#define R_ID 26
-#define R_DIM 23
-#define E_ID 27
-#define E_DIM 23
 #define TITLE_ID 17
 #define TITLE_DIM 128
+#define A_ID 23
+#define A_DIM 23
+#define E_ID 24
+#define E_DIM 23
+#define F_ID 25
+#define F_DIM 23
+#define G_ID 26
+#define G_DIM 23
+#define I_ID 27
+#define I_DIM 23
+#define K_ID 28
+#define K_DIM 23
+#define M_ID 29
+#define M_DIM 23
+#define N_ID 30
+#define N_DIM 23
+#define O_ID 31
+#define O_DIM 23
+#define P_ID 32
+#define P_DIM 23
+#define R_ID 33
+#define R_DIM 23
+#define S_ID 34
+#define S_DIM 23
+#define U_ID 35
+#define U_DIM 23
+#define V_ID 36
+#define V_DIM 23
+#define W_ID 37
+#define W_DIM 23
+#define T_ID 38
+#define T_DIM 23
 
 typedef struct {
 	unsigned int s; /* Sprite Number: Must be assigned in Game Logic. eg. Sprite1 == Player, etc.*/
