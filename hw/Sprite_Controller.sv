@@ -9,6 +9,7 @@ module Sprite_Controller(   input logic clk,
                                                sprite11, sprite12, sprite13, sprite14, sprite15, sprite16, sprite17, sprite18, sprite19, sprite20,
                                                sprite21, sprite22, sprite23, sprite24, sprite25, sprite26, sprite27, sprite28, sprite29, sprite30,
                             input logic [9:0]  VGA_HCOUNT, VGA_VCOUNT,
+                            input logic        VGA_HS,
                             input logic [23:0] M_ship, M_pig, M_bee, M_cow, M_mcdonald, M_bullet, M_zero, M_one, M_two, M_three, M_four, M_five, M_six, 
                                                M_seven, M_eight, M_nine, M_eskimo, M_cloud, M_title, M_goat, M_frog, M_chick, M_a, M_e, M_f, M_g, M_i, 
                                                M_k, M_m, M_n, M_o, M_p, M_r, M_s, M_u, M_v, M_w, M_t,
@@ -2664,7 +2665,7 @@ module Sprite_Controller(   input logic clk,
     /* END */
 
     /* Toggle between line buffers */
-    always_ff@(posedge VGA_VCOUNT[0])
+    always_ff@(posedge VGA_HS)
         buf_toggle <= buf_toggle + 1;
 
     always_ff@(posedge clk)

@@ -1,10 +1,10 @@
 #include "vga_led.h"
 
-#define MAX_BULLETS 5
+#define MAX_BULLETS 4
 #define BULLET_SPEED 20
 #define MAX_ENEMIES 8
 #define PLAYER_STEP_SIZE 2
-#define MAX_CLOUDS 6
+#define MAX_CLOUDS 4
 #define MAX_LIVES 3
 #define PIG_SCORE 16
 #define BEE_SCORE 40
@@ -18,15 +18,15 @@
 #define FROG_SPEED 3
 #define GOAT_SPEED 3
 #define CHICK_SPEED 3
-#define SCORE_OFFSET 280
+#define SCORE_OFFSET 240
 #define TICKS_FREQ 50
-#define PAUSE_OFFSET_X 280
+#define PAUSE_OFFSET_X 200
 #define PAUSE_OFFSET_Y 240
-#define GAMEOVER_OFFSET_X 280
+#define GAMEOVER_OFFSET_X 200
 #define GAMEOVER_OFFSET_Y 240
-#define WIN_OFFSET_X 280
+#define WIN_OFFSET_X 200
 #define WIN_OFFSET_Y 240
-#define START_OFFSET_X 280
+#define START_OFFSET_X 200
 #define START_OFFSET_Y 240
 
 enum direction_t {up, down, left, right, stationary};

@@ -19,7 +19,7 @@ sprite_t score_sprite[5];
 sprite_t score_nums[3];
 sprite_t start_sprite[5];
 sprite_t pause_sprite[5];
-sprite_t game_over_sprite[8];
+sprite_t gameover_sprite[8];
 sprite_t win_sprite[3];
 
 unsigned long ticks;
@@ -57,6 +57,7 @@ void draw_bullets(int);
 void draw_invaders();
 void draw_hud();
 void draw_score();
+void draw_pause();
 
 void init_keyboard() {
     if ( (keyboard = openkeyboard(&endpoint_address)) == NULL ) {
@@ -66,13 +67,13 @@ void init_keyboard() {
 }
 
 int check_vga_ready() {
-    unsigned int vga_ready;
-    if (vga_ready = ioctl(vga_led_fd, VGA_READY) < 0) {
-        printf("Clear - Device Driver Error\n");
+    vga_ready_t vga_ready;
+    if (ioctl(vga_led_fd, VGA_READY, &vga_ready) < 0) {
+        printf("VGA_READY - Error\n");
         return -1;
     }
     
-    return vga_ready;
+    return vga_ready.ready;
 }
 void handle_controller_thread_f2(void *ignored) {
     int i;
@@ -111,12 +112,12 @@ void handle_controller_thread_f2(void *ignored) {
         if (state == game && control_pressed[4]) {
             pthread_mutex_lock(&lock);
             player_shoot();
-            draw_bullets(1);
+
             pthread_mutex_unlock(&lock);
         }
         
         pthread_mutex_unlock(&controller_lock);
-        usleep(27000);
+        usleep(30000);
         while(check_vga_ready() != 0);
     }
 }
@@ -136,12 +137,19 @@ void handle_keyboard_thread_f(void *ignored) {
             
             if (packet.start && start_prev_state == 0) {
                 if (state == start) {
+                    pthread_mutex_lock(&lock);
                     state = game;
+                    pthread_mutex_unlock(&lock);
                 } else if (state == game) {
+                    pthread_mutex_lock(&lock);
                     state = game_pause;
-                    draw_pause();
+                    draw_background(); /* Clear the screen before writing PAUSE */
+                    pthread_mutex_unlock(&lock);
                 } else if (state == game_pause) {
+                    pthread_mutex_lock(&lock);
                     state = game;
+                    draw_player();
+                    pthread_mutex_unlock(&lock);
                 }
                 start_prev_state = 1;
             }
@@ -259,11 +267,13 @@ void draw_start() {
         
     
     for (i = 0; i < START_NUM; i++) {
-        start_sprite[i].x = START_OFFSET_x + S_DIM*i;
-        start_sprite[i].y = START_OFFSET_y
+        start_sprite[i].x = START_OFFSET_X + S_DIM*i;
+        start_sprite[i].y = START_OFFSET_Y;
         start_sprite[i].id = start_id[i];
-        start_sprite[i].dim = S_DIM;
+        start_sprite[i].dim = FONT_DIM;
+        start_sprite[i].s = init_s - i;
         draw_sprite(&start_sprite[i]);
+    }
         
 }
 
@@ -271,41 +281,49 @@ void draw_pause() {
     
         int i;
         int pause_id[5];
-        pause_id[0] = 32;
-        pause_id[1] = 23;
-        pause_id[2] = 35;
-        pause_id[3] = 34;
-        pause_id[4] = 24;
+        pause_id[0] = P_ID;
+        pause_id[1] = A_ID;
+        pause_id[2] = U_ID;
+        pause_id[3] = S_ID;
+        pause_id[4] = E_ID;
         
         
         for (i = 0; i < PAUSE_NUM; i++) {
-            pause_sprite[i].x = PAUSE_OFFSET_x + P_DIM*i;
-            pause_sprite[i].y = PAUSE_OFFSET_y
+            pause_sprite[i].x = PAUSE_OFFSET_X + P_DIM*i;
+            pause_sprite[i].y = PAUSE_OFFSET_Y;
             pause_sprite[i].id = pause_id[i];
-            pause_sprite[i].dim = P_DIM;
+            pause_sprite[i].dim = FONT_DIM;
+            pause_sprite[i].s = init_s - i;
             draw_sprite(&pause_sprite[i]);
+        }
             
+}
+
+void remove_pause() {
+    
 }
     
 void draw_gameover() {
         
         int i;
         int gameover_id[8];
-        gameover_id[0] = 26;
-        gameover_id[1] = 23;
-        gameover_id[2] = 29;
-        gameover_id[3] = 24;
-        gameover_id[4] = 31;
-        gameover_id[5] = 36;
-        gameover_id[6] = 24;
-        gameover_id[7] = 33;
+        gameover_id[0] = G_ID;
+        gameover_id[1] = A_ID;
+        gameover_id[2] = M_ID;
+        gameover_id[3] = E_ID;
+        gameover_id[4] = O_ID;
+        gameover_id[5] = V_ID;
+        gameover_id[6] = E_ID;
+        gameover_id[7] = R_ID;
 
         for (i = 0; i < GAMEOVER_NUM; i++) {
-            gameover_sprite[i].x = GAMEOVER_OFFSET_x + G_DIM*i;
-            gameover_sprite[i].y = GAMEOVER_OFFSET_y
+            gameover_sprite[i].x = GAMEOVER_OFFSET_X + G_DIM*i;
+            gameover_sprite[i].y = GAMEOVER_OFFSET_Y;
             gameover_sprite[i].id = gameover_id[i];
             gameover_sprite[i].dim = G_DIM;
+            gameover_sprite[i].s = init_s - i;
             draw_sprite(&gameover_sprite[i]);
+        }
             
 }
     
@@ -314,16 +332,18 @@ void draw_win() {
         int i;
         int win_id[3];
         
-        win_id[0] = 37;
-        win_id[1] = 27;
-        win_id[2] = 30;
+        win_id[0] = W_ID;
+        win_id[1] = I_ID;
+        win_id[2] = N_ID;
 
         for (i = 0; i < WIN_NUM; i++) {
-            win_sprite[i].x = WIN_OFFSET_x + W_DIM*i;
-            win_sprite[i].y = WIN_OFFSET_y
+            win_sprite[i].x = WIN_OFFSET_X + W_DIM*i;
+            win_sprite[i].y = WIN_OFFSET_Y;
             win_sprite[i].id = win_id[i];
-            win_sprite[i].dim = W_DIM;
+            win_sprite[i].dim = FONT_DIM;
+            win_sprite[i].s = init_s - i;
             draw_sprite(&win_sprite[i]);
+        }
             
 }
     
@@ -338,7 +358,6 @@ int init_sprite_controller() {
     }
     
     draw_background();
-    draw_start(); // DRAW THE START SPRITE
     init_s = MAX_SPRITES - 1;
     next_available_sprite_slot = 0;
     available_slots = MAX_SPRITES;
@@ -379,7 +398,7 @@ void init_invaders() {
     invaders.enemy[0].sprite_info.id = PIG_ID;
     invaders.enemy[0].sprite_info.dim = PIG_DIM;
     invaders.enemy[0].sprite_info.s = -1;
-    invaders.enemy[0].points = 1; //PIG
+    invaders.enemy[0].points = 1;
     invaders.enemy[0].direction = left;
     current_enemy_count++;
     next_available_enemy_slot++;
@@ -391,7 +410,7 @@ void init_invaders() {
     invaders.enemy[1].sprite_info.id = PIG_ID;
     invaders.enemy[1].sprite_info.dim = PIG_DIM;
     invaders.enemy[1].sprite_info.s = -1;
-    invaders.enemy[1].points = 1; //PIG
+    invaders.enemy[1].points = 1;
     invaders.enemy[1].direction = left;
     current_enemy_count++;
     next_available_enemy_slot++;
@@ -460,29 +479,6 @@ void init_clouds() {
     sprite_slots[init_s] = 1;
     init_s--;
     available_slots--;
-    
-    clouds[4].x = MAX_X - CLOUD_DIM - 50;
-    clouds[4].y = MAX_Y/4 + 10 + 1;
-    clouds[4].dim = CLOUD_DIM;
-    clouds[4].id = CLOUD_ID;
-    clouds[4].s = init_s;
-    sprite_slots[init_s] = 1;
-    init_s--;
-    available_slots--;
-    
-    clouds[5].x = MAX_X - CLOUD_DIM - 50;
-    clouds[5].y = MAX_Y/4 + 10 + 1;
-    clouds[5].dim = CLOUD_DIM;
-    clouds[5].id = CLOUD_ID;
-    clouds[5].s = init_s;
-    sprite_slots[init_s] = 1;
-    init_s--;
-    available_slots--;
-    
-    sprite_slots[init_s] = 1;
-    available_slots--;
-    
-    init_s--;
     
 }
 
@@ -560,13 +556,12 @@ void draw_clouds() {
     int i;
     int speed;
     
-    speed = 3;
+    speed = 6;
     for (i = 0; i < MAX_CLOUDS; i++) {
         if (clouds[i].x > speed) {
             clouds[i].x -= speed;
         } else {
             clouds[i].x = MAX_X - CLOUD_DIM;
-            //speed++;
         }
         
         draw_sprite(&clouds[i]);
@@ -615,10 +610,10 @@ void draw_score() {
     int i;
     
     for (i = 0; i < 3; i++) {
-        score_nums[i].x = SCORE_OFFSET + ZERO_DIM*i;
+        score_nums[i].x = SCORE_OFFSET + FONT_DIM*i;
         score_nums[i].y = 1;
         score_nums[i].id = ids[i];
-        score_nums[i].dim = ZERO_DIM;
+        score_nums[i].dim = FONT_DIM;
         draw_sprite(&score_nums[i]);
     }
 }
@@ -748,10 +743,10 @@ void move_enemy(enemy_t *enemy) {
             enemy->sprite_info.x = MAX_X - enemy->sprite_info.dim;
         }
         
-        if ((enemy->sprite_info.y > LIVES_DIM + enemy->speed) && enemy->alive == 1)
+        if ((enemy->sprite_info.y > HUD_BOUNDARY + enemy->speed) && enemy->alive == 1)
             enemy->sprite_info.y = enemy->sprite_info.y - enemy->speed;
         
-        else if ((enemy->sprite_info.y <= LIVES_DIM + enemy->speed) && enemy->alive == 1){
+        else if ((enemy->sprite_info.y <= HUD_BOUNDARY + enemy->speed) && enemy->alive == 1){
             enemy->direction = down;
             enemy->sprite_info.y = enemy->sprite_info.y + enemy->speed;
         }
@@ -919,7 +914,9 @@ int main() {
     while (quit == 0) {
         
         if (state == start) {
-            continue;
+            pthread_mutex_lock(&lock);
+            draw_start();
+            pthread_mutex_unlock(&lock);
         }
         else if (state == game) {
             pthread_mutex_lock(&lock);
@@ -935,21 +932,20 @@ int main() {
 			add_enemy();
             game_over_ai();
             pthread_mutex_unlock(&lock);
-            usleep(27000);
+            usleep(30000);
         } else if (state == game_over) {
-            sprite_t game_over;
-            
-            game_over.x = MAX_X /2;
-            game_over.y = MAX_Y /2;
-            game_over.id = TITLE_ID;
-            game_over.dim = TITLE_DIM;
-            game_over.s = -1;
             pthread_mutex_lock(&lock);
-            draw_sprite(&game_over);
+			draw_background();
+            draw_score();
+            draw_gameover();
             pthread_mutex_unlock(&lock);
             
         } else if (state == game_pause) {
-            continue;
+            pthread_mutex_lock(&lock);
+            draw_hud();
+            draw_score();
+            draw_pause();
+            pthread_mutex_unlock(&lock);
         }
         
         while(check_vga_ready() != 0);
