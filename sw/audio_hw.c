@@ -71,7 +71,7 @@ static long audio_hw_ioctl(struct file *f, unsigned int cmd, unsigned long arg)
 }
 
 /* The operations our device knows how to do */
-static const struct file_operations vga_led_fops = {
+static const struct file_operations audio_hw_fops = {
 	.owner		= THIS_MODULE,
 	.unlocked_ioctl = audio_hw_ioctl,
 };
