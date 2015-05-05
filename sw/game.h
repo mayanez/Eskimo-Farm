@@ -30,7 +30,7 @@
 #define START_OFFSET_Y 240
 
 enum direction_t {up, down, left, right, stationary};
-enum state_t {game, start, game_pause, game_over};
+enum state_t {game, start, game_pause, game_over, win};
 
 typedef struct {
 	sprite_t sprite_info;

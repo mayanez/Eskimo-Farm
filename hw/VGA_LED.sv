@@ -134,6 +134,10 @@ module VGA_LED( input logic         clk,
                        sprite29 <= 0;
                        sprite30 <= 0;
                        end
+            endcase
+        end
+        else if (read && chipselect) begin
+            case(address)
                 5'd61: readdata <= vsync;
             endcase
         end

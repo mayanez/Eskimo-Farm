@@ -56,7 +56,7 @@ module Sprite_Controller(   input logic clk,
                 dim15, dim16, dim17, dim18, dim19, dim20, dim21, dim22, dim23, dim24, dim25, dim26,
                 dim27, dim28, dim29, dim30, dim_grass;
 
-    logic [5:0] id1, id2, id3, id4, id5, id6, id7, id8, id9, id10, id11, id12, id13, id14, id15, id16, id17,
+    logic [6:0] id1, id2, id3, id4, id5, id6, id7, id8, id9, id10, id11, id12, id13, id14, id15, id16, id17,
                 id18, id19, id20, id21, id22, id23, id24, id25, id26, id27, id28, id29, id30, id_temp;
  
     /* Decode inputs */

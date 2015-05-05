@@ -139,6 +139,7 @@ void handle_keyboard_thread_f(void *ignored) {
                 if (state == start) {
                     pthread_mutex_lock(&lock);
                     state = game;
+                    draw_background();
                     pthread_mutex_unlock(&lock);
                 } else if (state == game) {
                     pthread_mutex_lock(&lock);
@@ -148,6 +149,7 @@ void handle_keyboard_thread_f(void *ignored) {
                 } else if (state == game_pause) {
                     pthread_mutex_lock(&lock);
                     state = game;
+                    draw_background(); /*Clear the screen before resuming game */
                     draw_player();
                     pthread_mutex_unlock(&lock);
                 }
@@ -247,9 +249,18 @@ int remove_sprite(sprite_t *sprite) {
 }
 
 int draw_background() {
-    if (ioctl(vga_led_fd, VGA_CLEAR) < 0) {
+    /*if (ioctl(vga_led_fd, VGA_CLEAR) < 0) {
         printf("Clear - Device Driver Error\n");
         return -1;
+    }*/
+
+    int i;
+    sprite_t empty_sprite;
+    memset(&empty_sprite, 0, sizeof(sprite_t));
+    
+    for (i = 0; i < MAX_SPRITES; i++) {
+        empty_sprite.s = i;        
+        ioctl(vga_led_fd, VGA_SET_SPRITE, &empty_sprite);
     }
     
     return 0;
@@ -267,7 +278,7 @@ void draw_start() {
         
     
     for (i = 0; i < START_NUM; i++) {
-        start_sprite[i].x = START_OFFSET_X + S_DIM*i;
+        start_sprite[i].x = START_OFFSET_X + FONT_DIM*i;
         start_sprite[i].y = START_OFFSET_Y;
         start_sprite[i].id = start_id[i];
         start_sprite[i].dim = FONT_DIM;
@@ -289,7 +300,7 @@ void draw_pause() {
         
         
         for (i = 0; i < PAUSE_NUM; i++) {
-            pause_sprite[i].x = PAUSE_OFFSET_X + P_DIM*i;
+            pause_sprite[i].x = PAUSE_OFFSET_X + FONT_DIM*i;
             pause_sprite[i].y = PAUSE_OFFSET_Y;
             pause_sprite[i].id = pause_id[i];
             pause_sprite[i].dim = FONT_DIM;
@@ -299,10 +310,6 @@ void draw_pause() {
             
 }
 
-void remove_pause() {
-    
-}
-    
 void draw_gameover() {
         
         int i;
@@ -317,10 +324,10 @@ void draw_gameover() {
         gameover_id[7] = R_ID;
 
         for (i = 0; i < GAMEOVER_NUM; i++) {
-            gameover_sprite[i].x = GAMEOVER_OFFSET_X + G_DIM*i;
+            gameover_sprite[i].x = GAMEOVER_OFFSET_X + FONT_DIM*i;
             gameover_sprite[i].y = GAMEOVER_OFFSET_Y;
             gameover_sprite[i].id = gameover_id[i];
-            gameover_sprite[i].dim = G_DIM;
+            gameover_sprite[i].dim = FONT_DIM;
             gameover_sprite[i].s = init_s - i;
             draw_sprite(&gameover_sprite[i]);
         }
@@ -337,7 +344,7 @@ void draw_win() {
         win_id[2] = N_ID;
 
         for (i = 0; i < WIN_NUM; i++) {
-            win_sprite[i].x = WIN_OFFSET_X + W_DIM*i;
+            win_sprite[i].x = WIN_OFFSET_X + FONT_DIM*i;
             win_sprite[i].y = WIN_OFFSET_Y;
             win_sprite[i].id = win_id[i];
             win_sprite[i].dim = FONT_DIM;
@@ -814,7 +821,7 @@ void add_enemy() {
             invaders.enemy[index].sprite_info.id = BEE_ID;
             invaders.enemy[index].sprite_info.dim = BEE_DIM;
             invaders.enemy[index].points = 2;
-            invaders.enemy[index].speed = 3;
+            invaders.enemy[index].speed = 2;
             invaders.enemy[index].direction = dir;
             
         } else if(score <= COW_SCORE){
@@ -832,7 +839,7 @@ void add_enemy() {
             invaders.enemy[index].sprite_info.id = FROG_ID;
             invaders.enemy[index].sprite_info.dim = FROG_DIM;
             invaders.enemy[index].points = 3;
-            invaders.enemy[index].speed = 3;
+            invaders.enemy[index].speed = 4;
             invaders.enemy[index].direction = dir;
             
         } else if(score <= GOAT_SCORE){
@@ -841,7 +848,7 @@ void add_enemy() {
             invaders.enemy[index].sprite_info.id = GOAT_ID;
             invaders.enemy[index].sprite_info.dim = GOAT_DIM;
             invaders.enemy[index].points = 3;
-            invaders.enemy[index].speed = 3;
+            invaders.enemy[index].speed = 2;
             invaders.enemy[index].direction = dir;
             
         } else if (score <= CHICK_SCORE){
@@ -850,15 +857,15 @@ void add_enemy() {
             invaders.enemy[index].sprite_info.id = CHICK_ID;
             invaders.enemy[index].sprite_info.dim = CHICK_DIM;
             invaders.enemy[index].points = 3;
-            invaders.enemy[index].speed = 4;
+            invaders.enemy[index].speed = 2;
             invaders.enemy[index].direction = dir;
         } else {
             invaders.enemy[index].sprite_info.x = MAX_X - PIG_DIM;
             invaders.enemy[index].sprite_info.y = ycord;
             invaders.enemy[index].sprite_info.id = PIG_ID;
             invaders.enemy[index].sprite_info.dim = PIG_DIM;
-            invaders.enemy[index].points = 3;
-            invaders.enemy[index].speed = 3;
+            invaders.enemy[index].points = 1;
+            invaders.enemy[index].speed = 2;
             invaders.enemy[index].direction = dir;
         }
         
@@ -884,7 +891,13 @@ void game_over_ai() {
     
     if (health <= 0) {
         state = game_over;
-        draw_gameover();
+    }
+}
+
+void game_win_ai() {
+
+    if (score > 300) {
+        state = win;
     }
 }
 
@@ -931,14 +944,20 @@ int main() {
             enemy_ai();
 			add_enemy();
             game_over_ai();
+            game_win_ai();
             pthread_mutex_unlock(&lock);
-            usleep(30000);
+            
         } else if (state == game_over) {
             pthread_mutex_lock(&lock);
 			draw_background();
+            draw_hud();
             draw_score();
             draw_gameover();
+            sleep(10);
+            state = start;
             pthread_mutex_unlock(&lock);
+
+
             
         } else if (state == game_pause) {
             pthread_mutex_lock(&lock);
@@ -946,8 +965,16 @@ int main() {
             draw_score();
             draw_pause();
             pthread_mutex_unlock(&lock);
+        } else if (state == win) {
+            pthread_mutex_lock(&lock);
+            draw_background();
+            draw_hud();
+            draw_score();
+            draw_win();
+            pthread_mutex_unlock(&lock);
         }
         
+        usleep(30000);
         while(check_vga_ready() != 0);
 		ticks++;
     }
