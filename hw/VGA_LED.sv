@@ -72,37 +72,37 @@ module VGA_LED( input logic         clk,
 		end
         if (write && chipselect) begin
             case(address)
-                5'd0: sprite1 <= gl_input;
-                5'd1: sprite2 <= gl_input;
-                5'd2: sprite3 <= gl_input;
-                5'd3: sprite4 <= gl_input;
-                5'd4: sprite5 <= gl_input;
-                5'd5: sprite6 <= gl_input;
-                5'd6: sprite7 <= gl_input;
-                5'd7: sprite8 <= gl_input;
-                5'd8: sprite9 <= gl_input;
-                5'd9: sprite10 <= gl_input;
-                5'd10: sprite11 <= gl_input;
-                5'd11: sprite12 <= gl_input;
-                5'd12: sprite13 <= gl_input;
-                5'd13: sprite14 <= gl_input;
-                5'd14: sprite15 <= gl_input;
-                5'd15: sprite16 <= gl_input;
-                5'd16: sprite17 <= gl_input;
-                5'd17: sprite18 <= gl_input;
-                5'd18: sprite19 <= gl_input;
-                5'd19: sprite20 <= gl_input;
-                5'd20: sprite21 <= gl_input;
-                5'd21: sprite22 <= gl_input;
-                5'd22: sprite23 <= gl_input;
-                5'd23: sprite24 <= gl_input;
-                5'd24: sprite25 <= gl_input;
-                5'd25: sprite26 <= gl_input;
-                5'd26: sprite27 <= gl_input;
-                5'd27: sprite28 <= gl_input;
-                5'd28: sprite29 <= gl_input;
-                5'd29: sprite30 <= gl_input;
-                5'd60: begin
+                6'd0: sprite1 <= gl_input;
+                6'd1: sprite2 <= gl_input;
+                6'd2: sprite3 <= gl_input;
+                6'd3: sprite4 <= gl_input;
+                6'd4: sprite5 <= gl_input;
+                6'd5: sprite6 <= gl_input;
+                6'd6: sprite7 <= gl_input;
+                6'd7: sprite8 <= gl_input;
+                6'd8: sprite9 <= gl_input;
+                6'd9: sprite10 <= gl_input;
+                6'd10: sprite11 <= gl_input;
+                6'd11: sprite12 <= gl_input;
+                6'd12: sprite13 <= gl_input;
+                6'd13: sprite14 <= gl_input;
+                6'd14: sprite15 <= gl_input;
+                6'd15: sprite16 <= gl_input;
+                6'd16: sprite17 <= gl_input;
+                6'd17: sprite18 <= gl_input;
+                6'd18: sprite19 <= gl_input;
+                6'd19: sprite20 <= gl_input;
+                6'd20: sprite21 <= gl_input;
+                6'd21: sprite22 <= gl_input;
+                6'd22: sprite23 <= gl_input;
+                6'd23: sprite24 <= gl_input;
+                6'd24: sprite25 <= gl_input;
+                6'd25: sprite26 <= gl_input;
+                6'd26: sprite27 <= gl_input;
+                6'd27: sprite28 <= gl_input;
+                6'd28: sprite29 <= gl_input;
+                6'd29: sprite30 <= gl_input;
+                6'd60: begin
                        sprite1 <= 0;
                        sprite2 <= 0;
                        sprite3 <= 0;
@@ -138,7 +138,7 @@ module VGA_LED( input logic         clk,
         end
         else if (read && chipselect) begin
             case(address)
-                5'd61: readdata <= vsync;
+                6'd61: readdata <= vsync;
             endcase
         end
     end

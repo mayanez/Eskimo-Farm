@@ -2659,14 +2659,14 @@ module Sprite_Controller(   input logic clk,
         else if (sprite30_on && id30 == 5'd38) M_buf = M_t;
 
         
-        else if (grass_on)                     M_buf = 12'd3264; /* Grass Color - Replace with sprite later */
-        else                                   M_buf = 12'd21372; /* Background color */
+        else if (grass_on)                     M_buf = 12'd448; /* Grass Color - Replace with sprite later */
+        else                                   M_buf = 12'd1231; /* Background color */
     end
     /* END */
 
     /* Toggle between line buffers */
-    always_ff@(posedge clk)
-        if (VGA_HS)         buf_toggle <= buf_toggle + 1;
+    always_ff@(posedge VGA_HS)
+        buf_toggle <= buf_toggle + 1;
 
     always_ff@(posedge clk)
     begin
