@@ -31,7 +31,7 @@ module VGA_LED( input logic         clk,
                  addr_title, addr_eskimo, addr_cloud, addr_frog, addr_goat, addr_chick, addr_a, addr_e, addr_f, addr_g,
                  addr_i, addr_k, addr_m, addr_n, addr_o, addr_p, addr_r, addr_s, addr_u, addr_v, addr_w, addr_t;
     
-    logic [23:0] M_ship, M_pig, M_bee, M_cow, M_mcdonald, M_zero, 
+    logic [11:0] M_ship, M_pig, M_bee, M_cow, M_mcdonald, M_zero, 
                  M_one, M_two, M_three, M_four, M_five, M_six, M_seven, M_eight, M_nine, M_bullet,
                  M_title, M_eskimo, M_cloud, M_frog, M_goat, M_chick, M_a, M_e, M_f, M_g, M_i, M_k, M_m, M_n, M_o, M_p, M_r, M_s, M_u, M_v, M_w, M_t;
 

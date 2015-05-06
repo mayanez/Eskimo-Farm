@@ -43,12 +43,18 @@ struct libusb_device_handle *keyboard;
 uint8_t endpoint_address;
 
 pthread_t input_thread;
+pthread_t input_thread2;
 
 pthread_mutex_t lock;
 pthread_mutex_t controller_lock;
 
 int control_pressed[6];
 int start_prev_state;
+
+int vga_sync;
+int vga_compute;
+int vga_draw;
+int vga_transition_count;
 
 void player_shoot();
 void move_player(enum direction_t);
@@ -66,15 +72,7 @@ void init_keyboard() {
     }
 }
 
-int check_vga_ready() {
-    vga_ready_t vga_ready;
-    if (ioctl(vga_led_fd, VGA_READY, &vga_ready) < 0) {
-        printf("VGA_READY - Error\n");
-        return -1;
-    }
-    
-    return vga_ready.ready;
-}
+
 void handle_controller_thread_f2(void *ignored) {
     int i;
     
@@ -117,12 +115,11 @@ void handle_controller_thread_f2(void *ignored) {
         }
         
         pthread_mutex_unlock(&controller_lock);
-        usleep(30000);
-        while(check_vga_ready() != 0);
+        usleep(32000);
     }
 }
 
-void handle_keyboard_thread_f(void *ignored) {
+void handle_controller_thread_f(void *ignored) {
     
     struct Xbox360Msg packet;
     int transferred;
@@ -140,6 +137,7 @@ void handle_keyboard_thread_f(void *ignored) {
                     pthread_mutex_lock(&lock);
                     state = game;
                     draw_background();
+                    draw_player();
                     pthread_mutex_unlock(&lock);
                 } else if (state == game) {
                     pthread_mutex_lock(&lock);
@@ -191,7 +189,6 @@ void handle_keyboard_thread_f(void *ignored) {
             if (state == game && packet.b) {
                 pthread_mutex_lock(&lock);
                 player_shoot();
-                draw_bullets(1); /* Check this */
                 pthread_mutex_unlock(&lock);
             }
             
@@ -226,7 +223,6 @@ int draw_sprite(sprite_t *sprite) {
         }
     }
     ioctl(vga_led_fd, VGA_SET_SPRITE, sprite);
-    
     return 0;
 }
 
@@ -492,6 +488,13 @@ void init_clouds() {
 void init_hud() {
 	int i;
     
+    for (i = 0; i < 3; i++) {
+        score_nums[i].s = init_s;
+        sprite_slots[init_s] = 1;
+        init_s--;
+        available_slots--;
+    }
+
 	for (i = 0; i < MAX_LIVES; i++) {
 		lives[i].alive = 1;
 		lives[i].sprite_info.x = i*LIVES_DIM;
@@ -504,14 +507,7 @@ void init_hud() {
         init_s--;
         available_slots--;
 	}
-    
-    for (i = 0; i < 3; i++) {
-        score_nums[i].s = init_s;
-        sprite_slots[init_s] = 1;
-        init_s--;
-        available_slots--;
-    }
-    
+        
 }
 
 void draw_hud() {
@@ -617,7 +613,7 @@ void draw_score() {
     int i;
     
     for (i = 0; i < 3; i++) {
-        score_nums[i].x = SCORE_OFFSET + FONT_DIM*i;
+        score_nums[i].x = SCORE_OFFSET + FONT_DIM*i + 1;
         score_nums[i].y = 1;
         score_nums[i].id = ids[i];
         score_nums[i].dim = FONT_DIM;
@@ -793,7 +789,8 @@ void add_enemy() {
         index = next_available_enemy_slot;
         invaders.enemy[index].alive = 1;
         
-        int ycord = rand() % (MAX_Y - 32);
+        int ycord = rand() % (MAX_Y - 32 - HUD_BOUNDARY);
+        ycord = ycord + HUD_BOUNDARY;
         
         
         int value = rand() % 3;
@@ -830,16 +827,7 @@ void add_enemy() {
             invaders.enemy[index].sprite_info.id = COW_ID;
             invaders.enemy[index].sprite_info.dim = COW_DIM;
             invaders.enemy[index].points = 3;
-            invaders.enemy[index].speed = 4;
-            invaders.enemy[index].direction = dir;
-            
-        } else if(score <= FROG_SCORE){
-            invaders.enemy[index].sprite_info.x = MAX_X - FROG_DIM;
-            invaders.enemy[index].sprite_info.y = ycord;
-            invaders.enemy[index].sprite_info.id = FROG_ID;
-            invaders.enemy[index].sprite_info.dim = FROG_DIM;
-            invaders.enemy[index].points = 3;
-            invaders.enemy[index].speed = 4;
+            invaders.enemy[index].speed = 2;
             invaders.enemy[index].direction = dir;
             
         } else if(score <= GOAT_SCORE){
@@ -896,9 +884,25 @@ void game_over_ai() {
 
 void game_win_ai() {
 
-    if (score > 300) {
+    if (score >= 150) {
         state = win;
     }
+}
+
+void restart_state() {
+
+    memset(&sprite_slots, 0, MAX_SPRITES*sizeof(sprite_t));
+    init_s = MAX_SPRITES - 1;
+    next_available_sprite_slot = 0;
+    available_slots = MAX_SPRITES;
+
+    init_player();
+    init_invaders();
+    init_bullets(MAX_BULLETS);
+    init_clouds();
+    init_hud();
+    ticks = 0;
+    init_state();
 }
 
 int main() {
@@ -913,16 +917,13 @@ int main() {
     init_clouds();
 	init_hud();
     
-    state = game;
 	ticks = 0;
     
     /*Draw initial game state */
-    pthread_mutex_lock(&lock);
     init_state();
-    pthread_mutex_unlock(&lock);
 	
-    pthread_create(&input_thread, NULL, handle_keyboard_thread_f, NULL);
-    pthread_create(&input_thread, NULL, handle_controller_thread_f2, NULL);
+    pthread_create(&input_thread, NULL, handle_controller_thread_f, NULL);
+    pthread_create(&input_thread2, NULL, handle_controller_thread_f2, NULL);
     
     while (quit == 0) {
         
@@ -955,10 +956,9 @@ int main() {
             draw_gameover();
             sleep(10);
             state = start;
-            pthread_mutex_unlock(&lock);
-
-
-            
+            draw_background();
+            restart_state();
+            pthread_mutex_unlock(&lock);            
         } else if (state == game_pause) {
             pthread_mutex_lock(&lock);
             draw_hud();
@@ -971,20 +971,24 @@ int main() {
             draw_hud();
             draw_score();
             draw_win();
+            sleep(10);
+            state = start;
+            draw_background();
+            restart_state();
             pthread_mutex_unlock(&lock);
         }
-        
-        usleep(30000);
-        while(check_vga_ready() != 0);
+        usleep(32000);
 		ticks++;
     }
     
     pthread_cancel(input_thread);
+    pthread_cancel(input_thread2);
     
     /* Destroy lock */
     pthread_mutex_destroy(&lock);
     
     /* Wait for the network thread to finish */
     pthread_join(input_thread, NULL);
+    pthread_join(input_thread2, NULL);
     
 }

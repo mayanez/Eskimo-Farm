@@ -10,7 +10,7 @@ module Sprite_Controller(   input logic clk,
                                                sprite21, sprite22, sprite23, sprite24, sprite25, sprite26, sprite27, sprite28, sprite29, sprite30,
                             input logic [9:0]  VGA_HCOUNT, VGA_VCOUNT,
                             input logic        VGA_HS,
-                            input logic [23:0] M_ship, M_pig, M_bee, M_cow, M_mcdonald, M_bullet, M_zero, M_one, M_two, M_three, M_four, M_five, M_six, 
+                            input logic [11:0] M_ship, M_pig, M_bee, M_cow, M_mcdonald, M_bullet, M_zero, M_one, M_two, M_three, M_four, M_five, M_six, 
                                                M_seven, M_eight, M_nine, M_eskimo, M_cloud, M_title, M_goat, M_frog, M_chick, M_a, M_e, M_f, M_g, M_i, 
                                                M_k, M_m, M_n, M_o, M_p, M_r, M_s, M_u, M_v, M_w, M_t,
                             output logic [9:0] addr_ship, addr_pig, addr_bee, addr_cow, addr_bullet, /*addr_mcdonald,*/ addr_zero, addr_one, addr_two,
@@ -409,84 +409,45 @@ module Sprite_Controller(   input logic clk,
                     sprite27_on ? id27 : 
                     sprite28_on ? id28 : 
                     sprite29_on ? id29 : 
-                    sprite30_on ? id30 : 0;
+                    sprite30_on ? id30 : 
+                    grass_on    ? 6'd60: 0;
     
-    always@(*) begin
-        if (id_buf == 6'd1) addr_ship = addr_buf;
-        else if (id_buf == 6'd2) addr_pig = addr_buf;
-        else if (id_buf == 6'd3) addr_bee = addr_buf;
-        else if (id_buf == 6'd4) addr_cow = addr_buf;
-        else if (id_buf == 6'd5) addr_bullet = addr_buf;
-        else if (id_buf == 6'd6) addr_zero = addr_buf;
-        else if (id_buf == 6'd7) addr_one = addr_buf;
-        else if (id_buf == 6'd8) addr_two = addr_buf;
-        else if (id_buf == 6'd9) addr_three = addr_buf;
-        else if (id_buf == 6'd10) addr_four = addr_buf;
-        else if (id_buf == 6'd11) addr_five = addr_buf;
-        else if (id_buf == 6'd12) addr_six = addr_buf;
-        else if (id_buf == 6'd13) addr_seven = addr_buf;
-        else if (id_buf == 6'd14) addr_eight = addr_buf;
-        else if (id_buf == 6'd15) addr_nine = addr_buf;
-        else if (id_buf == 6'd18) addr_eskimo = addr_buf;
-        else if (id_buf == 6'd19) addr_cloud = addr_buf;
-        else if (id_buf == 6'd20) addr_goat = addr_buf;
-        else if (id_buf == 6'd21) addr_frog = addr_buf;
-        else if (id_buf == 6'd22) addr_chick = addr_buf;
-        else if (id_buf == 6'd23) addr_a = addr_buf;
-        else if (id_buf == 6'd24) addr_e = addr_buf;
-        else if (id_buf == 6'd25) addr_f = addr_buf;
-        else if (id_buf == 6'd26) addr_g = addr_buf;
-        else if (id_buf == 6'd27) addr_i = addr_buf;
-        else if (id_buf == 6'd28) addr_k = addr_buf;
-        else if (id_buf == 6'd29) addr_m = addr_buf;
-        else if (id_buf == 6'd30) addr_n = addr_buf;
-        else if (id_buf == 6'd31) addr_o = addr_buf;
-        else if (id_buf == 6'd32) addr_p = addr_buf;
-        else if (id_buf == 6'd33) addr_r = addr_buf;
-        else if (id_buf == 6'd34) addr_s = addr_buf;
-        else if (id_buf == 6'd35) addr_u = addr_buf;
-        else if (id_buf == 6'd36) addr_v = addr_buf;
-        else if (id_buf == 6'd37) addr_w = addr_buf;
-        else if (id_buf == 6'd38) addr_t = addr_buf;
-        else begin
-            addr_ship = 0;
-            addr_pig = 0;
-            addr_bee = 0;
-            addr_cow = 0;
-            addr_bullet = 0;
-            addr_zero =0;
-            addr_one = 0;
-            addr_two = 0;
-            addr_three = 0;
-            addr_four       = 0;
-            addr_five       = 0;
-            addr_six        = 0;
-            addr_seven      =0 ;
-            addr_eight      =0 ;
-            addr_nine       = 0 ;
-            addr_eskimo     = 0 ;
-            addr_cloud      =0 ;
-            addr_goat       = 0 ;
-            addr_frog       = 0 ;
-            addr_chick      = 0;
-            addr_a = 0;
-            addr_e = 0;
-            addr_f = 0;
-            addr_g = 0;
-            addr_i = 0;
-            addr_k = 0;
-            addr_m = 0;
-            addr_n = 0;
-            addr_o = 0;
-            addr_p = 0;
-            addr_r = 0;
-            addr_s = 0;
-            addr_u = 0;
-            addr_v = 0;
-            addr_w = 0;
-            addr_t = 0;
-        end
-    end
+    assign addr_ship = (id_buf == 6'd1) ? addr_buf : 0;
+    assign addr_pig = (id_buf == 6'd2) ? addr_buf : 0;
+    assign addr_bee = (id_buf == 6'd3) ? addr_buf : 0;
+    assign addr_cow = (id_buf == 6'd4) ? addr_buf : 0;
+    assign addr_bullet = (id_buf == 6'd5) ? addr_buf : 0;
+    assign addr_zero = (id_buf == 6'd6) ? addr_buf : 0;
+    assign addr_one = (id_buf == 6'd7) ? addr_buf : 0;
+    assign addr_two = (id_buf == 6'd8) ? addr_buf : 0;
+    assign addr_three = (id_buf == 6'd9) ? addr_buf : 0;
+    assign addr_four = (id_buf == 6'd10) ? addr_buf : 0;
+    assign addr_five = (id_buf == 6'd11) ? addr_buf : 0;
+    assign addr_six = (id_buf == 6'd12) ? addr_buf : 0;
+    assign addr_seven = (id_buf == 6'd13) ? addr_buf : 0;
+    assign addr_eight = (id_buf == 6'd14) ? addr_buf : 0;
+    assign addr_nine = (id_buf == 6'd15) ? addr_buf : 0;
+    assign addr_eskimo = (id_buf == 6'd18) ? addr_buf : 0;
+    assign addr_cloud = (id_buf == 6'd19) ? addr_buf : 0;
+    assign addr_goat = (id_buf == 6'd20) ? addr_buf : 0;
+    assign addr_frog = (id_buf == 6'd21) ? addr_buf : 0;
+    assign addr_chick = (id_buf == 6'd22) ? addr_buf : 0;
+    assign addr_a = (id_buf == 6'd23) ? addr_buf : 0;
+    assign addr_e = (id_buf == 6'd24) ? addr_buf : 0;
+    assign addr_f = (id_buf == 6'd25) ? addr_buf : 0;
+    assign addr_g = (id_buf == 6'd26) ? addr_buf : 0;
+    assign addr_i = (id_buf == 6'd27) ? addr_buf : 0;
+    assign addr_k = (id_buf == 6'd28) ? addr_buf : 0;
+    assign addr_m = (id_buf == 6'd29) ? addr_buf : 0;
+    assign addr_n = (id_buf == 6'd30) ? addr_buf : 0;
+    assign addr_o = (id_buf == 6'd31) ? addr_buf : 0;
+    assign addr_p = (id_buf == 6'd32) ? addr_buf : 0;
+    assign addr_r = (id_buf == 6'd33) ? addr_buf : 0;
+    assign addr_s = (id_buf == 6'd34) ? addr_buf : 0;
+    assign addr_u = (id_buf == 6'd35) ? addr_buf : 0;
+    assign addr_v = (id_buf == 6'd36) ? addr_buf : 0;
+    assign addr_w = (id_buf == 6'd37) ? addr_buf : 0;
+    assign addr_t = (id_buf == 6'd38) ? addr_buf : 0;
     
     always@(*) begin
         if (id_buf == 6'd1) M_buf = M_ship;
@@ -525,6 +486,7 @@ module Sprite_Controller(   input logic clk,
         else if (id_buf == 6'd36) M_buf = M_v;
         else if (id_buf == 6'd37) M_buf = M_w;
         else if (id_buf == 6'd38) M_buf = M_t;
+        else if (id_buf == 6'd60) M_buf = 12'd448; /* Grass */
         else    M_buf = 12'd1231;
     end
     
