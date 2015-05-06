@@ -67,8 +67,8 @@ static long vga_led_ioctl(struct file *f, unsigned int cmd, unsigned long arg)
 			    sprite.s < 0 || sprite.s > MAX_SPRITES)
 					return -EINVAL;
 
-			iowrite32(((sprite.dim & 0x7F) << 26) | 
-					  ((sprite.id & 0x1F) << 20)  |
+			iowrite32(((sprite.dim & 0x3F) << 26) | 
+					  ((sprite.id & 0x3F) << 20)  |
 					  ((sprite.y & 0x3FF) << 10)  |
 					   (sprite.x & 0x3FF), dev.virtbase + (sprite.s << 2));
 
