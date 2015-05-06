@@ -18,9 +18,9 @@ count = 0
 for row in colors[2]:
 	i= 0
 	while i < len(row):
-		red = row[i]
-		green = row[i+1]
-		blue = row[i+2]
+		red = int(row[i]/16.0 -1)
+		green = int(row[i+1]/16.0 -1)
+		blue = int(row[i+2]/16.0 -1)
 		color = red*256 + green*16 + blue
 		f.write('%d : %d;\n' % (count, color))
 		i += 3 
