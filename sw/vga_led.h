@@ -1,7 +1,7 @@
 #ifndef _VGA_LED_H
 #define _VGA_LED_H
 
-//#include <linux/ioctl.h>
+#include <linux/ioctl.h>
 
 #define MAX_SPRITES 30
 #define MAX_SPRITE_DIM 32

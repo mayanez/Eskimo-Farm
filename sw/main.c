@@ -25,6 +25,8 @@ sprite_t win_sprite[3];
 unsigned long ticks;
 
 int vga_led_fd;
+int audio_hw_fd;
+
 unsigned int init_s;
 unsigned int health;
 
@@ -367,6 +369,17 @@ int init_sprite_controller() {
     return 0;
 }
 
+int init_audio_controller() {
+    static const char filename[] = "/dev/audio_hw";
+
+    if ((audio_hw_fd = open(filename, O_RDWR)) == -1) {
+        printf("Could not open device");
+        return -1;
+    }
+
+    return 0;
+}
+
 void init_player() {
     player.sprite_info.x = 0;
     player.sprite_info.y = (MAX_Y / 2);
@@ -671,6 +684,9 @@ void player_shoot() {
             break;
         }
     }
+    unsigned int c;
+    c = 1;
+    ioctl(audio_hw_fd, AUDIO_SET_CONTROL, &c);
 }
 
 /* Detect a collision between two sprites */
@@ -909,6 +925,7 @@ int main() {
     
     int quit = 0;
     init_sprite_controller();
+    init_audio_controller();
     init_keyboard();
     init_mutex();
     init_player();

@@ -1,7 +1,7 @@
 #ifndef _AUDIO_HW_H
 #define _AUDIO_HW_H
 
-//#include <linux/ioctl.h>
+#include <linux/ioctl.h>
 
 #define BACKGROUND_TRACK 1
 

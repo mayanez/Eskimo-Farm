@@ -1,5 +1,5 @@
 #include "vga_led.h"
-
+#include "audio_hw.h"
 #define MAX_BULLETS 4
 #define BULLET_SPEED 20
 #define MAX_ENEMIES 8
