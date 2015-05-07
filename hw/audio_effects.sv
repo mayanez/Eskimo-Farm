@@ -40,12 +40,13 @@ always @(posedge clk) begin
     if (sample_req) begin
         if (control == 1) begin //play city sound
             dat <= M_city;
+            index <= 0;
         end
         
-		if (index == 15'd22049)
-            index <= 15'd0;
+		if (index == 16'd23)
+            index <= 16'd0;
 		else
-		    index <= index +1'b1;   //increment city index
+		    index <= index +16'b1;   //increment city index
     
 	end
 	else

@@ -112,7 +112,9 @@ void handle_controller_thread_f2(void *ignored) {
         if (state == game && control_pressed[4]) {
             pthread_mutex_lock(&lock);
             player_shoot();
-
+                unsigned int c;
+                c = 1;
+                ioctl(audio_hw_fd, AUDIO_SET_CONTROL, &c);
             pthread_mutex_unlock(&lock);
         }
         
@@ -684,9 +686,6 @@ void player_shoot() {
             break;
         }
     }
-    unsigned int c;
-    c = 1;
-    ioctl(audio_hw_fd, AUDIO_SET_CONTROL, &c);
 }
 
 /* Detect a collision between two sprites */
@@ -952,6 +951,9 @@ int main() {
         else if (state == game) {
             pthread_mutex_lock(&lock);
             draw_bullets(MAX_BULLETS);
+                unsigned int c;
+                c = 0;
+                ioctl(audio_hw_fd, AUDIO_SET_CONTROL, &c);
 			draw_invaders();
             draw_clouds();
 			draw_hud();

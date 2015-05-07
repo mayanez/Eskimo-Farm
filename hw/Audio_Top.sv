@@ -51,7 +51,7 @@ wire [15:0] M_city;
 wire [14:0] addr_city;
 
 //Store sounds in memory ROM blocks
-city c0 (.clock(OSC_50_B8A), .address(addr_city), .q(M_city));
+shoot c0 (.clock(OSC_50_B8A), .address(addr_city), .q(M_city));
 
 
 
