@@ -1,0 +1,12 @@
+Logic utilization (in ALMs)	12,188 / 41,910 ( 29 % )
+Total registers	17782
+Total pins	289 / 499 ( 58 % )
+Total virtual pins	0
+Total block memory bits	435,712 / 5,662,720 ( 8 % )
+Total DSP Blocks	30 / 112 ( 27 % )
+Total HSSI RX PCSs	0 / 9 ( 0 % )
+Total HSSI PMA RX Deserializers	0 / 9 ( 0 % )
+Total HSSI TX PCSs	0 / 9 ( 0 % )
+Total HSSI TX Channels	0 / 9 ( 0 % )
+Total PLLs	1 / 15 ( 7 % )
+Total DLLs	1 / 4 ( 25 % )
