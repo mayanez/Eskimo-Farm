@@ -53,11 +53,6 @@ pthread_mutex_t controller_lock;
 int control_pressed[6];
 int start_prev_state;
 
-int vga_sync;
-int vga_compute;
-int vga_draw;
-int vga_transition_count;
-
 void player_shoot();
 void move_player(enum direction_t);
 void draw_player();
@@ -74,6 +69,15 @@ void init_keyboard() {
     }
 }
 
+int check_vga_ready() {
+    vga_ready_t vga_ready;
+    if (ioctl(vga_led_fd, VGA_READY, &vga_ready) < 0) {
+        printf("VGA_READY - Error\n");
+        return -1;
+    }
+    
+    return vga_ready.ready;
+}
 
 void handle_controller_thread_f2(void *ignored) {
     int i;
@@ -112,14 +116,12 @@ void handle_controller_thread_f2(void *ignored) {
         if (state == game && control_pressed[4]) {
             pthread_mutex_lock(&lock);
             player_shoot();
-                unsigned int c;
-                c = 1;
-                ioctl(audio_hw_fd, AUDIO_SET_CONTROL, &c);
             pthread_mutex_unlock(&lock);
         }
         
         pthread_mutex_unlock(&controller_lock);
         usleep(32000);
+        while(check_vga_ready() != 0);
     }
 }
 
@@ -135,7 +137,6 @@ void handle_controller_thread_f(void *ignored) {
                                   &transferred, 0);
         
         if (transferred == sizeof(packet)) {
-            
             if (packet.start && start_prev_state == 0) {
                 if (state == start) {
                     pthread_mutex_lock(&lock);
@@ -937,7 +938,10 @@ int main() {
     
     /*Draw initial game state */
     init_state();
-	
+	unsigned int c;
+    c = 1;
+    ioctl(audio_hw_fd, AUDIO_SET_CONTROL, &c);
+
     pthread_create(&input_thread, NULL, handle_controller_thread_f, NULL);
     pthread_create(&input_thread2, NULL, handle_controller_thread_f2, NULL);
     
@@ -951,9 +955,6 @@ int main() {
         else if (state == game) {
             pthread_mutex_lock(&lock);
             draw_bullets(MAX_BULLETS);
-                unsigned int c;
-                c = 0;
-                ioctl(audio_hw_fd, AUDIO_SET_CONTROL, &c);
 			draw_invaders();
             draw_clouds();
 			draw_hud();
@@ -976,7 +977,7 @@ int main() {
             sleep(10);
             state = start;
             draw_background();
-            restart_state();
+            quit = 1;
             pthread_mutex_unlock(&lock);            
         } else if (state == game_pause) {
             pthread_mutex_lock(&lock);
@@ -990,13 +991,13 @@ int main() {
             draw_hud();
             draw_score();
             draw_win();
-            sleep(10);
-            state = start;
-            draw_background();
-            restart_state();
+            quit = 1;
             pthread_mutex_unlock(&lock);
         }
         usleep(32000);
+
+        while(check_vga_ready() != 0);
+
 		ticks++;
     }
     
@@ -1009,5 +1010,8 @@ int main() {
     /* Wait for the network thread to finish */
     pthread_join(input_thread, NULL);
     pthread_join(input_thread2, NULL);
+
+    c = 0;
+    ioctl(audio_hw_fd, AUDIO_SET_CONTROL, &c);
     
 }
