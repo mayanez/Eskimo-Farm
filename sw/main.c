@@ -10,6 +10,7 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <errno.h>
+#include <signal.h>
 
 player_t player;
 invaders_t invaders;
@@ -23,7 +24,7 @@ sprite_t gameover_sprite[8];
 sprite_t win_sprite[3];
 
 unsigned long ticks;
-
+static int quit;
 int vga_led_fd;
 int audio_hw_fd;
 
@@ -62,13 +63,33 @@ void draw_hud();
 void draw_score();
 void draw_pause();
 
+
+void INTHandler(int) {
+    quit = 1;
+    audio_control(0);
+}
+
+/* Wraps Audio IOCTL */
+int audio_control(int play) {
+	unsigned int c;
+    c = play;
+    if (ioctl(audio_hw_fd, AUDIO_SET_CONTROL, &c) < 0) {
+        printf("Audio Driver IOCTL Error\n");
+        return -1;
+    }
+
+    return 0;
+}
+
+/* Opens Controller */
 void init_keyboard() {
     if ( (keyboard = openkeyboard(&endpoint_address)) == NULL ) {
-        fprintf(stderr, "Did not find a keyboard\n");
+        fprintf(stderr, "Did not find a controller\n");
         exit(1);
     }
 }
 
+/* Polls VGA Controller for SYNC status */
 int check_vga_ready() {
     vga_ready_t vga_ready;
     if (ioctl(vga_led_fd, VGA_READY, &vga_ready) < 0) {
@@ -79,6 +100,7 @@ int check_vga_ready() {
     return vga_ready.ready;
 }
 
+/* Handles Controller smooth input */
 void handle_controller_thread_f2(void *ignored) {
     int i;
     
@@ -125,6 +147,7 @@ void handle_controller_thread_f2(void *ignored) {
     }
 }
 
+/* Main Controller Handler */
 void handle_controller_thread_f(void *ignored) {
     
     struct Xbox360Msg packet;
@@ -141,17 +164,20 @@ void handle_controller_thread_f(void *ignored) {
                 if (state == start) {
                     pthread_mutex_lock(&lock);
                     state = game;
+                    audio_control(1);
                     draw_background();
                     draw_player();
                     pthread_mutex_unlock(&lock);
                 } else if (state == game) {
                     pthread_mutex_lock(&lock);
                     state = game_pause;
+                    audio_control(0);
                     draw_background(); /* Clear the screen before writing PAUSE */
                     pthread_mutex_unlock(&lock);
                 } else if (state == game_pause) {
                     pthread_mutex_lock(&lock);
                     state = game;
+                    audio_control(1);
                     draw_background(); /*Clear the screen before resuming game */
                     draw_player();
                     pthread_mutex_unlock(&lock);
@@ -227,7 +253,12 @@ int draw_sprite(sprite_t *sprite) {
             }
         }
     }
-    ioctl(vga_led_fd, VGA_SET_SPRITE, sprite);
+
+    if (ioctl(vga_led_fd, VGA_SET_SPRITE, sprite) < 0) {
+        printf("VGA_SET_SPRITE Error\n");
+        return -1;
+    }
+
     return 0;
 }
 
@@ -249,12 +280,8 @@ int remove_sprite(sprite_t *sprite) {
     return 0;
 }
 
+/* Clears the Screen without Modifying State */
 int draw_background() {
-    /*if (ioctl(vga_led_fd, VGA_CLEAR) < 0) {
-        printf("Clear - Device Driver Error\n");
-        return -1;
-    }*/
-
     int i;
     sprite_t empty_sprite;
     memset(&empty_sprite, 0, sizeof(sprite_t));
@@ -267,6 +294,7 @@ int draw_background() {
     return 0;
 }
 
+/* Draw START word */
 void draw_start() {
     
     int i;
@@ -289,6 +317,7 @@ void draw_start() {
         
 }
 
+/* Draw PAUSE word */
 void draw_pause() {
     
         int i;
@@ -311,6 +340,7 @@ void draw_pause() {
             
 }
 
+/* Draw Gameover word */
 void draw_gameover() {
         
         int i;
@@ -334,7 +364,8 @@ void draw_gameover() {
         }
             
 }
-    
+
+/* Draw Win word */
 void draw_win() {
         
         int i;
@@ -354,7 +385,8 @@ void draw_win() {
         }
             
 }
-    
+
+/* Initializes the VGA Controller for drawing sprites */    
 int init_sprite_controller() {
     static const char filename[] = "/dev/vga_led";
     
@@ -372,6 +404,7 @@ int init_sprite_controller() {
     return 0;
 }
 
+/* Initializes the Audio Controller */
 int init_audio_controller() {
     static const char filename[] = "/dev/audio_hw";
 
@@ -383,6 +416,7 @@ int init_audio_controller() {
     return 0;
 }
 
+/* Sets default player state */
 void init_player() {
     player.sprite_info.x = 0;
     player.sprite_info.y = (MAX_Y / 2);
@@ -391,6 +425,7 @@ void init_player() {
     player.sprite_info.s = -1;
 }
 
+/* Sets default enemy state */
 void init_invaders() {
     int i;
     current_enemy_count = 0;
@@ -435,6 +470,7 @@ void init_invaders() {
     next_available_enemy_slot++;
 }
 
+/* Initializes Mutexes */
 void init_mutex() {
     /* Init Mutex */
     if (pthread_mutex_init(&lock, NULL) != 0 && pthread_mutex_init(&controller_lock, NULL) != 0) {
@@ -443,6 +479,7 @@ void init_mutex() {
     }
 }
 
+/* Initializes Bullets */
 void init_bullets() {
     int i;
     
@@ -456,16 +493,19 @@ void init_bullets() {
     }
 }
 
+/* Sets default state */
 void init_state() {
     state = start;
     start_prev_state = 0;
 	health = MAX_LIVES;
 	score = 0;
+    quit = 0;
     draw_player();
 	draw_hud();
     draw_score();
 }
 
+/* Sets initial background (Clouds) */
 void init_clouds() {
     int i;
     
@@ -501,6 +541,7 @@ void init_clouds() {
     
 }
 
+/* Initializes Heads Up Display (Score + Lives) */
 void init_hud() {
 	int i;
     
@@ -526,6 +567,7 @@ void init_hud() {
         
 }
 
+/* Draws the HUD */
 void draw_hud() {
 	int i;
     
@@ -539,10 +581,12 @@ void draw_hud() {
 	
 }
 
+/* Draws the player */
 void draw_player() {
     draw_sprite(&player.sprite_info);
 }
 
+/* Draws the enemies */
 void draw_invaders() {
 	int i;
     
@@ -571,6 +615,7 @@ void draw_bullets(int max) {
     }
 }
 
+/* Moves bullets across the screen continuously (horizontally) */
 void draw_clouds() {
     int i;
     int speed;
@@ -587,6 +632,7 @@ void draw_clouds() {
     }
 }
 
+/* Helper function for transforming number to sprite */
 int find_num_id(unsigned int val) {
     
     switch(val) {
@@ -613,6 +659,7 @@ int find_num_id(unsigned int val) {
     }
 }
 
+/* Draws score (numbers) sprites */
 void draw_score() {
     
     unsigned int units = score % 10;
@@ -710,6 +757,7 @@ int detect_collision(sprite_t *a, sprite_t *b) {
     return 1;
 }
 
+/* Determines if there is a collision between an enemy and a bullet */
 void enemy_bullet_collision () {
 	int i, j;
 	for (i = 0; i < MAX_BULLETS; i++) {
@@ -726,6 +774,7 @@ void enemy_bullet_collision () {
 	}
 }
 
+/* Determines if there is a collision between an enemy and the player */
 void enemy_player_collision() {
     int i, j;
     for (i = 0; i < MAX_ENEMIES; i ++) {
@@ -745,6 +794,7 @@ void enemy_player_collision() {
     }
 }
 
+/* Moves an enemy in specified pattern */
 void move_enemy(enemy_t *enemy) {
     
     if(enemy->direction == left && enemy->alive == 1){
@@ -788,6 +838,7 @@ void move_enemy(enemy_t *enemy) {
     }
 }
 
+/* Adds Enemies according to FSM */
 void add_enemy() {
     int index;
 	if ((ticks % TICKS_FREQ == 0 ) && current_enemy_count < MAX_ENEMIES) {
@@ -851,7 +902,7 @@ void add_enemy() {
             invaders.enemy[index].sprite_info.y = ycord;
             invaders.enemy[index].sprite_info.id = GOAT_ID;
             invaders.enemy[index].sprite_info.dim = GOAT_DIM;
-            invaders.enemy[index].points = 3;
+            invaders.enemy[index].points = 4;
             invaders.enemy[index].speed = 2;
             invaders.enemy[index].direction = dir;
             
@@ -860,7 +911,7 @@ void add_enemy() {
             invaders.enemy[index].sprite_info.y = ycord;
             invaders.enemy[index].sprite_info.id = CHICK_ID;
             invaders.enemy[index].sprite_info.dim = CHICK_DIM;
-            invaders.enemy[index].points = 3;
+            invaders.enemy[index].points = 4;
             invaders.enemy[index].speed = 2;
             invaders.enemy[index].direction = dir;
         } else {
@@ -868,7 +919,7 @@ void add_enemy() {
             invaders.enemy[index].sprite_info.y = ycord;
             invaders.enemy[index].sprite_info.id = PIG_ID;
             invaders.enemy[index].sprite_info.dim = PIG_DIM;
-            invaders.enemy[index].points = 1;
+            invaders.enemy[index].points = 4;
             invaders.enemy[index].speed = 2;
             invaders.enemy[index].direction = dir;
         }
@@ -879,7 +930,7 @@ void add_enemy() {
     
 }
 
-
+/* Moves enemies depending on state */
 void enemy_ai() {
     int i;
     
@@ -891,6 +942,7 @@ void enemy_ai() {
     
 }
 
+/* Checks for gameover condition */
 void game_over_ai() {
     
     if (health <= 0) {
@@ -898,6 +950,7 @@ void game_over_ai() {
     }
 }
 
+/* Checks for Win condition */
 void game_win_ai() {
 
     if (score >= 150) {
@@ -905,6 +958,7 @@ void game_win_ai() {
     }
 }
 
+/* Restarts the State */
 void restart_state() {
 
     memset(&sprite_slots, 0, MAX_SPRITES*sizeof(sprite_t));
@@ -921,9 +975,9 @@ void restart_state() {
     init_state();
 }
 
+/* Main Game */
 int main() {
     
-    int quit = 0;
     init_sprite_controller();
     init_audio_controller();
     init_keyboard();
@@ -936,11 +990,11 @@ int main() {
     
 	ticks = 0;
     
+    
+    signal(SIGINT, INTHandler);
     /*Draw initial game state */
     init_state();
-	unsigned int c;
-    c = 1;
-    ioctl(audio_hw_fd, AUDIO_SET_CONTROL, &c);
+    audio_control(1);
 
     pthread_create(&input_thread, NULL, handle_controller_thread_f, NULL);
     pthread_create(&input_thread2, NULL, handle_controller_thread_f2, NULL);
@@ -967,7 +1021,6 @@ int main() {
             game_over_ai();
             game_win_ai();
             pthread_mutex_unlock(&lock);
-            
         } else if (state == game_over) {
             pthread_mutex_lock(&lock);
 			draw_background();
@@ -976,8 +1029,8 @@ int main() {
             draw_gameover();
             sleep(10);
             state = start;
-            draw_background();
             quit = 1;
+            audio_control(0);
             pthread_mutex_unlock(&lock);            
         } else if (state == game_pause) {
             pthread_mutex_lock(&lock);
@@ -992,15 +1045,20 @@ int main() {
             draw_score();
             draw_win();
             quit = 1;
+            audio_control(0);
             pthread_mutex_unlock(&lock);
         }
+        
         usleep(32000);
-
+        
+        /* VGA SYNC */
         while(check_vga_ready() != 0);
 
 		ticks++;
     }
     
+    audio_control(0);
+
     pthread_cancel(input_thread);
     pthread_cancel(input_thread2);
     
@@ -1011,7 +1069,6 @@ int main() {
     pthread_join(input_thread, NULL);
     pthread_join(input_thread2, NULL);
 
-    c = 0;
-    ioctl(audio_hw_fd, AUDIO_SET_CONTROL, &c);
+    
     
 }
