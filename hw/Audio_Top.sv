@@ -2,60 +2,50 @@
 /* Original audio codec code taken from
  * Howard Mao's FPGA blog
  * http://zhehaomao.com/blog/fpga/2014/01/15/sockit-8.html
- * /
-
-/* Audio_top.sv
-Contains the top-level audio controller. Instantiates sprite ROM blocks and
-communicates with the avalon bus */
+ * 
+ * Top-Level Audio Controller
+ */
 
 module Audio_top (
-    input  OSC_50_B8A,   //reference clock
-	 input logic 	  resetn,
-	 input logic [15:0]  writedata, //data from SW
-	 input logic address,   //1-bit peripheral address
-	 input logic write,
-	 input logic chipselect,
-	 output logic irq,		// interrupt from fpga to hps
-    inout  AUD_ADCLRCK, //Channel clock for ADC
-    input  AUD_ADCDAT,
-    inout  AUD_DACLRCK, //Channel clock for DAC
-    output AUD_DACDAT,  //DAC data
-    output AUD_XCK, 
-    inout  AUD_BCLK, // Bit clock
-    output AUD_I2C_SCLK, //I2C clock
-    inout  AUD_I2C_SDAT, //I2C data
-    output AUD_MUTE,    //Audio mute
+    input               OSC_50_B8A,
+    input logic 	    resetn,
+	input logic [15:0]  writedata,
+	input logic         address,
+	input logic         write,
+	input logic         chipselect,
+	output logic        irq,
+    inout               AUD_ADCLRCK,
+    input               AUD_ADCDAT,
+    inout               AUD_DACLRCK,
+    output              AUD_DACDAT,
+    output              AUD_XCK, 
+    inout               AUD_BCLK,
+    output              AUD_I2C_SCLK,
+    inout               AUD_I2C_SDAT,
+    output              AUD_MUTE,
 
-    input  [3:0] KEY,
-    input  [3:0] SW,
-    output [3:0] LED
+    input  [3:0]        KEY,
+    input  [3:0]        SW,
+    output [3:0]        LED
 );
 
-wire reset = !KEY[0];
-wire main_clk;
-wire audio_clk;
-wire ctrl;
-//wire chipselect = 1;
-wire [1:0] sample_end;
-wire [1:0] sample_req;
-wire [15:0] audio_output;
-wire [15:0] audio_sample;
-wire [15:0] audio_sw;
-wire [15:0] audio_ip;
+logic reset = !KEY[0];
+logic main_clk;
+logic audio_clk;
+logic ctrl;
+logic [1:0] sample_end;
+logic [1:0] sample_req;
+logic [15:0] audio_output;
+logic [15:0] audio_sample;
+logic [15:0] audio_sw;
+logic [15:0] audio_ip;
+logic [15:0] audio_input;
 
-//Sound samples from audio ROM blocks
-wire [15:0] M_city;
+logic [15:0] M_background;
+logic [16:0] addr_background;
 
+background c0 (.clock(OSC_50_B8A), .address(addr_background), .q(M_background));
 
-//Audio ROM block addresses
-wire [14:0] addr_city;
-
-//Store sounds in memory ROM blocks
-shoot c0 (.clock(OSC_50_B8A), .address(addr_city), .q(M_city));
-
-
-
-//generate audio clock
 clock_pll pll (
     .refclk (OSC_50_B8A),
     .rst (reset),
@@ -63,7 +53,6 @@ clock_pll pll (
     .outclk_1 (main_clk)
 );
 
-//Configure registers of audio codec ssm2603
 i2c_av_config av_config (
     .clk (main_clk),
     .reset (reset),
@@ -75,8 +64,6 @@ i2c_av_config av_config (
 assign AUD_XCK = audio_clk;
 assign AUD_MUTE = (SW != 4'b0);
 
-
-//Call Audio codec interface
 audio_codec ac (
     .clk (audio_clk),
     .reset (reset),
@@ -92,7 +79,6 @@ audio_codec ac (
     .AUD_BCLK (AUD_BCLK)
 );
 
-//Fetch audio samples from these ROM blocks
 audio_effects ae (
     .clk (audio_clk),
     .sample_end (sample_end[1]),
@@ -104,18 +90,15 @@ audio_effects ae (
 	 .control(ctrl)
 );
 
-//Read control (on/off) for striking sound from SW. Also has provision
-//for reading audio samples from SW but not used..
+
  always_ff @(posedge OSC_50_B8A)
-     if (resetn) begin
-	ctrl <= 0;
-
-
-     end
+    if (resetn) begin
+        ctrl <= 0;
+    end
 	else if (chipselect && write)
 	begin
 		case(address)
-            1'b0:	ctrl <= writedata[0]; // to turn the audio codec on/ off
+            1'b0:	ctrl <= writedata[0];
         endcase
 	end
 endmodule

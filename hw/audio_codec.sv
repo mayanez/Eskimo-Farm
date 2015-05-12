@@ -1,46 +1,36 @@
 /* Original audio codec code taken from
  * Howard Mao's FPGA blog
  * http://zhehaomao.com/blog/fpga/2014/01/15/sockit-8.html
- * /
+ * 
+ * Sends samples to the audio codec SSM2603.
+ */
 
-/*
-audio_codec.sv 
-Sends samples to the audio codec ssm 2603 at audio clock rate.
-*/
-
-
-//Audio codec interface
 module audio_codec (
-    input  clk, //audio clock
+    input  clk,
     input  reset,
-    output [1:0]  sample_end,   //end of sample
-    output [1:0]  sample_req,   //request new sample
-    input  [15:0] audio_output, //audio output sent to audio codec 
-    input  [1:0] channel_sel,   //select channel
-    output AUD_ADCLRCK, //ADC channel clock
+    output [1:0]  sample_end,
+    output [1:0]  sample_req,
+    input  [15:0] audio_output,
+    input  [1:0] channel_sel,
+    output AUD_ADCLRCK,
     input AUD_ADCDAT,
-    output AUD_DACLRCK, //DAC channel clock
+    output AUD_DACLRCK,
     output AUD_DACDAT,  
-    output AUD_BCLK //Bit clock
+    output AUD_BCLK
 );
 
-// divided by 256 clock for the LRC clock, one clock is oen audio frame
-reg [7:0] lrck_divider;
+logic [7:0] lrck_divider;
+logic [1:0] bclk_divider;
 
-// divided by 4 clock for the bit clock BCLK
-reg [1:0] bclk_divider;
+logic [15:0] shift_out;
+logic [15:0] shift_temp;
 
-reg [15:0] shift_out;
-reg [15:0] shift_temp;
+logic lrck = !lrck_divider[7];
 
-wire lrck = !lrck_divider[7];
-
-//assigning clocks from the clock divider
 assign AUD_ADCLRCK = lrck;
 assign AUD_DACLRCK = lrck;
 assign AUD_BCLK = bclk_divider[1];
 
-// assigning data as last bit of shift register
 assign AUD_DACDAT = shift_out[15];
 
 
@@ -64,14 +54,13 @@ assign sample_req[1] = (lrck_divider == 8'hfe);
 // end of half lrc clk cycle (126 mclk cycles) so request for next sample
 assign sample_req[0] = (lrck_divider == 8'h7e);
 
-wire clr_lrck = (lrck_divider == 8'h7f); // 127 mclk
-wire set_lrck = (lrck_divider == 8'hff); // 255 mclk
+logic clr_lrck = (lrck_divider == 8'h7f); // 127 mclk
+logic set_lrck = (lrck_divider == 8'hff); // 255 mclk
 // high right after bclk is set
-wire set_bclk = (bclk_divider == 2'b10 && !lrck_divider[6]);
+logic set_bclk = (bclk_divider == 2'b10 && !lrck_divider[6]);
 // high right before bclk is cleared
-wire clr_bclk = (bclk_divider == 2'b11 && !lrck_divider[6]);
+logic clr_bclk = (bclk_divider == 2'b11 && !lrck_divider[6]);
 
-//implementing shift operation to send the audio samples
 always @(posedge clk) begin
     if (reset) begin
         shift_out <= 16'h0;
