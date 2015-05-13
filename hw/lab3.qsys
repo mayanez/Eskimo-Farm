@@ -16,6 +16,14 @@
    {
       datum _sortIndex
       {
+         value = "4";
+         type = "int";
+      }
+   }
+   element audio_emulator_0
+   {
+      datum _sortIndex
+      {
          value = "3";
          type = "int";
       }
@@ -25,6 +33,14 @@
       datum baseAddress
       {
          value = "0";
+         type = "String";
+      }
+   }
+   element audio_emulator_0.avalon_slave_0
+   {
+      datum baseAddress
+      {
+         value = "256";
          type = "String";
       }
    }
@@ -74,6 +90,11 @@
  <interface name="reset" internal="clk_0.clk_in_reset" type="reset" dir="end" />
  <interface name="memory" internal="hps_0.memory" type="conduit" dir="end" />
  <interface name="hps_io" internal="hps_0.hps_io" type="conduit" dir="end" />
+ <interface
+   name="aud"
+   internal="audio_emulator_0.conduit_end"
+   type="conduit"
+   dir="end" />
  <interface name="vga" internal="VGA_LED_0.conduit_end" type="conduit" dir="end" />
  <module kind="clock_source" version="13.1" enabled="1" name="clk_0">
   <parameter name="clockFrequency" value="50000000" />
@@ -554,9 +575,14 @@
   <parameter name="AUTO_DEVICE_FAMILY" value="Cyclone V" />
   <parameter name="AUTO_DEVICE" value="5CSXFC6D6F31C8ES" />
  </module>
- <module kind="VGA_LED" version="1.0" enabled="1" name="VGA_LED_0">
-  <parameter name="AUTO_CLOCK_CLOCK_RATE" value="50000000" />
+ <module
+   kind="audio_emulator"
+   version="1.0"
+   enabled="1"
+   name="audio_emulator_0">
+  <parameter name="AUTO_CLOCK_SINK_CLOCK_RATE" value="50000000" />
  </module>
+ <module kind="VGA_LED" version="1.0" enabled="1" name="VGA_LED_0" />
  <connection
    kind="clock"
    version="13.1"
@@ -578,6 +604,34 @@
    version="13.1"
    start="clk_0.clk_reset"
    end="master_0.clk_reset" />
+ <connection
+   kind="clock"
+   version="13.1"
+   start="clk_0.clk"
+   end="audio_emulator_0.clock_sink" />
+ <connection
+   kind="reset"
+   version="13.1"
+   start="clk_0.clk_reset"
+   end="audio_emulator_0.reset_sink" />
+ <connection
+   kind="avalon"
+   version="13.1"
+   start="hps_0.h2f_lw_axi_master"
+   end="audio_emulator_0.avalon_slave_0">
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="0x0100" />
+  <parameter name="defaultConnection" value="false" />
+ </connection>
+ <connection
+   kind="avalon"
+   version="13.1"
+   start="master_0.master"
+   end="audio_emulator_0.avalon_slave_0">
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="0x0100" />
+  <parameter name="defaultConnection" value="false" />
+ </connection>
  <connection kind="clock" version="13.1" start="clk_0.clk" end="VGA_LED_0.clock" />
  <connection
    kind="reset"
@@ -587,7 +641,7 @@
  <connection
    kind="avalon"
    version="13.1"
-   start="hps_0.h2f_lw_axi_master"
+   start="master_0.master"
    end="VGA_LED_0.avalon_slave_0">
   <parameter name="arbitrationPriority" value="1" />
   <parameter name="baseAddress" value="0x0000" />
@@ -596,7 +650,7 @@
  <connection
    kind="avalon"
    version="13.1"
-   start="master_0.master"
+   start="hps_0.h2f_lw_axi_master"
    end="VGA_LED_0.avalon_slave_0">
   <parameter name="arbitrationPriority" value="1" />
   <parameter name="baseAddress" value="0x0000" />
