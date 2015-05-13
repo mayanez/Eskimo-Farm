@@ -25,7 +25,7 @@ logic [1:0] bclk_divider;
 logic [15:0] shift_out;
 logic [15:0] shift_temp;
 
-logic lrck = !lrck_divider[7];
+assign lrck = !lrck_divider[7];
 
 assign AUD_ADCLRCK = lrck;
 assign AUD_DACLRCK = lrck;
@@ -54,12 +54,12 @@ assign sample_req[1] = (lrck_divider == 8'hfe);
 // end of half lrc clk cycle (126 mclk cycles) so request for next sample
 assign sample_req[0] = (lrck_divider == 8'h7e);
 
-logic clr_lrck = (lrck_divider == 8'h7f); // 127 mclk
-logic set_lrck = (lrck_divider == 8'hff); // 255 mclk
+assign clr_lrck = (lrck_divider == 8'h7f); // 127 mclk
+assign set_lrck = (lrck_divider == 8'hff); // 255 mclk
 // high right after bclk is set
-logic set_bclk = (bclk_divider == 2'b10 && !lrck_divider[6]);
+assign set_bclk = (bclk_divider == 2'b10 && !lrck_divider[6]);
 // high right before bclk is cleared
-logic clr_bclk = (bclk_divider == 2'b11 && !lrck_divider[6]);
+assign clr_bclk = (bclk_divider == 2'b11 && !lrck_divider[6]);
 
 always @(posedge clk) begin
     if (reset) begin

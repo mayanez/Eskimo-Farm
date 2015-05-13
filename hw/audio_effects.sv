@@ -29,7 +29,7 @@ always @(posedge clk) begin
             addr_background <= 0;
         end
         
-		if (index == 17'd88116) /* # of samples in Background */
+		if (index == 17'd117585) /* # of samples in Background */
             addr_background <= 17'd0;
 		else
 		    addr_background <= addr_background +17'b1;

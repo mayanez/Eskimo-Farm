@@ -29,7 +29,7 @@ module Audio_top (
     output [3:0]        LED
 );
 
-logic reset = !KEY[0];
+assign reset = !KEY[0];
 logic main_clk;
 logic audio_clk;
 logic ctrl;
@@ -85,9 +85,9 @@ audio_effects ae (
     .sample_req (sample_req[1]),
     .audio_output (audio_output),
     .audio_sample  (audio_sample),
-    .addr_city(addr_city),
-    .M_city(M_city),
-	 .control(ctrl)
+    .addr_background(addr_background),
+    .M_background(M_background),
+	.control(ctrl)
 );
 
 
