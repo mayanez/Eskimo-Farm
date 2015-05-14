@@ -1,7 +1,7 @@
 /*
- * Avalon memory-mapped peripheral for the VGA LED Emulator
+ * Avalon memory-mapped peripheral.
  *
- * Stephen A. Edwards
+ * Originally modified from Stephen A. Edwards Lab3 Code.
  * Columbia University
  */
 

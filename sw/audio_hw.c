@@ -1,9 +1,9 @@
 /*
- * Device driver for the VGA LED Emulator
+ * Device driver for the Audio Controller
  *
  * A Platform device implemented using the misc subsystem
  *
- * Stephen A. Edwards
+ * Originally modified from Stephen A. Edwards Lab3 Code.
  * Columbia University
  *
  * References:
@@ -11,12 +11,6 @@
  *               drivers/misc/arm-charlcd.c
  * http://www.linuxforu.com/tag/linux-device-drivers/
  * http://free-electrons.com/docs/
- *
- * "make" to build
- * insmod vga_led.ko
- *
- * Check code style with
- * checkpatch.pl --file --no-tree vga_led.c
  */
 
 #include <linux/module.h>
@@ -47,8 +41,6 @@ struct audio_hw_dev {
 
 /*
  * Handle ioctl() calls from userspace:
- * Read or write the segments on single digits.
- * Note extensive error checking of arguments
  */
 static long audio_hw_ioctl(struct file *f, unsigned int cmd, unsigned long arg)
 {
@@ -91,7 +83,7 @@ static int __init audio_hw_probe(struct platform_device *pdev)
 {
 	int ret;
 
-	/* Register ourselves as a misc device: creates /dev/vga_led */
+	/* Register ourselves as a misc device */
 	ret = misc_register(&audio_hw_misc_device);
 
 	/* Get the address of our registers from the device tree */

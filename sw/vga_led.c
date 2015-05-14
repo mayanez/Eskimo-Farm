@@ -3,7 +3,7 @@
  *
  * A Platform device implemented using the misc subsystem
  *
- * Stephen A. Edwards
+ * Originally modified from Stephen A. Edwards Lab3 Code
  * Columbia University
  *
  * References:

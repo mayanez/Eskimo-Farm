@@ -1,5 +1,5 @@
 /*
- * Seven-segment LED emulator
+ * LED emulator
  *
  * Stephen A. Edwards, Columbia University
  */

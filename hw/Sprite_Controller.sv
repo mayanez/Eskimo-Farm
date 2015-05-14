@@ -1,6 +1,5 @@
 /*
- * Avalon memory-mapped peripheral for the VGA LED Emulator
- *
+ * Avalon memory-mapped peripheral
  */
 
 module Sprite_Controller(   input logic clk,
